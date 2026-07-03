@@ -85,7 +85,10 @@ export async function listAves(filtros: ListAvesFiltros = {}) {
 }
 
 export async function getAve(id: string) {
-  return await prisma.ave.findUnique({ where: { id } });
+  return await prisma.ave.findUnique({
+    where: { id },
+    include: { especie: true, paiAve: true, maeAve: true },
+  });
 }
 
 export async function updateAve(id: string, input: unknown) {

@@ -1,19 +1,15 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import { createAveAction } from "@/lib/aves/actions";
+import { useParentesCandidatos } from "@/lib/aves/useParentesCandidatos";
 
 interface Especie {
   id: string;
   nome: string;
-}
-
-interface AveCandidata {
-  id: string;
-  nomeApelido: string | null;
-  anilha: string;
 }
 
 const selectClass =
@@ -28,34 +24,7 @@ export default function NovoCadastroForm({ especies }: { especies: Especie[] }) 
   const [origem, setOrigem] = useState<"NASCIDA_NO_CRIATORIO" | "ADQUIRIDA">(
     "NASCIDA_NO_CRIATORIO",
   );
-  const [pais, setPais] = useState<AveCandidata[]>([]);
-  const [maes, setMaes] = useState<AveCandidata[]>([]);
-
-  useEffect(() => {
-    let cancelado = false;
-
-    if (!especieId) {
-      return () => {
-        cancelado = true;
-      };
-    }
-
-    fetch(`/api/aves?especieId=${especieId}&sexo=MACHO`)
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data: AveCandidata[]) => {
-        if (!cancelado) setPais(data);
-      });
-
-    fetch(`/api/aves?especieId=${especieId}&sexo=FEMEA`)
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data: AveCandidata[]) => {
-        if (!cancelado) setMaes(data);
-      });
-
-    return () => {
-      cancelado = true;
-    };
-  }, [especieId]);
+  const { pais, maes } = useParentesCandidatos(especieId);
 
   function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -65,14 +34,14 @@ export default function NovoCadastroForm({ especies }: { especies: Especie[] }) 
   return (
     <div className="max-w-[560px] mx-auto min-h-screen box-border">
       <div className="flex items-center gap-3.5 px-5 py-[18px] border-b border-border bg-background sticky top-0 z-[2]">
-        <a
+        <Link
           href="/plantel"
           className="w-9 h-9 rounded-full bg-white border border-border flex items-center justify-center no-underline shrink-0"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2B2A21" strokeWidth={2.2}>
             <path d="M15 18l-6-6 6-6" />
           </svg>
-        </a>
+        </Link>
         <div className="font-serif font-semibold text-xl text-text-primary">
           Nova ave
         </div>
@@ -252,12 +221,12 @@ export default function NovoCadastroForm({ especies }: { especies: Especie[] }) 
         )}
 
         <div className="flex gap-3 mt-2 pb-6">
-          <a
+          <Link
             href="/plantel"
             className="flex-1 text-center no-underline font-sans font-bold text-[15px] text-text-secondary border-[1.5px] border-border px-4 py-3.5 rounded-[10px]"
           >
             Cancelar
-          </a>
+          </Link>
           <Button type="submit" disabled={pending} className="flex-1">
             {pending ? "Salvando..." : "Salvar ave"}
           </Button>
