@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Design System — Ninhal (design/Design System.dc.html) */
+  --color-oliva-900: #2b3623;
+  --color-oliva-600: #4b5d3a;
+  --color-oliva-400: #7c9364;
+  --color-ambar: #c97a2b;
+  --color-terracota: #b3423a;
+  --color-background: #f7f3ea;
+  --color-surface: #ffffff;
+  --color-border: #e4dcc8;
+  --color-border-subtle: #f0ebdd;
+  --color-input-border: #ddd5c2;
+  --color-text-primary: #2b2a21;
+  --color-text-secondary: #6b6656;
+  --color-text-muted: #8a8578;
+  --color-success-bg: #dce5d2;
+  --color-success-text: #3c4a2f;
+  --color-warning-bg: #f0dcc4;
+  --color-warning-text: #8b5a24;
+  --color-danger-bg: #ead2ce;
+  --color-danger-text: #8a3830;
+  --color-info-bg: #dce3ea;
+  --color-info-text: #2f4a6b;
+  --color-tab-track: #ede7d6;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-text-primary);
+  --color-oliva-900: var(--color-oliva-900);
+  --color-oliva-600: var(--color-oliva-600);
+  --color-oliva-400: var(--color-oliva-400);
+  --color-ambar: var(--color-ambar);
+  --color-terracota: var(--color-terracota);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-border-subtle: var(--color-border-subtle);
+  --color-input-border: var(--color-input-border);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-success-bg: var(--color-success-bg);
+  --color-success-text: var(--color-success-text);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-warning-text: var(--color-warning-text);
+  --color-danger-bg: var(--color-danger-bg);
+  --color-danger-text: var(--color-danger-text);
+  --color-info-bg: var(--color-info-bg);
+  --color-info-text: var(--color-info-text);
+  --color-tab-track: var(--color-tab-track);
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-source-serif);
+  --font-mono: var(--font-space-grotesk);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+}
+
+input::placeholder {
+  color: #a79e88;
 }
