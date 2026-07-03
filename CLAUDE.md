@@ -24,6 +24,10 @@ Antes de implementar uma lógica que possa já existir de um trabalho anterior n
 
 Toda a interface e qualquer texto voltado ao usuário final (rótulos, mensagens, alertas, documentação de uso) deve ser escrito em português do Brasil.
 
+## Testes de Cadastro e E-mail
+
+O Supabase sinalizou uma taxa alta de e-mails retornados (bounce) por cadastros de teste usando endereços fabricados/inexistentes (ex: `teste@example.com`), o que arrisca restrição do envio de e-mails transacionais do projeto. Qualquer cadastro de usuário real contra o projeto Supabase (desenvolvimento, produção, ou testes automatizados que não usem mocks) deve usar um endereço de e-mail real e entregável — por exemplo, um endereço próprio do usuário com alias `+` (ex: `gersonvan+ninhal-teste1@gmail.com`), nunca um domínio fictício. Isso vale para verificação manual, dados de teste em Task Prompts, e a suíte Playwright ponta a ponta.
+
 ## Controle de Versão
 
 Repositório: `/Users/gersonvan/dev/plantel_board`, branch base `main`, remoto `origin` em `https://github.com/gersonvan/ninhal.git` (pushes apenas quando explicitamente solicitados). Branches de feature seguem `tipo/descricao-curta` (ex: `feat/cadastro-de-aves`). Commits seguem `tipo: descrição`, com tipos `feat`, `fix`, `refactor`, `docs`, `test`, `chore`.
