@@ -2,6 +2,8 @@
 
 import { useActionState, useState } from "react";
 import { completeOnboardingAction } from "@/lib/onboarding/actions";
+import Button from "@/components/ui/Button";
+import TextField from "@/components/ui/TextField";
 
 const SPECIES = [
   { name: "Canários", emoji: "🐤" },
@@ -9,9 +11,6 @@ const SPECIES = [
   { name: "Psitacídeos", emoji: "🦚" },
   { name: "Outras aves ornamentais", emoji: "🐦" },
 ];
-
-const inputClass =
-  "font-sans text-base px-4 py-[15px] rounded-[10px] border-[1.5px] border-input-border bg-white text-text-primary";
 
 export default function OnboardingWizard() {
   const [step, setStep] = useState(1);
@@ -82,11 +81,11 @@ export default function OnboardingWizard() {
                 Esse nome aparece no seu pedigree e nos documentos
                 compartilhados com clientes.
               </p>
-              <input
+              <TextField
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: Aviário Serra Verde"
-                className={inputClass}
+                className="text-base py-[15px]"
               />
             </div>
           )}
@@ -185,31 +184,28 @@ export default function OnboardingWizard() {
           )}
 
           <div className="flex gap-3 mt-2">
-            <button
+            <Button
               type="button"
+              variant="tertiary"
               onClick={handleBack}
-              className="font-sans font-bold text-[15px] bg-transparent text-text-secondary border-none px-2.5 py-[15px] cursor-pointer"
+              className="!text-text-secondary"
               style={{ visibility: step === 1 ? "hidden" : "visible" }}
             >
               Voltar
-            </button>
+            </Button>
             {step < 3 ? (
-              <button
+              <Button
                 type="button"
                 onClick={handleNext}
                 disabled={step === 1 && name.trim().length === 0}
-                className="flex-1 font-sans font-bold text-[15px] bg-oliva-600 text-background border-none px-4 py-[15px] rounded-[10px] cursor-pointer disabled:opacity-60"
+                className="flex-1"
               >
                 Continuar
-              </button>
+              </Button>
             ) : (
-              <button
-                type="submit"
-                disabled={pending}
-                className="flex-1 font-sans font-bold text-[15px] bg-oliva-600 text-background border-none px-4 py-[15px] rounded-[10px] cursor-pointer disabled:opacity-70"
-              >
+              <Button type="submit" disabled={pending} className="flex-1">
                 {pending ? "Concluindo..." : "Concluir"}
-              </button>
+              </Button>
             )}
           </div>
         </form>

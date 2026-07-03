@@ -6,12 +6,8 @@ import {
   signInAction,
   signUpAction,
 } from "@/lib/auth/actions";
-
-const inputClass =
-  "font-sans text-[15px] px-4 py-3.5 rounded-[10px] border-[1.5px] border-input-border bg-white text-text-primary";
-const labelClass = "text-[13px] font-bold text-[#4a4638]";
-const primaryButtonClass =
-  "text-center font-sans font-bold text-[15px] bg-oliva-600 text-background px-4 py-[15px] rounded-[10px]";
+import Button from "@/components/ui/Button";
+import TextField from "@/components/ui/TextField";
 
 type Tab = "login" | "signup" | "recover";
 
@@ -90,32 +86,22 @@ export default function LoginPage() {
 
           {tab === "login" && (
             <form action={loginAction} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass} htmlFor="login-email">
-                  E-mail
-                </label>
-                <input
-                  id="login-email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="voce@aviario.com.br"
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass} htmlFor="login-password">
-                  Senha
-                </label>
-                <input
-                  id="login-password"
-                  name="password"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  className={inputClass}
-                />
-              </div>
+              <TextField
+                id="login-email"
+                name="email"
+                type="email"
+                required
+                label="E-mail"
+                placeholder="voce@aviario.com.br"
+              />
+              <TextField
+                id="login-password"
+                name="password"
+                type="password"
+                required
+                label="Senha"
+                placeholder="••••••••"
+              />
               {loginState?.error && (
                 <p className="text-sm font-semibold text-terracota">
                   {loginState.error}
@@ -128,69 +114,46 @@ export default function LoginPage() {
               >
                 Esqueci minha senha
               </button>
-              <button
-                type="submit"
-                disabled={loginPending}
-                className={`${primaryButtonClass} border-none cursor-pointer disabled:opacity-70`}
-              >
+              <Button type="submit" disabled={loginPending}>
                 {loginPending ? "Entrando..." : "Entrar"}
-              </button>
+              </Button>
             </form>
           )}
 
           {tab === "signup" && (
             <form action={signupAction} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass} htmlFor="signup-name">
-                  Nome completo
-                </label>
-                <input
-                  id="signup-name"
-                  name="name"
-                  required
-                  placeholder="Carlos Menezes"
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass} htmlFor="signup-email">
-                  E-mail
-                </label>
-                <input
-                  id="signup-email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="voce@aviario.com.br"
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass} htmlFor="signup-password">
-                  Senha
-                </label>
-                <input
-                  id="signup-password"
-                  name="password"
-                  type="password"
-                  required
-                  minLength={6}
-                  placeholder="Crie uma senha"
-                  className={inputClass}
-                />
-              </div>
+              <TextField
+                id="signup-name"
+                name="name"
+                required
+                label="Nome completo"
+                placeholder="Carlos Menezes"
+              />
+              <TextField
+                id="signup-email"
+                name="email"
+                type="email"
+                required
+                label="E-mail"
+                placeholder="voce@aviario.com.br"
+              />
+              <TextField
+                id="signup-password"
+                name="password"
+                type="password"
+                required
+                minLength={6}
+                label="Senha"
+                placeholder="Crie uma senha"
+              />
               {signupState?.error && (
                 <p className="text-sm font-semibold text-terracota">
                   {signupState.error}
                 </p>
               )}
-              <button
-                type="submit"
-                disabled={signupPending}
-                className={`${primaryButtonClass} border-none cursor-pointer disabled:opacity-70`}
-              >
+              <Button type="submit" disabled={signupPending}>
                 {signupPending ? "Criando conta..." : "Criar conta"}
-              </button>
+              </Button>
             </form>
           )}
 
@@ -200,19 +163,14 @@ export default function LoginPage() {
                 Informe seu e-mail cadastrado. Enviaremos um link para
                 redefinir sua senha.
               </p>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass} htmlFor="recover-email">
-                  E-mail
-                </label>
-                <input
-                  id="recover-email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="voce@aviario.com.br"
-                  className={inputClass}
-                />
-              </div>
+              <TextField
+                id="recover-email"
+                name="email"
+                type="email"
+                required
+                label="E-mail"
+                placeholder="voce@aviario.com.br"
+              />
               {recoverState && "error" in recoverState && (
                 <p className="text-sm font-semibold text-terracota">
                   {recoverState.error}
@@ -223,20 +181,17 @@ export default function LoginPage() {
                   Link enviado! Verifique sua caixa de entrada.
                 </p>
               )}
-              <button
-                type="submit"
-                disabled={recoverPending}
-                className={`${primaryButtonClass} border-none cursor-pointer disabled:opacity-70`}
-              >
+              <Button type="submit" disabled={recoverPending}>
                 {recoverPending ? "Enviando..." : "Enviar link"}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="tertiary"
                 onClick={() => setTab("login")}
-                className="bg-transparent border-none font-sans text-[13px] font-bold text-text-secondary cursor-pointer p-0"
+                className="!text-text-secondary"
               >
                 Voltar ao login
-              </button>
+              </Button>
             </form>
           )}
         </div>
