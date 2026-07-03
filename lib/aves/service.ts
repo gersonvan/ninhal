@@ -1,4 +1,4 @@
-import { Prisma } from "@/app/generated/prisma/client";
+import { Prisma, type SexoAve, type StatusAve } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { assertMaeCompativel, assertPaiCompativel } from "./compatibility";
 import { AnilhaDuplicadaError, RegistroNaoEncontradoError } from "./errors";
@@ -53,11 +53,35 @@ export async function createAve(input: unknown) {
   }
 }
 
-export async function listAves() {
+export interface ListAvesFiltros {
+  /** Busca por nome/apelido ou anilha (case-insensitive, substring). */
+  busca?: string;
+  especieId?: string;
+  sexo?: SexoAve;
+  status?: StatusAve;
+}
+
+export async function listAves(filtros: ListAvesFiltros = {}) {
+  const where: Prisma.AveWhereInput = {};
+
+  if (filtros.busca) {
+    where.OR = [
+      { nomeApelido: { contains: filtros.busca, mode: "insensitive" } },
+      { anilha: { contains: filtros.busca, mode: "insensitive" } },
+    ];
+  }
+  if (filtros.especieId) where.especieId = filtros.especieId;
+  if (filtros.sexo) where.sexo = filtros.sexo;
+  if (filtros.status) where.status = filtros.status;
+
   // `await` explícito é necessário mesmo podendo retornar a promise diretamente:
   // sem ele, o Prisma só despacha a consulta (e aciona o middleware de tenant) no
   // `.then()` do chamador, que corre fora do contexto síncrono de `runWithTenant`.
-  return await prisma.ave.findMany({ orderBy: { createdAt: "desc" } });
+  return await prisma.ave.findMany({
+    where,
+    include: { especie: true },
+    orderBy: { createdAt: "desc" },
+  });
 }
 
 export async function getAve(id: string) {
