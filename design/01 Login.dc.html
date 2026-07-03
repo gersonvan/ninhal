@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#2B3623; font-family:'Manrope',sans-serif; }
+    input::placeholder { color:#a79e88; }
+  </style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; box-sizing:border-box; background:radial-gradient(circle at 20% 10%, #3d4b2e 0%, #2B3623 60%);">
+  <div style="width:100%; max-width:420px; display:flex; flex-direction:column; gap:28px;">
+
+    <div style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
+      <div style="width:56px; height:56px; border-radius:16px; background:#4B5D3A; display:flex; align-items:center; justify-content:center; border:1px solid #7C9364;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F7F3EA" stroke-width="1.8"><path d="M12 3c-3 2-5 5-5 9a5 5 0 0010 0c0-4-2-7-5-9z"/><path d="M12 12v9"/><path d="M8 21h8"/></svg>
+      </div>
+      <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:26px; color:#F7F3EA;">Ninhal</div>
+      <div style="font-family:'Manrope',sans-serif; font-size:14px; color:#B9C2A9;">Gestão genética para criadores de aves</div>
+    </div>
+
+    <div style="background:#F7F3EA; border-radius:20px; padding:32px 28px; display:flex; flex-direction:column; gap:20px; box-shadow:0 30px 60px -20px rgba(0,0,0,0.4);">
+
+      <div style="display:flex; background:#EDE7D6; border-radius:12px; padding:4px;">
+        <button onClick="{{ setTab_login }}" style="{{ tabStyleLogin }}">Entrar</button>
+        <button onClick="{{ setTab_signup }}" style="{{ tabStyleSignup }}">Criar conta</button>
+      </div>
+
+      <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:13px; font-weight:700; color:#4a4638;">E-mail</label>
+            <input placeholder="voce@aviario.com.br" style="font-family:'Manrope',sans-serif; font-size:15px; padding:14px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:13px; font-weight:700; color:#4a4638;">Senha</label>
+            <input type="password" placeholder="••••••••" style="font-family:'Manrope',sans-serif; font-size:15px; padding:14px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+          </div>
+          <button onClick="{{ setTab_recover }}" style="align-self:flex-end; background:none; border:none; font-family:'Manrope',sans-serif; font-size:13px; font-weight:700; color:#4B5D3A; cursor:pointer; padding:0;">Esqueci minha senha</button>
+          <a href="03 Dashboard.dc.html" style="text-decoration:none; text-align:center; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:#4B5D3A; color:#F7F3EA; padding:15px; border-radius:10px;">Entrar</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:13px; font-weight:700; color:#4a4638;">Nome completo</label>
+            <input placeholder="Carlos Menezes" style="font-family:'Manrope',sans-serif; font-size:15px; padding:14px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:13px; font-weight:700; color:#4a4638;">E-mail</label>
+            <input placeholder="voce@aviario.com.br" style="font-family:'Manrope',sans-serif; font-size:15px; padding:14px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:13px; font-weight:700; color:#4a4638;">Senha</label>
+            <input type="password" placeholder="Crie uma senha" style="font-family:'Manrope',sans-serif; font-size:15px; padding:14px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+          </div>
+          <a href="02 Onboarding.dc.html" style="text-decoration:none; text-align:center; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:#4B5D3A; color:#F7F3EA; padding:15px; border-radius:10px;">Criar conta</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isRecover }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; line-height:1.5;">Informe seu e-mail cadastrado. Enviaremos um link para redefinir sua senha.</div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:13px; font-weight:700; color:#4a4638;">E-mail</label>
+            <input placeholder="voce@aviario.com.br" style="font-family:'Manrope',sans-serif; font-size:15px; padding:14px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+          </div>
+          <button onClick="{{ setTab_login }}" style="text-align:center; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:#4B5D3A; color:#F7F3EA; padding:15px; border-radius:10px; border:none; cursor:pointer;">Enviar link</button>
+          <button onClick="{{ setTab_login }}" style="background:none; border:none; font-family:'Manrope',sans-serif; font-size:13px; font-weight:700; color:#6b6656; cursor:pointer; padding:0;">Voltar ao login</button>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div style="text-align:center; font-family:'Manrope',sans-serif; font-size:12px; color:#8DA271;">Feito para quem cria no dia a dia — no viveiro, no sol, com uma mão só.</div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'login' };
+
+  renderVals() {
+    const active = (t) => ({
+      flex:1, padding:'10px 0', border:'none', borderRadius:'9px', cursor:'pointer',
+      fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14,
+      background: this.state.tab === t ? '#4B5D3A' : 'transparent',
+      color: this.state.tab === t ? '#F7F3EA' : '#6b6656'
+    });
+    return {
+      isLogin: this.state.tab === 'login',
+      isSignup: this.state.tab === 'signup',
+      isRecover: this.state.tab === 'recover',
+      tabStyleLogin: active('login'),
+      tabStyleSignup: active('signup'),
+      setTab_login: () => this.setState({ tab: 'login' }),
+      setTab_signup: () => this.setState({ tab: 'signup' }),
+      setTab_recover: () => this.setState({ tab: 'recover' }),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

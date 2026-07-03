@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>body { margin:0; background:#F7F3EA; font-family:'Manrope',sans-serif; }</style>
+</helmet>
+
+<div style="max-width:640px; margin:0 auto; min-height:100vh; box-sizing:border-box; padding-bottom:40px;">
+
+  <div style="display:flex; align-items:center; gap:14px; padding:18px 20px; border-bottom:1px solid #E4DCC8; position:sticky; top:0; background:#F7F3EA; z-index:2;">
+    <a href="07 Lista de Ninhadas.dc.html" style="width:36px; height:36px; border-radius:50%; background:#fff; border:1px solid #E4DCC8; display:flex; align-items:center; justify-content:center; text-decoration:none; flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2B2A21" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="flex:1;">
+      <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:20px; color:#2B2A21;">Ninhada #{{ n.id }}</div>
+      <div style="font-family:'Manrope',sans-serif; font-size:12.5px; color:#8a8578;">{{ n.macho }} × {{ n.femea }} · {{ n.especie }}</div>
+    </div>
+    <span style="{{ statusStyle }}">{{ n.statusLabel }}</span>
+  </div>
+
+  <div style="padding:20px; display:flex; flex-direction:column; gap:20px;">
+
+    <sc-if value="{{ n.alerta }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#F0DCC4; border:1.5px solid #C97A2B; border-radius:12px; padding:16px 18px; display:flex; gap:12px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B5A24" stroke-width="2" style="flex-shrink:0;"><path d="M12 2L1 21h22L12 2z"/><path d="M12 9v5M12 17h.01"/></svg>
+        <div>
+          <div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:14.5px; color:#6B3E17;">Atenção: risco de consanguinidade</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:13.5px; color:#6B3E17; margin-top:3px; line-height:1.5;">{{ n.alertaTexto }} Coeficiente estimado: <strong>{{ n.alertaCoef }}%</strong>.</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px; text-align:center;">
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:26px; color:#2B2A21;">{{ n.ovos }}</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:11px; color:#8a8578; text-transform:uppercase; font-weight:700;">Ovos</div>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px; text-align:center;">
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:26px; color:#2B2A21;">{{ n.ferteis }}</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:11px; color:#8a8578; text-transform:uppercase; font-weight:700;">Férteis</div>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px; text-align:center;">
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:26px; color:#2B2A21;">{{ n.nascidos }}</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:11px; color:#8a8578; text-transform:uppercase; font-weight:700;">Nascidos</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ n.taxaEclosao }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#DCE5D2; border:1px solid #7C9364; border-radius:12px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#3C4A2F;">Taxa de eclosão</div>
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:22px; color:#3C4A2F;">{{ n.taxaEclosao }}%</div>
+      </div>
+    </sc-if>
+
+    <div>
+      <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21; margin-bottom:12px;">Ovos</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(56px,1fr)); gap:10px;">
+        <sc-for list="{{ n.ovosList }}" as="o" hint-placeholder-count="6">
+          <div style="{{ o.style }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ o.iconColor }}" stroke-width="2"><ellipse cx="12" cy="13" rx="7" ry="9"/></svg>
+            <div style="font-family:'Manrope',sans-serif; font-size:9px; font-weight:700; color:{{ o.textColor }}; margin-top:2px;">{{ o.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex; gap:16px; margin-top:12px; font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578;">
+        <div style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#DCE5D2; border:1px solid #7C9364;"></span>Fértil</div>
+        <div style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#F7F3EA; border:1px solid #DDD5C2;"></span>Infértil</div>
+        <div style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#4B5D3A;"></span>Eclodido</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ n.filhotes }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21; margin-bottom:12px;">Filhotes gerados</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <sc-for list="{{ n.filhotes }}" as="f" hint-placeholder-count="2">
+            <a href="{{ f.href }}" style="text-decoration:none; background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:12px 14px; display:flex; align-items:center; gap:10px;">
+              <div style="width:34px; height:34px; border-radius:8px; background:#E4DCC8;"></div>
+              <div style="flex:1;"><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#2B2A21;">{{ f.nome }}</div></div>
+              <span style="{{ f.statusStyle }}">{{ f.status }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ n.podeGerar }}" hint-placeholder-val="{{ false }}">
+      <a href="06 Novo Cadastro de Ave.dc.html" style="text-decoration:none; text-align:center; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; color:#F7F3EA; background:#4B5D3A; padding:15px; border-radius:10px;">Gerar filhotes na árvore</a>
+    </sc-if>
+
+    <a href="10 Árvore Genealógica.dc.html" style="display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#4B5D3A; border:1.5px solid #4B5D3A; border-radius:10px; padding:12px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="2"><circle cx="12" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M12 7.5V13M12 13L6 16.5M12 13l6 3.5"/></svg>
+      Ver na árvore genealógica
+    </a>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const NINHADAS = {
+  '12': { id:'12', macho:'Rufus', femea:'Amália', especie:'Canário Belga', statusLabel:'Risco genético', statusKind:'risco',
+    ovos:7, ferteis:5, nascidos:0, taxaEclosao:null,
+    alerta:true, alertaTexto:'Rufus é pai de Amália — parentesco direto.', alertaCoef:25,
+    ovosStates:['fertil','fertil','fertil','fertil','fertil','infertil','infertil'], filhotes:null, podeGerar:false },
+  '14': { id:'14', macho:'Theo', femea:'Bela', especie:'Calopsita', statusLabel:'Em curso', statusKind:'curso',
+    ovos:6, ferteis:4, nascidos:0, taxaEclosao:null,
+    alerta:false, ovosStates:['fertil','fertil','fertil','fertil','infertil','infertil'], filhotes:null, podeGerar:false },
+  '10': { id:'10', macho:'Rufus', femea:'Alice', especie:'Canário Belga', statusLabel:'Encerrada', statusKind:'encerrada',
+    ovos:7, ferteis:6, nascidos:6, taxaEclosao:86,
+    alerta:false, ovosStates:['eclodido','eclodido','eclodido','eclodido','eclodido','eclodido','infertil'],
+    filhotes:[{nome:'Amália', status:'Ativo', href:'05 Ficha da Ave.dc.html?ave=amalia'}, {nome:'Bruno', status:'Vendido', href:'#'}, {nome:'Cacau', status:'Vendido', href:'#'}],
+    podeGerar:false },
+};
+
+class Component extends DCLogic {
+  getId() {
+    if (typeof window === 'undefined') return '12';
+    return new URLSearchParams(window.location.search).get('ninhada') || '12';
+  }
+
+  renderVals() {
+    const n = { ...NINHADAS[this.getId()] || NINHADAS['12'] };
+    const statusColors = { risco:{bg:'#B3423A',color:'#fff'}, curso:{bg:'#F0DCC4',color:'#8B5A24'}, encerrada:{bg:'#E4DCC8',color:'#6b6656'} };
+    const sc = statusColors[n.statusKind];
+    n.ovosList = n.ovosStates.map((st,i) => {
+      const map = {
+        fertil: { bg:'#DCE5D2', border:'#7C9364', iconColor:'#3C4A2F', textColor:'#3C4A2F', label:'Fértil' },
+        infertil: { bg:'#F7F3EA', border:'#DDD5C2', iconColor:'#a79e88', textColor:'#8a8578', label:'Infértil' },
+        eclodido: { bg:'#4B5D3A', border:'#4B5D3A', iconColor:'#F7F3EA', textColor:'#F7F3EA', label:'Eclodido' },
+      }[st];
+      return {
+        iconColor: map.iconColor, textColor: map.textColor, label: map.label,
+        style: { background: map.bg, border:'1.5px solid '+map.border, borderRadius:10, padding:'10px 4px', display:'flex', flexDirection:'column', alignItems:'center' }
+      };
+    });
+    if (n.filhotes) {
+      n.filhotes = n.filhotes.map(f => ({
+        ...f,
+        statusStyle: { fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:10, textTransform:'uppercase',
+          background: f.status === 'Ativo' ? '#DCE5D2' : '#EAD2CE', color: f.status === 'Ativo' ? '#3C4A2F' : '#8A3830',
+          padding:'3px 9px', borderRadius:100 }
+      }));
+    }
+    return {
+      n,
+      statusStyle: { fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:11, textTransform:'uppercase', background:sc.bg, color:sc.color, padding:'5px 11px', borderRadius:100, whiteSpace:'nowrap' },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

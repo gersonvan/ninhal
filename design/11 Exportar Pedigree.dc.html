@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>body { margin:0; background:#DCD5C1; font-family:'Manrope',sans-serif; }</style>
+</helmet>
+
+<div style="max-width:920px; margin:0 auto; padding:32px 16px; display:flex; flex-direction:column; gap:20px; align-items:center;">
+
+  <div style="width:100%; max-width:820px; display:flex; align-items:center; justify-content:space-between;">
+    <a href="05 Ficha da Ave.dc.html?ave=amalia" style="text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#4B5D3A; display:flex; align-items:center; gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>Voltar</a>
+    <div style="display:flex; gap:10px;">
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; background:#fff; color:#4B5D3A; border:1.5px solid #4B5D3A; padding:10px 16px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="2.2"><path d="M4 12v7a2 2 0 002 2h12a2 2 0 002-2v-7M16 6l-4-4-4 4M12 2v14"/></svg>Imagem</button>
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; background:#4B5D3A; color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 12v7a2 2 0 002 2h12a2 2 0 002-2v-7M16 6l-4-4-4 4M12 2v14"/></svg>Exportar PDF</button>
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; background:#fff; color:#4B5D3A; border:1.5px solid #4B5D3A; padding:10px 16px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-3.9M8.6 13.5l6.8 3.9"/></svg>Compartilhar</button>
+    </div>
+  </div>
+
+  <!-- CERTIFICATE CANVAS -->
+  <div style="width:820px; height:1090px; background:#FBF8F0; position:relative; box-shadow:0 30px 70px -20px rgba(43,42,33,0.35); flex-shrink:0;">
+
+    <!-- outer border -->
+    <div style="position:absolute; inset:22px; border:2px solid #4B5D3A;"></div>
+    <div style="position:absolute; inset:28px; border:1px solid #C97A2B;"></div>
+
+    <!-- corner flourishes -->
+    <div style="position:absolute; top:34px; left:34px; width:26px; height:26px; border-top:2px solid #C97A2B; border-left:2px solid #C97A2B;"></div>
+    <div style="position:absolute; top:34px; right:34px; width:26px; height:26px; border-top:2px solid #C97A2B; border-right:2px solid #C97A2B;"></div>
+    <div style="position:absolute; bottom:34px; left:34px; width:26px; height:26px; border-bottom:2px solid #C97A2B; border-left:2px solid #C97A2B;"></div>
+    <div style="position:absolute; bottom:34px; right:34px; width:26px; height:26px; border-bottom:2px solid #C97A2B; border-right:2px solid #C97A2B;"></div>
+
+    <div style="position:absolute; inset:60px; display:flex; flex-direction:column;">
+
+      <!-- header -->
+      <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px;">
+        <div style="width:52px; height:52px; border-radius:50%; border:1.5px solid #4B5D3A; display:flex; align-items:center; justify-content:center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="1.6"><path d="M12 3c-3 2-5 5-5 9a5 5 0 0010 0c0-4-2-7-5-9z"/><path d="M12 12v9"/><path d="M8 21h8"/></svg>
+        </div>
+        <div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:13px; letter-spacing:0.2em; text-transform:uppercase; color:#2B2A21;">Aviário Serra Verde</div>
+        <div style="width:60px; height:1px; background:#C97A2B; margin:4px 0;"></div>
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:34px; color:#2B2A21; font-style:italic;">Certificado de Pedigree</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:12px; letter-spacing:0.06em; color:#8a8578;">Registro genealógico emitido em 02 de julho de 2026</div>
+      </div>
+
+      <!-- ave summary -->
+      <div style="display:flex; gap:24px; align-items:center; margin-top:28px; padding-bottom:24px; border-bottom:1px solid #E4DCC8;">
+        <div style="width:104px; height:104px; border-radius:50%; background:linear-gradient(135deg,#E4DCC8,#C9BB9A); flex-shrink:0; border:3px solid #fff; box-shadow:0 0 0 1.5px #C97A2B;"></div>
+        <div style="flex:1;">
+          <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:32px; color:#2B2A21;">Amália</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:13px; color:#6b6656; margin-top:2px;">Canário Belga · Mutação Isabela · Fêmea</div>
+          <div style="display:flex; gap:22px; margin-top:12px;">
+            <div><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:#8a8578;">Anilha</div><div style="font-family:'Space Grotesk',monospace; font-weight:700; font-size:14px; color:#2B2A21;">BR-2024-0451</div></div>
+            <div><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:#8a8578;">Nascimento</div><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#2B2A21;">12/03/2024</div></div>
+            <div><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:#8a8578;">Origem</div><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#2B2A21;">Criatório próprio</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- pedigree tree -->
+      <div style="flex:1; display:flex; gap:16px; margin-top:24px;">
+
+        <div style="display:flex; flex-direction:column; justify-content:center; width:150px; flex-shrink:0;">
+          <div style="background:#DCE5D2; border:1.5px solid #4B5D3A; border-radius:10px; padding:14px 12px; text-align:center;">
+            <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#3C4A2F;">Geração 0</div>
+            <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:17px; color:#2B2A21; margin-top:4px;">Amália</div>
+            <div style="font-family:'Space Grotesk',monospace; font-size:10px; color:#6b6656; margin-top:2px;">BR-2024-0451</div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; justify-content:space-around; width:150px; flex-shrink:0;">
+          <div style="background:#fff; border:1px solid #DDD5C2; border-radius:10px; padding:12px; text-align:center;">
+            <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#8a8578;">Pai</div>
+            <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:15px; color:#2B2A21; margin-top:3px;">Rufus</div>
+            <div style="font-family:'Space Grotesk',monospace; font-size:10px; color:#6b6656;">BR-2021-0099</div>
+          </div>
+          <div style="background:#fff; border:1px solid #DDD5C2; border-radius:10px; padding:12px; text-align:center;">
+            <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#8a8578;">Mãe</div>
+            <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:15px; color:#2B2A21; margin-top:3px;">Alice</div>
+            <div style="font-family:'Space Grotesk',monospace; font-size:10px; color:#6b6656;">BR-2021-0075</div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; justify-content:space-around; flex:1;">
+          <div style="background:#F7F3EA; border:1px dashed #DDD5C2; border-radius:8px; padding:9px; text-align:center;"><div style="font-family:'Manrope',sans-serif; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#a79e88;">Avô paterno</div><div style="font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578; margin-top:2px;">Não registrado</div></div>
+          <div style="background:#F7F3EA; border:1px dashed #DDD5C2; border-radius:8px; padding:9px; text-align:center;"><div style="font-family:'Manrope',sans-serif; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#a79e88;">Avó paterna</div><div style="font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578; margin-top:2px;">Não registrada</div></div>
+          <div style="background:#F7F3EA; border:1px dashed #DDD5C2; border-radius:8px; padding:9px; text-align:center;"><div style="font-family:'Manrope',sans-serif; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#a79e88;">Avô materno</div><div style="font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578; margin-top:2px;">Adquirido — sem registro</div></div>
+          <div style="background:#F7F3EA; border:1px dashed #DDD5C2; border-radius:8px; padding:9px; text-align:center;"><div style="font-family:'Manrope',sans-serif; font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#a79e88;">Avó materna</div><div style="font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578; margin-top:2px;">Adquirida — sem registro</div></div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-top:24px; padding-top:20px; border-top:1px solid #E4DCC8;">
+        <div>
+          <div style="width:170px; border-bottom:1px solid #2B2A21; margin-bottom:6px; height:28px;"></div>
+          <div style="font-family:'Manrope',sans-serif; font-size:12px; color:#2B2A21; font-weight:700;">Carlos Menezes</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:11px; color:#8a8578;">Responsável técnico · Aviário Serra Verde</div>
+        </div>
+        <div style="width:80px; height:80px; border-radius:50%; border:2px solid #C97A2B; display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(-8deg); flex-shrink:0;">
+          <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:11px; color:#8B5A24;">SERRA</div>
+          <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:11px; color:#8B5A24;">VERDE</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:7px; letter-spacing:.1em; color:#8B5A24; margin-top:2px;">AUTENTICADO</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:#8a8578;">Código de verificação</div>
+          <div style="font-family:'Space Grotesk',monospace; font-weight:700; font-size:15px; color:#2B2A21;">PDG-0451-SV</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="font-family:'Manrope',sans-serif; font-size:12px; color:#6b6656; text-align:center; max-width:500px;">Este pedigree é gerado automaticamente a partir dos registros do seu plantel e pode ser compartilhado como PDF ou imagem com quem adquirir o filhote.</div>
+</div>
+
+</x-dc>
+</body>
+</html>

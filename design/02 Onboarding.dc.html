@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>body { margin:0; background:#F7F3EA; font-family:'Manrope',sans-serif; }</style>
+</helmet>
+<x-import component-from-global-scope="image-slot" from="./image-slot.js"></x-import>
+
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; box-sizing:border-box;">
+  <div style="width:100%; max-width:460px; display:flex; flex-direction:column; gap:24px;">
+
+    <div style="display:flex; gap:8px;">
+      <div style="{{ dotStyle1 }}"></div><div style="{{ dotStyle2 }}"></div><div style="{{ dotStyle3 }}"></div>
+    </div>
+
+    <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#8B6A2F;">Passo 1 de 3</div>
+        <h1 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:28px; color:#2B2A21; margin:0;">Como se chama seu criatório?</h1>
+        <p style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; margin:0 0 8px; line-height:1.5;">Esse nome aparece no seu pedigree e nos documentos compartilhados com clientes.</p>
+        <input placeholder="Ex: Aviário Serra Verde" style="font-family:'Manrope',sans-serif; font-size:16px; padding:15px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+          <label style="font-size:13px; font-weight:700; color:#4a4638;">Registro / CNPJ (opcional)</label>
+          <input placeholder="Se aplicável" style="font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#8B6A2F;">Passo 2 de 3</div>
+        <h1 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:28px; color:#2B2A21; margin:0;">Qual seu foco de criação?</h1>
+        <p style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; margin:0 0 8px;">Pode escolher mais de uma. Isso ajusta os campos do seu plantel.</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ species }}" as="sp" hint-placeholder-count="4">
+            <button onClick="{{ sp.toggle }}" style="{{ sp.style }}">
+              <span>{{ sp.emoji }}</span>
+              <span style="flex:1; text-align:left;">{{ sp.name }}</span>
+              <sc-if value="{{ sp.selected }}" hint-placeholder-val="{{ false }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
+              </sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#8B6A2F;">Passo 3 de 3</div>
+        <h1 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:28px; color:#2B2A21; margin:0;">Adicione o logo do seu criatório</h1>
+        <p style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; margin:0 0 8px;">Ele será usado no pedigree exportável. Pode pular e adicionar depois.</p>
+        <div style="display:flex; justify-content:center; padding:12px 0;">
+          <image-slot id="onboarding-logo" style="width:160px;height:160px" shape="circle" placeholder="Arraste o logo"></image-slot>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display:flex; gap:12px; margin-top:8px;">
+      <button onClick="{{ back }}" style="{{ backStyle }}">Voltar</button>
+      <button onClick="{{ next }}" style="flex:1; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:#4B5D3A; color:#F7F3EA; border:none; padding:15px; border-radius:10px; cursor:pointer;">{{ nextLabel }}</button>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 1, species: { 'Canários': true, 'Calopsitas': false, 'Psitacídeos': false, 'Outras aves ornamentais': false } };
+
+  dotStyle(n) {
+    return { flex:1, height:5, borderRadius:100, background: n <= this.state.step ? '#4B5D3A' : '#E4DCC8' };
+  }
+
+  renderVals() {
+    const emojiMap = { 'Canários':'🐤', 'Calopsitas':'🦜', 'Psitacídeos':'🦚', 'Outras aves ornamentais':'🐦' };
+    const species = Object.keys(this.state.species).map(name => {
+      const selected = this.state.species[name];
+      return {
+        name, selected,
+        emoji: emojiMap[name],
+        toggle: () => this.setState(s => ({ species: { ...s.species, [name]: !s.species[name] } })),
+        style: {
+          display:'flex', alignItems:'center', gap:12, textAlign:'left',
+          fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15,
+          padding:'16px 18px', borderRadius:12, cursor:'pointer',
+          background: selected ? '#DCE5D2' : '#fff',
+          border: selected ? '1.5px solid #4B5D3A' : '1.5px solid #E4DCC8',
+          color: '#2B2A21'
+        }
+      };
+    });
+    return {
+      isStep1: this.state.step === 1,
+      isStep2: this.state.step === 2,
+      isStep3: this.state.step === 3,
+      dotStyle1: this.dotStyle(1), dotStyle2: this.dotStyle(2), dotStyle3: this.dotStyle(3),
+      species,
+      nextLabel: this.state.step === 3 ? 'Concluir' : 'Continuar',
+      backStyle: {
+        fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15, background:'transparent',
+        color:'#6b6656', border:'none', padding:'15px 10px', cursor:'pointer',
+        visibility: this.state.step === 1 ? 'hidden' : 'visible'
+      },
+      back: () => this.setState(s => ({ step: Math.max(1, s.step - 1) })),
+      next: () => {
+        if (this.state.step < 3) this.setState(s => ({ step: s.step + 1 }));
+        else window.location.href = '03 Dashboard.dc.html';
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

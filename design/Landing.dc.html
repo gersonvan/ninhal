@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>body { margin:0; background:#F7F3EA; font-family:'Manrope',sans-serif; }</style>
+</helmet>
+
+<div style="width:100%; overflow-x:hidden;">
+
+  <!-- NAV -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; max-width:1160px; margin:0 auto;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:34px; height:34px; border-radius:9px; background:#4B5D3A; display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F7F3EA" stroke-width="1.8"><path d="M12 3c-3 2-5 5-5 9a5 5 0 0010 0c0-4-2-7-5-9z"/><path d="M12 12v9"/><path d="M8 21h8"/></svg></div>
+      <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:19px; color:#2B2A21;">Ninhal</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:20px;">
+      <a href="01 Login.dc.html" style="text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#4a4638;">Entrar</a>
+      <a href="01 Login.dc.html" style="text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#F7F3EA; background:#4B5D3A; padding:11px 20px; border-radius:9px;">Criar conta</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div style="max-width:1160px; margin:0 auto; padding:60px 24px 40px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;">
+    <div>
+      <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8B6A2F; margin-bottom:14px;">Gestão genética para criadores de aves</div>
+      <h1 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:48px; line-height:1.12; color:#2B2A21; margin:0 0 18px;">Sua genealogia, do viveiro para o papel — sem planilha</h1>
+      <p style="font-family:'Manrope',sans-serif; font-size:17px; line-height:1.6; color:#6b6656; margin:0 0 28px; max-width:480px;">Cadastre suas aves, registre ninhadas e gere automaticamente uma árvore genealógica e um pedigree pronto para imprimir — direto do celular, mesmo sob sol forte no aviário.</p>
+      <div style="display:flex; gap:14px; flex-wrap:wrap;">
+        <a href="01 Login.dc.html" style="text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; color:#F7F3EA; background:#4B5D3A; padding:15px 26px; border-radius:10px;">Começar agora</a>
+        <a href="11 Exportar Pedigree.dc.html" style="text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; color:#4B5D3A; border:1.5px solid #4B5D3A; padding:15px 26px; border-radius:10px;">Ver exemplo de pedigree</a>
+      </div>
+    </div>
+    <div style="position:relative; display:flex; justify-content:center;">
+      <div style="width:280px; background:#fff; border-radius:28px; border:8px solid #2B2A21; box-shadow:0 30px 60px -20px rgba(43,42,33,0.35); overflow:hidden;">
+        <div style="background:#F7F3EA; padding:16px; display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:15px; color:#2B2A21;">Serra Verde</div><div style="width:22px; height:22px; border-radius:50%; background:#fff; border:1px solid #E4DCC8;"></div></div>
+          <div style="background:#F0DCC4; border:1px solid #C97A2B; border-radius:9px; padding:9px 11px; display:flex; gap:8px; align-items:center;"><span style="font-size:13px;">⚠</span><span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:10.5px; color:#6B3E17;">Risco de consanguinidade — Ninhada #12</span></div>
+          <div style="background:#fff; border:1px solid #E4DCC8; border-radius:9px; padding:11px; display:flex; flex-direction:column; gap:6px;">
+            <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; color:#2B2A21;">Ninhada #14</div>
+            <div style="height:5px; border-radius:100px; background:#E4DCC8;"><div style="height:5px; width:66%; border-radius:100px; background:#4B5D3A;"></div></div>
+            <div style="font-family:'Manrope',sans-serif; font-size:10px; color:#8a8578;">4 de 6 ovos férteis</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1; background:#fff; border:1px solid #E4DCC8; border-radius:9px; padding:10px; text-align:center;"><div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21;">6</div><div style="font-family:'Manrope',sans-serif; font-size:9px; color:#8a8578; text-transform:uppercase; font-weight:700;">Aves</div></div>
+            <div style="flex:1; background:#fff; border:1px solid #E4DCC8; border-radius:9px; padding:10px; text-align:center;"><div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21;">2</div><div style="font-family:'Manrope',sans-serif; font-size:9px; color:#8a8578; text-transform:uppercase; font-weight:700;">Ninhadas</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <div style="background:#2B3623; padding:56px 24px;">
+    <div style="max-width:900px; margin:0 auto; text-align:center;">
+      <h2 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:28px; color:#F7F3EA; margin:0 0 14px;">Papel e planilha não escalam com o seu plantel</h2>
+      <p style="font-family:'Manrope',sans-serif; font-size:16px; color:#B9C2A9; line-height:1.6; margin:0;">Toda vez que você cruza duas aves sem saber o grau de parentesco entre elas, arrisca a saúde da ninhada — e sem um registro organizado, montar um pedigree confiável para vender um filhote vira trabalho manual e demorado.</p>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div style="max-width:1160px; margin:0 auto; padding:64px 24px;">
+    <h2 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:30px; color:#2B2A21; text-align:center; margin:0 0 40px;">Feito para o dia a dia do criatório</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;">
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:16px; padding:26px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="1.8"><circle cx="12" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M12 7.5V13M12 13L6 16.5M12 13l6 3.5"/></svg>
+        <h3 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21; margin:14px 0 8px;">Árvore genealógica automática</h3>
+        <p style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; line-height:1.55; margin:0;">Cada ninhada cadastrada já alimenta a árvore da sua ave. Sem montar nada manualmente.</p>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:16px; padding:26px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B3423A" stroke-width="1.8"><path d="M12 2L1 21h22L12 2z"/><path d="M12 9v5M12 17h.01"/></svg>
+        <h3 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21; margin:14px 0 8px;">Alerta de consanguinidade em tempo real</h3>
+        <p style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; line-height:1.55; margin:0;">Ao escolher macho e fêmea para uma nova ninhada, você é avisado na hora se são parentes.</p>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:16px; padding:26px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C97A2B" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
+        <h3 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21; margin:14px 0 8px;">Pedigree pronto para imprimir</h3>
+        <p style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; line-height:1.55; margin:0;">Gere um certificado profissional com sua marca ao vender um filhote — em PDF ou imagem.</p>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:16px; padding:26px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+        <h3 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; color:#2B2A21; margin:14px 0 8px;">Feito para o viveiro</h3>
+        <p style="font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656; line-height:1.55; margin:0;">Alto contraste para uso ao sol, telas simples de operar com uma mão só, direto do celular.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PEDIGREE SHOWCASE -->
+  <div style="background:#EDE7D6; padding:64px 24px;">
+    <div style="max-width:1160px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;">
+      <div>
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8B6A2F; margin-bottom:12px;">O documento que representa seu criatório</div>
+        <h2 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:30px; color:#2B2A21; margin:0 0 16px;">Um pedigree que parece de verdade profissional</h2>
+        <p style="font-family:'Manrope',sans-serif; font-size:15.5px; color:#6b6656; line-height:1.6; margin:0 0 24px;">Com a marca do seu criatório, dados genealógicos completos e um layout de certificado — pronto para entregar a quem leva um filhote seu para casa.</p>
+        <a href="11 Exportar Pedigree.dc.html" style="text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; color:#F7F3EA; background:#4B5D3A; padding:14px 24px; border-radius:10px; display:inline-block;">Ver pedigree de exemplo</a>
+      </div>
+      <div style="background:#FBF8F0; border:2px solid #4B5D3A; border-radius:6px; padding:28px; position:relative;">
+        <div style="position:absolute; inset:6px; border:1px solid #C97A2B;"></div>
+        <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px;">
+          <div style="width:38px; height:38px; border-radius:50%; border:1.5px solid #4B5D3A; display:flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="1.6"><path d="M12 3c-3 2-5 5-5 9a5 5 0 0010 0c0-4-2-7-5-9z"/><path d="M12 12v9"/><path d="M8 21h8"/></svg></div>
+          <div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:#2B2A21;">Aviário Serra Verde</div>
+          <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:20px; color:#2B2A21; font-style:italic; margin-top:4px;">Certificado de Pedigree</div>
+          <div style="width:220px; height:1px; background:#E4DCC8; margin:12px 0;"></div>
+          <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:22px; color:#2B2A21;">Amália</div>
+          <div style="font-family:'Space Grotesk',monospace; font-size:11px; color:#8a8578;">BR-2024-0451</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div style="max-width:900px; margin:0 auto; padding:64px 24px;">
+    <h2 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:30px; color:#2B2A21; text-align:center; margin:0 0 44px;">Como funciona</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:32px;">
+      <div style="text-align:center;">
+        <div style="width:44px; height:44px; border-radius:50%; background:#4B5D3A; color:#F7F3EA; font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">1</div>
+        <h3 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:16px; color:#2B2A21; margin:0 0 6px;">Cadastre suas aves</h3>
+        <p style="font-family:'Manrope',sans-serif; font-size:13.5px; color:#6b6656; line-height:1.5; margin:0;">Foto, anilha, espécie e, se souber, quem são os pais.</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:44px; height:44px; border-radius:50%; background:#4B5D3A; color:#F7F3EA; font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">2</div>
+        <h3 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:16px; color:#2B2A21; margin:0 0 6px;">Registre a ninhada</h3>
+        <p style="font-family:'Manrope',sans-serif; font-size:13.5px; color:#6b6656; line-height:1.5; margin:0;">Escolha o casal — avisamos na hora sobre parentesco.</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:44px; height:44px; border-radius:50%; background:#4B5D3A; color:#F7F3EA; font-family:'Source Serif 4',serif; font-weight:600; font-size:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">3</div>
+        <h3 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:16px; color:#2B2A21; margin:0 0 6px;">Exporte o pedigree</h3>
+        <p style="font-family:'Manrope',sans-serif; font-size:13.5px; color:#6b6656; line-height:1.5; margin:0;">Compartilhe um documento pronto com quem levar o filhote.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div style="background:#4B5D3A; padding:64px 24px; text-align:center;">
+    <h2 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:30px; color:#F7F3EA; margin:0 0 14px;">Organize seu plantel a partir de hoje</h2>
+    <p style="font-family:'Manrope',sans-serif; font-size:15.5px; color:#DCE5D2; margin:0 0 26px;">Comece gratuitamente — sem cartão de crédito.</p>
+    <a href="01 Login.dc.html" style="text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; color:#4B5D3A; background:#F7F3EA; padding:15px 30px; border-radius:10px; display:inline-block;">Criar minha conta</a>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="padding:32px 24px; text-align:center;">
+    <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:15px; color:#2B2A21;">Ninhal</div>
+    <div style="font-family:'Manrope',sans-serif; font-size:12.5px; color:#8a8578; margin-top:6px;">Gestão genética para criadores de aves ornamentais</div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>body { margin:0; background:#F7F3EA; font-family:'Manrope',sans-serif; }</style>
+</helmet>
+
+<div style="max-width:560px; margin:0 auto; min-height:100vh; box-sizing:border-box;">
+
+  <div style="display:flex; align-items:center; gap:14px; padding:18px 20px; border-bottom:1px solid #E4DCC8; background:#F7F3EA; position:sticky; top:0; z-index:2;">
+    <a href="07 Lista de Ninhadas.dc.html" style="width:36px; height:36px; border-radius:50%; background:#fff; border:1px solid #E4DCC8; display:flex; align-items:center; justify-content:center; text-decoration:none; flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2B2A21" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:20px; color:#2B2A21;">Nova ninhada</div>
+  </div>
+
+  <div style="padding:20px; display:flex; flex-direction:column; gap:20px;">
+
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <label style="font-size:13px; font-weight:700; color:#4a4638;">Espécie</label>
+      <div style="position:relative;">
+        <select onChange="{{ onEspecieChange }}" style="width:100%; box-sizing:border-box; appearance:none; font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;">
+          <sc-for list="{{ especies }}" as="e" hint-placeholder-count="2"><option value="{{ e }}">{{ e }}</option></sc-for>
+        </select>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6656" stroke-width="2.2" style="position:absolute; right:14px; top:16px; pointer-events:none;"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <label style="font-size:13px; font-weight:700; color:#4a4638;">Macho</label>
+      <div style="position:relative;">
+        <select onChange="{{ onMachoChange }}" style="width:100%; box-sizing:border-box; appearance:none; font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;">
+          <option value="">Selecione…</option>
+          <sc-for list="{{ machos }}" as="m" hint-placeholder-count="2"><option value="{{ m.nome }}">{{ m.nome }} — {{ m.anilha }}</option></sc-for>
+        </select>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6656" stroke-width="2.2" style="position:absolute; right:14px; top:16px; pointer-events:none;"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <label style="font-size:13px; font-weight:700; color:#4a4638;">Fêmea</label>
+      <div style="position:relative;">
+        <select onChange="{{ onFemeaChange }}" style="width:100%; box-sizing:border-box; appearance:none; font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;">
+          <option value="">Selecione…</option>
+          <sc-for list="{{ femeas }}" as="f" hint-placeholder-count="2"><option value="{{ f.nome }}">{{ f.nome }} — {{ f.anilha }}</option></sc-for>
+        </select>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6656" stroke-width="2.2" style="position:absolute; right:14px; top:16px; pointer-events:none;"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+
+    <sc-if value="{{ showRisk }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#F0DCC4; border:1.5px solid #C97A2B; border-radius:12px; padding:16px 18px; display:flex; gap:12px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B5A24" stroke-width="2" style="flex-shrink:0;"><path d="M12 2L1 21h22L12 2z"/><path d="M12 9v5M12 17h.01"/></svg>
+        <div>
+          <div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:14.5px; color:#6B3E17;">Atenção: risco de consanguinidade</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:13.5px; color:#6B3E17; margin-top:3px; line-height:1.5;">{{ riskText }} Coeficiente de parentesco estimado: <strong>{{ riskCoef }}%</strong>.</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:12.5px; color:#6B3E17; margin-top:6px;">Você pode prosseguir mesmo assim, mas recomendamos revisar a árvore genealógica antes.</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showSafe }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#DCE5D2; border:1.5px solid #7C9364; border-radius:12px; padding:14px 16px; display:flex; gap:10px; align-items:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3C4A2F" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:13.5px; color:#3C4A2F;">Nenhum parentesco direto encontrado entre esses dois indivíduos.</div>
+      </div>
+    </sc-if>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-size:13px; font-weight:700; color:#4a4638;">Data de início</label>
+        <input type="date" style="font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-size:13px; font-weight:700; color:#4a4638;">Nº de ovos previstos</label>
+        <input placeholder="Ex: 6" style="font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:8px; padding-bottom:24px;">
+      <a href="07 Lista de Ninhadas.dc.html" style="flex:1; text-align:center; text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; color:#6b6656; border:1.5px solid #E4DCC8; padding:14px; border-radius:10px;">Cancelar</a>
+      <a href="09 Detalhe da Ninhada.dc.html?ninhada=12" style="flex:1; text-align:center; text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; color:#F7F3EA; background:#4B5D3A; padding:14px; border-radius:10px;">Confirmar ninhada</a>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const AVES = [
+  { nome:'Rufus', anilha:'BR-2021-0099', sexo:'M', especie:'Canário Belga' },
+  { nome:'Alice', anilha:'BR-2021-0075', sexo:'F', especie:'Canário Belga' },
+  { nome:'Amália', anilha:'BR-2024-0451', sexo:'F', especie:'Canário Belga' },
+  { nome:'Theo', anilha:'BR-2023-0345', sexo:'M', especie:'Calopsita' },
+  { nome:'Nina', anilha:'BR-2024-0512', sexo:'F', especie:'Calopsita' },
+  { nome:'Bela', anilha:'BR-2022-0210', sexo:'F', especie:'Calopsita' },
+];
+
+const RELACOES = {
+  'Rufus|Amália': { coef: 25, label: 'Rufus é pai de Amália —' },
+  'Theo|Nina': { coef: 25, label: 'Theo é pai de Nina —' },
+};
+
+class Component extends DCLogic {
+  state = { especie: 'Canário Belga', macho: '', femea: '' };
+
+  renderVals() {
+    const machos = AVES.filter(a => a.especie === this.state.especie && a.sexo === 'M');
+    const femeas = AVES.filter(a => a.especie === this.state.especie && a.sexo === 'F');
+    const key = this.state.macho + '|' + this.state.femea;
+    const relacao = (this.state.macho && this.state.femea) ? RELACOES[key] : null;
+    return {
+      especies: ['Canário Belga', 'Calopsita'],
+      machos, femeas,
+      onEspecieChange: (e) => this.setState({ especie: e.target.value, macho:'', femea:'' }),
+      onMachoChange: (e) => this.setState({ macho: e.target.value }),
+      onFemeaChange: (e) => this.setState({ femea: e.target.value }),
+      showRisk: !!relacao,
+      showSafe: !!(this.state.macho && this.state.femea) && !relacao,
+      riskText: relacao ? relacao.label : '',
+      riskCoef: relacao ? relacao.coef : 0,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

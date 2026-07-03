@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>body { margin:0; background:#F7F3EA; font-family:'Manrope',sans-serif; }</style>
+</helmet>
+
+<div style="max-width:640px; margin:0 auto; min-height:100vh; box-sizing:border-box; padding-bottom:40px;">
+
+  <div style="position:relative;">
+    <div style="height:220px; background:linear-gradient(135deg,#C9BB9A,#8B9D74); display:flex; align-items:center; justify-content:center; color:#F7F3EA; font-family:'Manrope',sans-serif; font-size:13px;">foto da ave</div>
+    <a href="04 Lista do Plantel.dc.html" style="position:absolute; top:16px; left:16px; width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B2A21" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="position:absolute; top:16px; right:16px; width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2B2A21" stroke-width="2.2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+  </div>
+
+  <div style="padding:20px;">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+      <div>
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:28px; color:#2B2A21;">{{ ave.nome }}</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:13px; color:#8a8578; margin-top:2px;">{{ ave.especie }} · {{ ave.sexo }}</div>
+      </div>
+      <span style="{{ statusStyle }}">{{ ave.status }}</span>
+    </div>
+
+    <div style="font-family:'Space Grotesk',monospace; font-weight:600; font-size:15px; color:#4B5D3A; background:#DCE5D2; display:inline-block; padding:6px 12px; border-radius:8px; margin-top:12px;">{{ ave.anilha }}</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px;">
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:#8a8578;">Nascimento</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:15px; color:#2B2A21; margin-top:4px;">{{ ave.nascimento }}</div>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:#8a8578;">Mutação / cor</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:15px; color:#2B2A21; margin-top:4px;">{{ ave.mutacao }}</div>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px; grid-column:span 2;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:#8a8578;">Origem</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:15px; color:#2B2A21; margin-top:4px;">{{ ave.origem }}</div>
+      </div>
+    </div>
+
+    <h2 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:19px; color:#2B2A21; margin:24px 0 12px;">Genealogia</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <a href="{{ paiHref }}" style="text-decoration:none; background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px; display:flex; align-items:center; gap:10px;">
+        <div style="width:38px; height:38px; border-radius:9px; background:#E4DCC8; flex-shrink:0;"></div>
+        <div style="min-width:0;">
+          <div style="font-family:'Manrope',sans-serif; font-size:11px; color:#8a8578; text-transform:uppercase; font-weight:700;">Pai</div>
+          <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#2B2A21; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ave.paiNome }}</div>
+        </div>
+      </a>
+      <a href="{{ maeHref }}" style="text-decoration:none; background:#fff; border:1px solid #E4DCC8; border-radius:12px; padding:14px; display:flex; align-items:center; gap:10px;">
+        <div style="width:38px; height:38px; border-radius:9px; background:#E4DCC8; flex-shrink:0;"></div>
+        <div style="min-width:0;">
+          <div style="font-family:'Manrope',sans-serif; font-size:11px; color:#8a8578; text-transform:uppercase; font-weight:700;">Mãe</div>
+          <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#2B2A21; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ave.maeNome }}</div>
+        </div>
+      </a>
+    </div>
+    <a href="10 Árvore Genealógica.dc.html" style="display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; margin-top:10px; font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#4B5D3A; border:1.5px solid #4B5D3A; border-radius:10px; padding:12px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="2"><circle cx="12" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M12 7.5V13M12 13L6 16.5M12 13l6 3.5"/></svg>
+      Ver árvore genealógica completa
+    </a>
+
+    <h2 style="font-family:'Source Serif 4',serif; font-weight:600; font-size:19px; color:#2B2A21; margin:24px 0 12px;">Histórico</h2>
+    <div style="background:#fff; border:1px solid #E4DCC8; border-radius:14px; overflow:hidden;">
+      <sc-for list="{{ ave.historico }}" as="ev" hint-placeholder-count="3">
+        <div style="padding:14px 16px; display:flex; gap:12px; border-bottom:1px solid #F0EBDD;">
+          <div style="width:8px; height:8px; border-radius:50%; background:#4B5D3A; margin-top:6px; flex-shrink:0;"></div>
+          <div><div style="font-family:'Manrope',sans-serif; font-size:14px; color:#2B2A21;">{{ ev.texto }}</div><div style="font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578;">{{ ev.data }}</div></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:24px;">
+      <a href="04 Lista do Plantel.dc.html" style="flex:1; text-align:center; text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#6b6656; border:1.5px solid #E4DCC8; padding:13px; border-radius:10px;">Voltar ao plantel</a>
+      <a href="11 Exportar Pedigree.dc.html" style="flex:1; text-align:center; text-decoration:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#F7F3EA; background:#4B5D3A; padding:13px; border-radius:10px;">Gerar pedigree</a>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const AVES = {
+  amalia: { nome:'Amália', sexo:'Fêmea', especie:'Canário Belga', anilha:'BR-2024-0451', status:'Em ninhada',
+    nascimento:'12/03/2024', mutacao:'Isabela', origem:'Nascida no criatório (Ninhada #10)',
+    pai:'rufus', paiNome:'Rufus', mae:'alice', maeNome:'Alice',
+    historico:[{texto:'Vinculada à Ninhada #12 (com Rufus)', data:'28/06/2026'},{texto:'Cadastrada no plantel', data:'15/03/2024'},{texto:'Nascida na Ninhada #10', data:'12/03/2024'}] },
+  rufus: { nome:'Rufus', sexo:'Macho', especie:'Canário Belga', anilha:'BR-2021-0099', status:'Ativo',
+    nascimento:'04/07/2021', mutacao:'Verde selvagem', origem:'Nascido no criatório',
+    pai:null, paiNome:'Desconhecido', mae:null, maeNome:'Desconhecida',
+    historico:[{texto:'Vinculado à Ninhada #12 (com Amália)', data:'28/06/2026'},{texto:'Pai na Ninhada #10 (gerou Amália)', data:'2023'},{texto:'Cadastrado no plantel', data:'10/07/2021'}] },
+  alice: { nome:'Alice', sexo:'Fêmea', especie:'Canário Belga', anilha:'BR-2021-0075', status:'Ativo',
+    nascimento:'19/02/2021', mutacao:'Amarelo', origem:'Adquirida de outro criador',
+    pai:null, paiNome:'Desconhecido', mae:null, maeNome:'Desconhecida',
+    historico:[{texto:'Mãe na Ninhada #10 (gerou Amália)', data:'2023'},{texto:'Cadastrada no plantel', data:'02/03/2021'}] },
+  theo: { nome:'Theo', sexo:'Macho', especie:'Calopsita', anilha:'BR-2023-0345', status:'Em ninhada',
+    nascimento:'22/05/2020', mutacao:'Lutino', origem:'Adquirido de outro criador',
+    pai:null, paiNome:'Desconhecido', mae:null, maeNome:'Desconhecida',
+    historico:[{texto:'Vinculado à Ninhada #14 (com Bela)', data:'20/06/2026'},{texto:'Pai da Nina (fora do plantel)', data:'2024'},{texto:'Cadastrado no plantel', data:'01/06/2020'}] },
+  nina: { nome:'Nina', sexo:'Fêmea', especie:'Calopsita', anilha:'BR-2024-0512', status:'Ativo',
+    nascimento:'08/01/2024', mutacao:'Perolada', origem:'Nascida no criatório',
+    pai:'theo', paiNome:'Theo', mae:null, maeNome:'Íris (externa)',
+    historico:[{texto:'Cadastrada no plantel', data:'20/01/2024'}] },
+  bela: { nome:'Bela', sexo:'Fêmea', especie:'Calopsita', anilha:'BR-2022-0210', status:'Em ninhada',
+    nascimento:'14/09/2022', mutacao:'Cinza', origem:'Adquirida de outro criador',
+    pai:null, paiNome:'Desconhecido', mae:null, maeNome:'Desconhecida',
+    historico:[{texto:'Vinculada à Ninhada #14 (com Theo)', data:'20/06/2026'},{texto:'Cadastrada no plantel', data:'01/10/2022'}] },
+};
+
+class Component extends DCLogic {
+  getAveId() {
+    if (typeof window === 'undefined') return 'amalia';
+    return new URLSearchParams(window.location.search).get('ave') || 'amalia';
+  }
+
+  renderVals() {
+    const id = this.getAveId();
+    const ave = AVES[id] || AVES.amalia;
+    const statusColors = {
+      'Ativo': { bg:'#DCE5D2', color:'#3C4A2F' },
+      'Em ninhada': { bg:'#F0DCC4', color:'#8B5A24' },
+      'Vendido': { bg:'#EAD2CE', color:'#8A3830' },
+    };
+    const sc = statusColors[ave.status] || statusColors['Ativo'];
+    return {
+      ave,
+      statusStyle: { fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:11, textTransform:'uppercase', background:sc.bg, color:sc.color, padding:'5px 11px', borderRadius:100, flexShrink:0, marginTop:4 },
+      paiHref: ave.pai ? ('05 Ficha da Ave.dc.html?ave=' + ave.pai) : '#',
+      maeHref: ave.mae ? ('05 Ficha da Ave.dc.html?ave=' + ave.mae) : '#',
+    };
+  }
+}
+
+</script>
+</body>
+</html>

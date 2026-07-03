@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#F7F3EA; font-family:'Manrope',sans-serif; -webkit-font-smoothing:antialiased; }
+    ::selection { background:#C97A2B; color:#fff; }
+  </style>
+</helmet>
+
+<div style="max-width:1180px; margin:0 auto; padding:56px 32px 120px; display:flex; flex-direction:column; gap:64px;">
+
+  <!-- HEADER -->
+  <div>
+    <div style="font-family:'Space Grotesk',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#8B6A2F;">Design System · Direção 1a — Editorial Naturalista</div>
+    <h1 style="font-family:'Source Serif 4',serif; font-size:44px; font-weight:600; color:#2B2A21; margin:8px 0 6px;">Ninhal</h1>
+    <p style="font-size:16px; color:#6b6656; max-width:640px; line-height:1.5; margin:0;">Sistema visual para o SaaS de gestão de plantel avícola. Alto contraste para uso ao ar livre, tom acolhedor porém profissional, identidade ligada à natureza.</p>
+  </div>
+
+  <!-- COLORS -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Cores</h2>
+    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:16px;">
+      <div><div style="height:76px; border-radius:10px; background:#2B3623;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Oliva 900</div><div style="font-size:12px; color:#8a8578;">#2B3623 · texto sobre claro</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#4B5D3A;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Oliva 600 · Primária</div><div style="font-size:12px; color:#8a8578;">#4B5D3A · CTAs, links</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#7C9364;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Oliva 400</div><div style="font-size:12px; color:#8a8578;">#7C9364 · hover/estados</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#C97A2B;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Âmbar · Acento</div><div style="font-size:12px; color:#8a8578;">#C97A2B · destaques</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#B3423A;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Terracota · Alerta</div><div style="font-size:12px; color:#8a8578;">#B3423A · consanguinidade</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#F7F3EA; border:1px solid #DDD5C2;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Fundo</div><div style="font-size:12px; color:#8a8578;">#F7F3EA</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#FFFFFF; border:1px solid #E4DCC8;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Superfície / Card</div><div style="font-size:12px; color:#8a8578;">#FFFFFF</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#E4DCC8;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Borda</div><div style="font-size:12px; color:#8a8578;">#E4DCC8</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#6b6656;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Texto secundário</div><div style="font-size:12px; color:#8a8578;">#6b6656</div></div>
+      <div><div style="height:76px; border-radius:10px; background:#2B2A21;"></div><div style="font-size:13px; font-weight:700; color:#2B2A21; margin-top:8px;">Texto principal</div><div style="font-size:12px; color:#8a8578;">#2B2A21</div></div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-top:16px;">
+      <div><div style="height:56px; border-radius:10px; background:#DCE5D2;"></div><div style="font-size:12px; font-weight:700; color:#3C4A2F; margin-top:6px;">Sucesso bg #DCE5D2</div></div>
+      <div><div style="height:56px; border-radius:10px; background:#F0DCC4;"></div><div style="font-size:12px; font-weight:700; color:#8B5A24; margin-top:6px;">Aviso bg #F0DCC4</div></div>
+      <div><div style="height:56px; border-radius:10px; background:#EAD2CE;"></div><div style="font-size:12px; font-weight:700; color:#8A3830; margin-top:6px;">Encerrado bg #EAD2CE</div></div>
+      <div><div style="height:56px; border-radius:10px; background:#DCE3EA;"></div><div style="font-size:12px; font-weight:700; color:#2F4A6B; margin-top:6px;">Info bg #DCE3EA</div></div>
+      <div><div style="height:56px; border-radius:10px; background:#F0DCC4; border:1.5px solid #C97A2B;"></div><div style="font-size:12px; font-weight:700; color:#8B5A24; margin-top:6px;">Alerta consang. #F0DCC4</div></div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Tipografia</h2>
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      <div style="display:flex; align-items:baseline; gap:20px;"><div style="width:170px; font-size:12px; color:#8a8578; font-weight:700;">Display / Serif</div><div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:42px; color:#2B2A21;">Aa Genealogia 01</div></div>
+      <div style="display:flex; align-items:baseline; gap:20px;"><div style="width:170px; font-size:12px; color:#8a8578; font-weight:700;">H1 · 32/600</div><div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:32px; color:#2B2A21;">Ficha da Ave</div></div>
+      <div style="display:flex; align-items:baseline; gap:20px;"><div style="width:170px; font-size:12px; color:#8a8578; font-weight:700;">H2 · 22/600</div><div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:22px; color:#2B2A21;">Nova Ninhada — Canário Belga</div></div>
+      <div style="display:flex; align-items:baseline; gap:20px;"><div style="width:170px; font-size:12px; color:#8a8578; font-weight:700;">Body · 15/400</div><div style="font-family:'Manrope',sans-serif; font-weight:400; font-size:15px; color:#2B2A21;">Corpo de texto em Manrope, legível sob luz solar forte e em telas pequenas.</div></div>
+      <div style="display:flex; align-items:baseline; gap:20px;"><div style="width:170px; font-size:12px; color:#8a8578; font-weight:700;">Label · 12/700 upper</div><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:#8B6A2F;">Rótulo de seção</div></div>
+      <div style="display:flex; align-items:baseline; gap:20px;"><div style="width:170px; font-size:12px; color:#8a8578; font-weight:700;">Mono/Dados · Space Grotesk</div><div style="font-family:'Space Grotesk',monospace; font-weight:600; font-size:16px; color:#2B2A21; letter-spacing:0.02em;">BR-2024-0451</div></div>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Botões</h2>
+    <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:center;">
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:#4B5D3A; color:#F7F3EA; border:none; padding:14px 24px; border-radius:10px; cursor:pointer;">Primário</button>
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:transparent; color:#4B5D3A; border:1.5px solid #4B5D3A; padding:14px 24px; border-radius:10px; cursor:pointer;">Secundário</button>
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:none; color:#4B5D3A; border:none; padding:14px 12px; cursor:pointer;">Terciário / texto</button>
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:#B3423A; color:#fff; border:none; padding:14px 24px; border-radius:10px; cursor:pointer;">Destrutivo</button>
+      <button disabled style="font-family:'Manrope',sans-serif; font-weight:700; font-size:15px; background:#E4DCC8; color:#A79E88; border:none; padding:14px 24px; border-radius:10px;">Desabilitado</button>
+    </div>
+    <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:14px;">
+      <button style="font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; background:#4B5D3A; color:#F7F3EA; border:none; padding:9px 16px; border-radius:8px;">Pequeno</button>
+      <button style="width:46px; height:46px; border-radius:12px; background:#4B5D3A; border:none; display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F7F3EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button style="width:46px; height:46px; border-radius:12px; background:#FFF; border:1.5px solid #E4DCC8; display:flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M12 20l-4-4M12 20l4-4M4 4h16"/></svg></button>
+    </div>
+  </div>
+
+  <!-- FORMS -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Campos de formulário</h2>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;">
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-family:'Manrope',sans-serif; font-size:13px; font-weight:700; color:#4a4638;">Nome da ave</label>
+        <input placeholder="Ex: Amália" style="font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-family:'Manrope',sans-serif; font-size:13px; font-weight:700; color:#4a4638;">Anilha</label>
+        <input placeholder="BR-2024-0451" style="font-family:'Space Grotesk',monospace; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #C97A2B; background:#fff; color:#2B2A21; box-shadow:0 0 0 3px #F0DCC4;"/>
+        <span style="font-size:12px; color:#8a8578;">Campo em foco</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-family:'Manrope',sans-serif; font-size:13px; font-weight:700; color:#4a4638;">Espécie</label>
+        <div style="position:relative;">
+          <select style="width:100%; appearance:none; font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;">
+            <option>Canário Belga</option>
+          </select>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6656" stroke-width="2.2" style="position:absolute; right:14px; top:16px; pointer-events:none;"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-family:'Manrope',sans-serif; font-size:13px; font-weight:700; color:#4a4638;">Campo com erro</label>
+        <input value="03/45/2024" style="font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px; border-radius:10px; border:1.5px solid #B3423A; background:#fff; color:#2B2A21;"/>
+        <span style="font-size:12px; color:#B3423A; font-weight:600;">Data inválida</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-family:'Manrope',sans-serif; font-size:13px; font-weight:700; color:#4a4638;">Buscar no plantel</label>
+        <div style="position:relative;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8578" stroke-width="2.2" style="position:absolute; left:14px; top:15px;"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input placeholder="Nome ou anilha" style="width:100%; box-sizing:border-box; font-family:'Manrope',sans-serif; font-size:15px; padding:13px 16px 13px 40px; border-radius:10px; border:1.5px solid #DDD5C2; background:#fff; color:#2B2A21;"/>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px; justify-content:center;">
+        <label style="display:flex; align-items:center; gap:10px; font-family:'Manrope',sans-serif; font-size:14px; color:#2B2A21;"><span style="width:20px; height:20px; border-radius:6px; background:#4B5D3A; display:flex; align-items:center; justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></span>Confirmado</label>
+        <label style="display:flex; align-items:center; gap:10px; font-family:'Manrope',sans-serif; font-size:14px; color:#6b6656;"><span style="width:36px; height:20px; border-radius:100px; background:#4B5D3A; position:relative;"><span style="position:absolute; right:2px; top:2px; width:16px; height:16px; border-radius:50%; background:#fff;"></span></span>Notificações</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- BADGES -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Badges de status</h2>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.04em; text-transform:uppercase; background:#DCE5D2; color:#3C4A2F; padding:6px 12px; border-radius:100px; display:flex; align-items:center; gap:6px;"><span style="width:6px; height:6px; border-radius:50%; background:#3C4A2F;"></span>Ativo</span>
+      <span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.04em; text-transform:uppercase; background:#F0DCC4; color:#8B5A24; padding:6px 12px; border-radius:100px;">Em ninhada</span>
+      <span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.04em; text-transform:uppercase; background:#EAD2CE; color:#8A3830; padding:6px 12px; border-radius:100px;">Vendido</span>
+      <span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.04em; text-transform:uppercase; background:#DCE3EA; color:#2F4A6B; padding:6px 12px; border-radius:100px;">Reservado</span>
+      <span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.04em; text-transform:uppercase; background:#E4DCC8; color:#6b6656; padding:6px 12px; border-radius:100px;">Óbito</span>
+      <span style="font-family:'Manrope',sans-serif; font-weight:800; font-size:12px; letter-spacing:.04em; text-transform:uppercase; background:#B3423A; color:#fff; padding:6px 12px; border-radius:100px; display:flex; align-items:center; gap:6px;">⚠ Risco genético</span>
+    </div>
+  </div>
+
+  <!-- ALERTS -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Alertas</h2>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="background:#F0DCC4; border:1.5px solid #C97A2B; border-radius:12px; padding:16px 18px; display:flex; gap:12px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B5A24" stroke-width="2" style="flex-shrink:0;"><path d="M12 2L1 21h22L12 2z"/><path d="M12 9v5M12 17h.01"/></svg>
+        <div><div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:14px; color:#6B3E17;">Atenção: risco de consanguinidade</div><div style="font-family:'Manrope',sans-serif; font-size:13px; color:#6B3E17; margin-top:2px;">Esses pais são parentes próximos (coeficiente 25%). Revise antes de confirmar a ninhada.</div></div>
+      </div>
+      <div style="background:#DCE5D2; border:1.5px solid #7C9364; border-radius:12px; padding:16px 18px; display:flex; gap:12px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3C4A2F" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+        <div><div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:14px; color:#3C4A2F;">Ninhada cadastrada com sucesso</div><div style="font-family:'Manrope',sans-serif; font-size:13px; color:#3C4A2F; margin-top:2px;">4 filhotes foram vinculados à árvore genealógica.</div></div>
+      </div>
+      <div style="background:#EAD2CE; border:1.5px solid #B3423A; border-radius:12px; padding:16px 18px; display:flex; gap:12px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A3830" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        <div><div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:14px; color:#8A3830;">Anilha já cadastrada</div><div style="font-family:'Manrope',sans-serif; font-size:13px; color:#8A3830; margin-top:2px;">Verifique o número — já existe uma ave com essa identificação.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Cards</h2>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px;">
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:14px; overflow:hidden;">
+        <div style="height:130px; background:linear-gradient(135deg,#E4DCC8,#C9BB9A); display:flex; align-items:center; justify-content:center; color:#8a8578; font-size:12px;">foto</div>
+        <div style="padding:14px;">
+          <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:17px; color:#2B2A21;">Amália</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578; margin-top:2px;">Canário Belga · Fêmea</div>
+          <div style="font-family:'Space Grotesk',monospace; font-size:12px; color:#8a8578; margin-top:6px;">BR-2024-0451</div>
+        </div>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:4px;">
+        <div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:#8a8578;">Aves ativas</div>
+        <div style="font-family:'Source Serif 4',serif; font-weight:600; font-size:36px; color:#2B2A21;">128</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:12px; color:#7C9364; font-weight:700;">+6 este mês</div>
+      </div>
+      <div style="background:#fff; border:1px solid #E4DCC8; border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; color:#2B2A21;">Ninhada #12</div><span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:10px; text-transform:uppercase; background:#F0DCC4; color:#8B5A24; padding:3px 8px; border-radius:100px;">Em curso</span></div>
+        <div style="font-family:'Manrope',sans-serif; font-size:12px; color:#8a8578;">Amália × Rufus</div>
+        <div style="height:6px; border-radius:100px; background:#E4DCC8;"><div style="height:6px; width:70%; border-radius:100px; background:#4B5D3A;"></div></div>
+        <div style="font-family:'Manrope',sans-serif; font-size:11px; color:#8a8578;">5 de 7 ovos férteis</div>
+      </div>
+      <div style="background:#F0DCC4; border:1.5px solid #C97A2B; border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:6px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5A24" stroke-width="2"><path d="M12 2L1 21h22L12 2z"/><path d="M12 9v5M12 17h.01"/></svg>
+        <div style="font-family:'Manrope',sans-serif; font-weight:800; font-size:13px; color:#6B3E17;">1 alerta de consanguinidade</div>
+        <div style="font-family:'Manrope',sans-serif; font-size:12px; color:#6B3E17;">Ninhada #14 precisa de revisão</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Tabela / lista</h2>
+    <div style="background:#fff; border:1px solid #E4DCC8; border-radius:14px; overflow:hidden;">
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; padding:12px 18px; background:#F7F3EA; font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:#8a8578;">
+        <div>Ave</div><div>Anilha</div><div>Sexo</div><div>Espécie</div><div>Status</div>
+      </div>
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; padding:14px 18px; align-items:center; border-top:1px solid #F0EBDD; font-family:'Manrope',sans-serif; font-size:14px; color:#2B2A21;">
+        <div style="display:flex; align-items:center; gap:10px;"><div style="width:32px; height:32px; border-radius:8px; background:#E4DCC8;"></div>Amália</div>
+        <div style="font-family:'Space Grotesk',monospace; font-size:13px; color:#6b6656;">BR-2024-0451</div><div>Fêmea</div><div>Canário Belga</div>
+        <div><span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; text-transform:uppercase; background:#DCE5D2; color:#3C4A2F; padding:4px 10px; border-radius:100px;">Ativo</span></div>
+      </div>
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; padding:14px 18px; align-items:center; border-top:1px solid #F0EBDD; font-family:'Manrope',sans-serif; font-size:14px; color:#2B2A21;">
+        <div style="display:flex; align-items:center; gap:10px;"><div style="width:32px; height:32px; border-radius:8px; background:#E4DCC8;"></div>Rufus</div>
+        <div style="font-family:'Space Grotesk',monospace; font-size:13px; color:#6b6656;">BR-2023-0198</div><div>Macho</div><div>Canário Belga</div>
+        <div><span style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; text-transform:uppercase; background:#F0DCC4; color:#8B5A24; padding:4px 10px; border-radius:100px;">Em ninhada</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div>
+    <h2 style="font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; color:#2B2A21; margin:0 0 20px; border-bottom:1px solid #E4DCC8; padding-bottom:12px;">Navegação</h2>
+    <div style="display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap;">
+      <div style="width:390px; background:#fff; border:1px solid #E4DCC8; border-radius:20px; padding:10px 8px; display:flex; justify-content:space-around;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; color:#4B5D3A;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg><span style="font-size:10px; font-weight:700;">Início</span></div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; color:#a79e88;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a79e88" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M9 4v18"/></svg><span style="font-size:10px; font-weight:700;">Plantel</span></div>
+        <div style="width:46px; height:46px; border-radius:50%; background:#4B5D3A; display:flex; align-items:center; justify-content:center; margin-top:-8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; color:#a79e88;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a79e88" stroke-width="2"><path d="M9 21V9h6v12M3 10l9-7 9 7"/><circle cx="12" cy="6" r="0"/></svg><span style="font-size:10px; font-weight:700;">Ninhadas</span></div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; color:#a79e88;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a79e88" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 008.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2a2 2 0 010-4h.09A1.65 1.65 0 003.6 8.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H8a1.65 1.65 0 001-1.51V2a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V8c.38.38.38 1 .38 1.51"/></svg><span style="font-size:10px; font-weight:700;">Ajustes</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+</body>
+</html>
