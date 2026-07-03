@@ -9,8 +9,10 @@ title: Ninhal
 - Prisma 7 removeu o middleware `$use` e o `Prisma.dmmf` público no client gerado; `PrismaClient` exige um adapter de driver explícito (`@prisma/adapter-pg`). O isolamento multi-tenant é aplicado via `$extends` sobre uma lista manual de modelos (`lib/tenant/scoped-models.ts`, `TENANT_SCOPED_MODELS`) — toda tabela de domínio nova (Ave, Ninhada) precisa ser registrada manualmente nessa lista além de ganhar o campo `tenantId`; não há detecção automática.
 - A conexão do Prisma com o Supabase só funciona neste ambiente via connection pooler (Supavisor) — o host de conexão direta resolve apenas por IPv6, inalcançável na rede local. Qualquer nova configuração de ambiente (local, CI, deploy) deve usar a string do pooler.
 - Cadastros de teste contra o projeto Supabase devem usar e-mails reais e entregáveis (ex: alias `+` em um endereço real) — o projeto recebeu aviso de alta taxa de bounce por testes com endereços fabricados, com risco de restrição do envio de e-mails. Regra registrada em CLAUDE.md.
-- A confirmação de e-mail obrigatória do Supabase Auth segue ativa (usuário vai desabilitar manualmente no painel) — verificar se foi resolvido antes de despachar a Task de testes E2E (Stage 5), já que bloqueia login imediato após cadastro.
-- Políticas de RLS do bucket de Storage `logos` não foram verificadas após a criação do bucket — mesma verificação vale para qualquer upload de foto de ave (Cadastro Geral).
+- A confirmação de e-mail obrigatória do Supabase Auth foi desabilitada pelo usuário e confirmada via teste real de cadastro (2026-07-03) — login imediato após cadastro funciona normalmente, não bloqueia mais a Stage 5 (testes E2E).
+- Chamadas ao Prisma dentro de `runWithTenant` (isolamento multi-tenant) precisam de `await` interno na própria função que as executa — sem isso, o despacho real da query ocorre fora da janela síncrona do `AsyncLocalStorage.run()` e o contexto de tenant se perde (falha com `MissingTenantContextError`, não vaza dados, mas quebra a operação). Toda Task futura que crie ou estenda serviços sobre tabelas tenant-scoped (Ninhada na Stage 3, e qualquer extensão dos serviços de Ave) deve observar esse padrão.
+- `Especie` foi modelada como catálogo compartilhado (não tenant-scoped) — decisão do Worker por inferência, sem tenant customizado por criatório neste MVP. Se o produto precisar de espécies customizadas por tenant no futuro, isso exige uma Task nova para tornar `Especie` tenant-scoped.
+- Políticas de RLS de bucket do Supabase Storage criadas pela UI podem ficar restritas a um nome de pasta literal (padrão de policy "dar acesso à pasta X" gerado pelo wizard), em vez de liberar o bucket inteiro — isso bloqueia uploads para caminhos diferentes do esperado mesmo com uma policy aparentemente correta. Ao configurar Storage, preferir policies explícitas por `bucket_id` (`with check (bucket_id = 'nome-do-bucket')`) em vez de aceitar o padrão de pasta do wizard. Vale reconferir o bucket `logos` (Onboarding, Stage 1) com o mesmo teste real usado para `fotos-aves`, caso surjam problemas de upload de logo.
 
 ## Stage Summaries
 
@@ -26,4 +28,16 @@ Achados notáveis: a rede de desenvolvimento local exige o connection pooler do 
 - task-01-03.log.md
 - task-01-04.log.md
 - task-01-05.log.md
+
+### Stage 2 - Cadastro Geral (Aves)
+
+Stage concluída com as 4 Tasks executadas sequencialmente pelo Fullstack Agent (mesma instância, sem Handoffs) na branch `feat/cadastro-geral-aves`, mergeada para `main` ao final da Stage. Entregou: modelos `Ave` (tenant-scoped) e `Especie` (catálogo compartilhado) com API CRUD completa e regras de negócio (unicidade de anilha por tenant, compatibilidade de espécie/sexo entre pai/mãe) testadas por integração contra o banco real; tela Lista do Plantel com busca e filtros por espécie/sexo/status; tela Novo Cadastro de Ave com upload de foto e dropdowns de pai/mãe filtrados dinamicamente; e tela Ficha da Ave com visualização, edição e mudança de status.
+
+Achado técnico relevante: durante a Task 2.1, o Worker descobriu e corrigiu um bug de propagação de contexto no middleware de isolamento multi-tenant — chamadas ao Prisma dentro de `runWithTenant` sem `await` interno perdem o contexto de tenant (falha seguramente com erro, não vaza dados, mas quebra a operação). Documentado como padrão a observar em toda Task futura que use o mesmo middleware. Todas as três telas fizeram omissões conscientes e bem justificadas do mockup por ausência de modelo de dados de suporte (indicador "Em ninhada", seção "Histórico" da Ficha, chip de filtro "Em ninhada"), consistentes com o escopo explícito das Tasks e com a regra de fidelidade ao design (reaproveitar tokens existentes em vez de inventar padrões novos). Uma verificação holística ao final da Stage encontrou que o upload real de fotos para o bucket `fotos-aves` falhava com erro de RLS (`403`, apesar de policies aparentemente configuradas) — causa raiz: a policy gerada pela UI do Supabase estava restrita a um nome de pasta literal em vez de liberar o bucket inteiro. Corrigido diretamente via SQL (novas policies de `insert`/`select` por `bucket_id`), com upload e leitura pública confirmados por teste real antes de fechar a Stage.
+
+**Task Logs:**
+- task-02-01.log.md
+- task-02-02.log.md
+- task-02-03.log.md
+- task-02-04.log.md
 
