@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Mockups estáticos de referência de design, não fazem parte do código da aplicação.
+    "design/**",
+    "app/generated/**",
   ]),
 ]);
 
