@@ -24,4 +24,63 @@ model Tenant {
   logoUrl   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  aves      Ave[]
+}
+
+/// Lista extensível de espécies (catálogo compartilhado, não isolado por tenant),
+/// usada como opção de seleção no Cadastro Geral de aves.
+model Especie {
+  id   String @id @default(uuid())
+  nome String @unique
+  aves Ave[]
+}
+
+enum SexoAve {
+  MACHO
+  FEMEA
+  NAO_SEXADO
+}
+
+enum OrigemAve {
+  NASCIDA_NO_CRIATORIO
+  ADQUIRIDA
+}
+
+enum StatusAve {
+  ATIVO
+  RESERVADO
+  VENDIDO
+  OBITO
+  FUGIU
+}
+
+/// Cadastro Geral de aves do plantel. Tenant-scoped — registrada em
+/// lib/tenant/scoped-models.ts para isolamento automático por criador.
+model Ave {
+  id             String    @id @default(uuid())
+  tenantId       String
+  tenant         Tenant    @relation(fields: [tenantId], references: [id])
+  /// Identificador físico da anilha, inserido manualmente pelo usuário — único por tenant, não globalmente.
+  anilha         String
+  nomeApelido    String?
+  especieId      String
+  especie        Especie   @relation(fields: [especieId], references: [id])
+  mutacaoCor     String?
+  sexo           SexoAve
+  dataNascimento DateTime? @db.Date
+  origem         OrigemAve
+  /// Referencia outra Ave do mesmo tenant, mesma espécie, sexo Macho.
+  anilhaPaiId    String?
+  paiAve         Ave?      @relation("AvePai", fields: [anilhaPaiId], references: [id])
+  filhosComoPai  Ave[]     @relation("AvePai")
+  /// Referencia outra Ave do mesmo tenant, mesma espécie, sexo Fêmea.
+  anilhaMaeId    String?
+  maeAve         Ave?      @relation("AveMae", fields: [anilhaMaeId], references: [id])
+  filhosComoMae  Ave[]     @relation("AveMae")
+  status         StatusAve @default(ATIVO)
+  foto           String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([tenantId, anilha])
 }
