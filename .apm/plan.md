@@ -1,6 +1,6 @@
 ---
 title: Ninhal
-modified: Plan creation by the Planner.
+modified: Added Task 3.6 (hardening of tenant-isolation middleware) after the await-forgetting bug pattern recurred across Tasks 2.1 and 3.5 (both fail-safe, no data leak). Modified by the Manager with User approval.
 ---
 
 # APM Plan
@@ -17,7 +17,7 @@ modified: Plan creation by the Planner.
 |---|---|---|---|
 | 1 | Fundação Técnica e Autenticação | 5 | Fullstack Agent |
 | 2 | Cadastro Geral (Aves) | 4 | Fullstack Agent |
-| 3 | Reprodução e Travas de Segurança | 5 | Fullstack Agent |
+| 3 | Reprodução e Travas de Segurança | 6 | Fullstack Agent |
 | 4 | Árvore Genealógica e Pedigree Exportável | 4 | Fullstack Agent |
 | 5 | Validação Ponta a Ponta e Entrega | 4 | Fullstack Agent |
 
@@ -47,6 +47,7 @@ subgraph S3["Stage 3: Reprodução e Travas de Segurança"]
   T3_2 --> T3_3["3.3 Nova Ninhada e Lista<br/><i>Fullstack Agent</i>"]
   T3_1 --> T3_4["3.4 Detalhe da Ninhada e gerar filhotes<br/><i>Fullstack Agent</i>"]
   T3_1 --> T3_5["3.5 Indicador Em ninhada<br/><i>Fullstack Agent</i>"]
+  T3_6["3.6 Reforço do isolamento multi-tenant<br/><i>Fullstack Agent</i>"]
 end
 
 subgraph S4["Stage 4: Árvore Genealógica e Pedigree Exportável"]
@@ -92,6 +93,7 @@ style T3_2 fill:#7C9364,color:#000
 style T3_3 fill:#7C9364,color:#000
 style T3_4 fill:#7C9364,color:#000
 style T3_5 fill:#7C9364,color:#000
+style T3_6 fill:#7C9364,color:#000
 style T4_1 fill:#7C9364,color:#000
 style T4_2 fill:#7C9364,color:#000
 style T4_3 fill:#7C9364,color:#000
@@ -291,6 +293,19 @@ style T5_4 fill:#7C9364,color:#000
 
 1. Implementar a consulta que determina se uma ave está referenciada em uma Ninhada em andamento.
 2. Adicionar o badge calculado à Lista do Plantel e à Ficha da Ave.
+
+### Task 3.6: Reforço estrutural do isolamento multi-tenant - Fullstack Agent
+
+* **Objective:** Tornar o padrão de isolamento por tenant (`runWithTenant`/middleware do Prisma, Task 1.2) estruturalmente mais resistente ao esquecimento de `await` interno, que já causou duas falhas (sempre seguras — erro, sem vazamento de dado) em código de produção (Task 2.1) e de teste (Task 3.5).
+* **Output:** Uma salvaguarda estrutural (wrapper, assinatura de função revisada, ou regra de lint customizada) que torna o padrão incorreto mais difícil de escrever silenciosamente, mantendo o comportamento correto já existente; teste automatizado que comprova que a salvaguarda de fato pega o padrão incorreto.
+* **Validation:** Um teste automatizado que reproduz deliberadamente o padrão incorreto (callback sem `await` interno) demonstra que a salvaguarda o detecta (erro claro e imediato, ou falha de lint/build) em vez de depender apenas da disciplina do desenvolvedor; a suíte de testes existente continua passando sem alteração de comportamento para o uso correto do padrão.
+* **Guidance:** Investigar a causa raiz exata antes de propor a correção — o achado registrado descreve que o despacho da consulta ocorre fora da janela síncrona de `AsyncLocalStorage.run()` quando o callback não é aguardado internamente. Avaliar a opção mais simples e idiomática (ex: revisar a assinatura de `runWithTenant` para aceitar apenas callbacks que o próprio wrapper aguarda internamente, ou um lint customizado que sinaliza chamadas ao Prisma sem `await` dentro de callbacks de `runWithTenant`) em vez de introduzir complexidade desnecessária. Não é necessário reescrever chamadas já corretas existentes.
+* **Dependencies:** None (Task independente, atua sobre a infraestrutura já existente da Task 1.2).
+
+1. Investigar e confirmar a causa raiz exata do comportamento (propagação de `AsyncLocalStorage` através de callbacks não aguardados).
+2. Implementar a salvaguarda estrutural escolhida.
+3. Escrever um teste automatizado que reproduz deliberadamente o padrão incorreto e comprova que a salvaguarda o detecta.
+4. Confirmar que a suíte de testes existente continua passando sem alteração de comportamento.
 
 ## Stage 4: Árvore Genealógica e Pedigree Exportável
 

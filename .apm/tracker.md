@@ -15,10 +15,11 @@ title: Ninhal
 | Task | Status | Agent | Branch |
 |------|--------|-------|--------|
 | 3.1 | Done | fullstack-agent | feat/ninhadas-modelo-api |
-| 3.2 | Active | fullstack-agent | feat/ninhadas-modelo-api |
-| 3.3 | Waiting: 3.2 | fullstack-agent | |
-| 3.4 | Active | fullstack-agent | feat/ninhadas-modelo-api |
-| 3.5 | Active | fullstack-agent | feat/ninhadas-modelo-api |
+| 3.2 | Done | fullstack-agent | feat/ninhadas-modelo-api |
+| 3.3 | Active | fullstack-agent | feat/ninhadas-modelo-api |
+| 3.4 | Done | fullstack-agent | feat/ninhadas-modelo-api |
+| 3.5 | Done | fullstack-agent | feat/ninhadas-modelo-api |
+| 3.6 | Active | fullstack-agent | feat/ninhadas-modelo-api |
 
 ## Worker Tracking
 
