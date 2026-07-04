@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { buildSignUpPayload } from "@/lib/auth/signup";
 
 export type AuthActionState = { error: string } | null;
 export type PasswordResetState = { error: string } | { success: true } | null;
@@ -30,9 +31,8 @@ export async function signUpAction(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const { email, password } = readCredentials(formData);
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await supabase.auth.signUp(buildSignUpPayload(formData));
 
   if (error) {
     return { error: translateAuthError(error.message) };
