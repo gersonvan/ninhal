@@ -43,3 +43,16 @@ Achado técnico relevante: durante a Task 2.1, o Worker descobriu e corrigiu um 
 - task-02-03.log.md
 - task-02-04.log.md
 
+### Stage 3 - Reprodução e Travas de Segurança
+
+Stage concluída com 6 Tasks (a Task 3.6 foi adicionada ao Plano durante a Stage) executadas sequencialmente pelo Fullstack Agent (mesma instância, sem Handoffs) na branch `feat/ninhadas-modelo-api`, mergeada para `main` ao final da Stage. Entregou: modelo `Ninhada` (tenant-scoped) com geração automática de código por tenant/ano e cálculo de taxa de eclosão; a Trava 1 (espécie/sexo/status Ativo na seleção do casal); o coeficiente de parentesco (Trava 2) usando o método recursivo correto de kinship coefficient, com um caso ambíguo da tabela do Spec identificado, testado e documentado em vez de decidido silenciosamente; as telas de Nova Ninhada (com alerta de consanguinidade em tempo real, não bloqueante), Lista de Ninhadas, Detalhe da Ninhada (com preenchimento progressivo e o fluxo "gerar filhotes") e o indicador retroativo "Em ninhada" no Cadastro Geral.
+
+O Spec precisou de um esclarecimento do Manager durante a Stage: como o schema de Ninhada não tem campo de encerramento separado, "em andamento" foi definido operacionalmente como `filhotesNascidos` nulo — definição reaproveitada consistentemente pelas Tasks seguintes (status calculado "Em curso/Risco genético/Encerrada"). O bug de propagação de contexto documentado na Stage 2 (Task 2.1) reincidiu uma segunda vez na Task 3.5 (desta vez em código de teste), levando o usuário a aprovar a Task 3.6 como reforço estrutural — que investigou a fundo e descobriu que a causa raiz registrada anteriormente estava mais ampla do que a realidade (o problema só ocorria com callbacks não-`async` repassando a promise do Prisma diretamente). `runWithTenant` foi corrigido para aguardar o callback internamente, tornando o padrão seguro por construção; o entendimento anterior foi corrigido nos registros de Memory. Nenhuma verificação holística adicional foi necessária ao final da Stage — as Tasks já cobriram os pontos de risco (cálculo de parentesco, isolamento multi-tenant) com testes de integração contra o banco real.
+
+**Task Logs:**
+- task-03-01.log.md
+- task-03-02.log.md
+- task-03-03.log.md
+- task-03-04.log.md
+- task-03-05.log.md
+- task-03-06.log.md
