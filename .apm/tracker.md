@@ -16,9 +16,9 @@ title: Ninhal
 
 | Task | Status | Agent | Branch |
 |------|--------|-------|--------|
-| 4.1 | Ready | fullstack-agent | |
-| 4.2 | Waiting: 4.1 | fullstack-agent | |
-| 4.3 | Waiting: 4.1 | fullstack-agent | |
+| 4.1 | Done | fullstack-agent | feat/arvore-genealogica-servico |
+| 4.2 | Active | fullstack-agent | feat/arvore-genealogica-servico |
+| 4.3 | Active | fullstack-agent | feat/arvore-genealogica-servico |
 | 4.4 | Waiting: 4.3 | fullstack-agent | |
 
 ## Worker Tracking
