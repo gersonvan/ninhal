@@ -16,15 +16,16 @@ datasource db {
 /// Toda tabela de domínio (aves, ninhadas, ...) deve referenciar um Tenant via `tenantId`
 /// e ser filtrada por ele através do middleware de isolamento (ver lib/tenant/).
 model Tenant {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   /// ID do usuário do Supabase Auth (auth.users.id) dono deste tenant.
-  ownerId   String   @unique
+  ownerId   String    @unique
   name      String?
   focus     String?
   logoUrl   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   aves      Ave[]
+  ninhadas  Ninhada[]
 }
 
 /// Lista extensível de espécies (catálogo compartilhado, não isolado por tenant),
@@ -82,5 +83,31 @@ model Ave {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
+  ninhadasComoMacho Ninhada[] @relation("NinhadaMacho")
+  ninhadasComoFemea Ninhada[] @relation("NinhadaFemea")
+
   @@unique([tenantId, anilha])
+}
+
+/// Ninhada de um casal de aves do plantel. Tenant-scoped — registrada em
+/// lib/tenant/scoped-models.ts para isolamento automático por criador.
+model Ninhada {
+  id               String   @id @default(uuid())
+  tenantId         String
+  tenant           Tenant   @relation(fields: [tenantId], references: [id])
+  /// Código no formato AAAA-NN, gerado automaticamente (sequência por tenant/ano), editável pelo usuário.
+  codNinhada       String
+  anilhaMachoId    String
+  macho            Ave      @relation("NinhadaMacho", fields: [anilhaMachoId], references: [id])
+  anilhaFemeaId    String
+  femea            Ave      @relation("NinhadaFemea", fields: [anilhaFemeaId], references: [id])
+  dataPostura      DateTime @db.Date
+  ovosPrevistos    Int?
+  ovosBotados      Int?
+  ovosFerteis      Int?
+  filhotesNascidos Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([tenantId, codNinhada])
 }

@@ -42,3 +42,17 @@ export function assertMaeCompativel(mae: AveParentesco, especieId: string): void
     );
   }
 }
+
+/**
+ * Extensão da checagem de compatibilidade para reprodução (usada por Ninhadas):
+ * além de espécie/sexo (assertPaiCompativel/assertMaeCompativel), a ave precisa
+ * estar com status Ativo. Mantida separada por não se aplicar ao cadastro comum
+ * de pai/mãe genealógico (Task 2.1), apenas ao casal de uma Ninhada.
+ */
+export function assertAveAtivaParaReproducao(ave: { status: string }): void {
+  if (ave.status !== "ATIVO") {
+    throw new ParentescoInvalidoError(
+      "A ave selecionada precisa estar com status Ativo para formar um casal.",
+    );
+  }
+}

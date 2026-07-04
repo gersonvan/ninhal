@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runWithTenant } from "@/lib/tenant/context";
-import { requireTenantId } from "@/lib/aves/request-context";
+import { requireTenantId } from "@/lib/tenant/request-context";
 import { createAve, listAves, type ListAvesFiltros } from "@/lib/aves/service";
 import { aveErrorResponse } from "@/lib/aves/http";
 import { SEXO_AVE_VALUES, STATUS_AVE_VALUES } from "@/lib/aves/schema";

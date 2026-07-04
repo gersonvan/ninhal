@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireTenantId } from "@/lib/aves/request-context";
+import { requireTenantId } from "@/lib/tenant/request-context";
 import { prisma } from "@/lib/prisma";
 
 /** Catálogo de espécies (não é isolado por tenant — compartilhado entre todos os criadores). */
