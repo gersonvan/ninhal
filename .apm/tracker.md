@@ -18,7 +18,7 @@ title: Ninhal
 
 | Task | Status | Agent | Branch |
 |------|--------|-------|--------|
-| 5.1 | Ready | fullstack-agent | |
+| 5.1 | Active | fullstack-agent | feat/configuracoes-conta |
 | 5.2 | Waiting: 5.1 | fullstack-agent | |
 | 5.3 | Waiting: 5.1 | fullstack-agent | |
 | 5.4 | Waiting: 5.3 | fullstack-agent | |
