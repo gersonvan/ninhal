@@ -58,3 +58,16 @@ O Spec precisou de um esclarecimento do Manager durante a Stage: como o schema d
 - task-03-04.log.md
 - task-03-05.log.md
 - task-03-06.log.md
+
+### Stage 4 - Árvore Genealógica e Pedigree Exportável
+
+Stage concluída com 5 Tasks (a Task 4.5 foi adicionada ao Plano durante a Stage) executadas sequencialmente pelo Fullstack Agent (mesma instância, sem Handoffs) na branch `feat/arvore-genealogica-servico`, mergeada para `main` ao final da Stage. Entregou: o serviço de montagem da árvore genealógica de 3 gerações (reaproveitando o padrão de consulta aninhada já usado no coeficiente de parentesco), com rotulagem de ancestrais ausentes ("Não registrado/a" vs. "Adquirido/a — sem registro" conforme a origem do ancestral conhecido mais próximo); a tela navegável da Árvore Genealógica com banner de ninhada ativa (reaproveitando a classificação de status "Em curso/Risco genético/Encerrada" da Stage 3); o certificado de pedigree em PDF via `@react-pdf/renderer`, usando a mesma estrutura de 3 gerações como única fonte de ancestralidade; e a tela de Exportar Pedigree ligada à geração de PDF já existente.
+
+Durante a Task 4.3, o Worker descobriu que o nome completo do responsável — coletado no formulário de cadastro desde a Task 1.3 (Stage 1) — nunca havia sido persistido em lugar nenhum, usando o e-mail do usuário como alternativa no certificado. O usuário aprovou a Task 4.5 para corrigir a causa raiz: o nome agora é persistido em `user_metadata.full_name` do Supabase Auth durante o cadastro, com o e-mail preservado apenas como alternativa para contas criadas antes da correção. A Task 4.3 também substituiu as fontes do design (Source Serif 4/Manrope/Space Grotesk) pelas famílias embutidas do React-PDF no certificado, por não haver arquivo de fonte licenciado disponível — divergência aceita pelo usuário por ora, mantendo a hierarquia visual (serif/sans/mono) ainda que com fontes diferentes. A Task 4.4 resolveu um conflito de rota do Next.js (page.tsx e route.ts não podem coexistir no mesmo segmento), movendo a geração de PDF para uma sub-rota (`/pedigree/download`) e liberando o caminho principal para a nova tela de exportação. Nenhuma verificação holística adicional foi necessária ao final da Stage.
+
+**Task Logs:**
+- task-04-01.log.md
+- task-04-02.log.md
+- task-04-03.log.md
+- task-04-04.log.md
+- task-04-05.log.md
