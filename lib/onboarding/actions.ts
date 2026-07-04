@@ -3,10 +3,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { uploadLogo } from "@/lib/tenant/logo";
 
 export type OnboardingState = { error: string } | null;
-
-const LOGO_BUCKET = "logos";
 
 export async function completeOnboardingAction(
   _prevState: OnboardingState,
@@ -32,21 +31,14 @@ export async function completeOnboardingAction(
   let logoUrl: string | undefined;
 
   if (logo instanceof File && logo.size > 0) {
-    const extension = logo.name.split(".").pop() ?? "png";
-    const path = `${user.id}/logo-${Date.now()}.${extension}`;
-    const { error: uploadError } = await supabase.storage
-      .from(LOGO_BUCKET)
-      .upload(path, logo, { upsert: true });
-
-    if (uploadError) {
+    const url = await uploadLogo(supabase, user.id, logo);
+    if (!url) {
       return {
         error:
           "Não foi possível enviar o logo agora. Você pode pular esta etapa e adicionar depois.",
       };
     }
-
-    logoUrl = supabase.storage.from(LOGO_BUCKET).getPublicUrl(path).data
-      .publicUrl;
+    logoUrl = url;
   }
 
   await prisma.tenant.upsert({

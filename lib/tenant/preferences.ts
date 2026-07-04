@@ -13,3 +13,14 @@ export async function alertasConsanguinidadeAtivados(tenantId: string): Promise<
   });
   return tenant?.alertasConsanguinidadeAtivados ?? true;
 }
+
+/** Atualiza a preferência "alertas de consanguinidade ativados" do tenant informado. */
+export async function atualizarAlertasConsanguinidade(
+  tenantId: string,
+  ativado: boolean,
+): Promise<void> {
+  await prisma.tenant.update({
+    where: { id: tenantId },
+    data: { alertasConsanguinidadeAtivados: ativado },
+  });
+}
