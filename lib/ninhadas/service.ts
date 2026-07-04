@@ -98,7 +98,18 @@ export async function listNinhadas() {
     include: INCLUDE_CASAL,
     orderBy: { createdAt: "desc" },
   });
-  return ninhadas.map(comTaxaEclosao);
+
+  const comParentesco = await Promise.all(
+    ninhadas.map(async (ninhada) => ({
+      ...comTaxaEclosao(ninhada),
+      coeficienteParentesco: await calcularCoeficienteParentescoEntreAves(
+        ninhada.anilhaMachoId,
+        ninhada.anilhaFemeaId,
+      ),
+    })),
+  );
+
+  return comParentesco;
 }
 
 export async function getNinhada(id: string) {

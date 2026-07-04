@@ -4,9 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import Badge, { BIRD_STATUS_BADGE, type BadgeVariant } from "@/components/ui/Badge";
+import Badge, { BIRD_STATUS_BADGE } from "@/components/ui/Badge";
 import Alert from "@/components/ui/Alert";
 import { STATUS_AVE_LABELS } from "@/lib/aves/labels";
+import { determinarStatusNinhada } from "@/lib/ninhadas/status";
 
 interface Especie {
   id: string;
@@ -46,19 +47,6 @@ function nomeAve(ave: AveResumo): string {
   return ave.nomeApelido || ave.anilha;
 }
 
-function determinarStatus(
-  ninhada: NinhadaDetalhe,
-  alertasAtivados: boolean,
-): { label: string; variant: BadgeVariant } {
-  if (ninhada.filhotesNascidos != null) {
-    return { label: "Encerrada", variant: "neutral" };
-  }
-  if (alertasAtivados && ninhada.coeficienteParentesco > 0) {
-    return { label: "Risco genético", variant: "risk" };
-  }
-  return { label: "Em curso", variant: "warning" };
-}
-
 export default function FichaNinhada({
   ninhada,
   filhotes,
@@ -73,7 +61,7 @@ export default function FichaNinhada({
   const [pending, setPending] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
-  const status = determinarStatus(dados, alertasAtivados);
+  const status = determinarStatusNinhada(dados, alertasAtivados);
   const mostrarAlerta = alertasAtivados && dados.coeficienteParentesco > 0;
 
   async function salvarProgresso(formData: FormData) {

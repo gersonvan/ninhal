@@ -8,8 +8,16 @@ export interface AveCandidata {
   anilha: string;
 }
 
-/** Busca aves do plantel compatíveis como pai (Macho) e mãe (Fêmea) para a espécie informada. */
-export function useParentesCandidatos(especieId: string | undefined) {
+/**
+ * Busca aves do plantel compatíveis como pai (Macho) e mãe (Fêmea) para a espécie
+ * informada. `status`, se informado, restringe adicionalmente por status da ave
+ * (ex: "ATIVO", usado pela Trava 1 de Ninhadas — não se aplica à seleção comum de
+ * pai/mãe genealógico do Cadastro de Ave, que não filtra por status).
+ */
+export function useParentesCandidatos(
+  especieId: string | undefined,
+  status?: string,
+) {
   const [pais, setPais] = useState<AveCandidata[]>([]);
   const [maes, setMaes] = useState<AveCandidata[]>([]);
 
@@ -22,13 +30,15 @@ export function useParentesCandidatos(especieId: string | undefined) {
       };
     }
 
-    fetch(`/api/aves?especieId=${especieId}&sexo=MACHO`)
+    const sufixoStatus = status ? `&status=${status}` : "";
+
+    fetch(`/api/aves?especieId=${especieId}&sexo=MACHO${sufixoStatus}`)
       .then((res) => (res.ok ? res.json() : []))
       .then((data: AveCandidata[]) => {
         if (!cancelado) setPais(data);
       });
 
-    fetch(`/api/aves?especieId=${especieId}&sexo=FEMEA`)
+    fetch(`/api/aves?especieId=${especieId}&sexo=FEMEA${sufixoStatus}`)
       .then((res) => (res.ok ? res.json() : []))
       .then((data: AveCandidata[]) => {
         if (!cancelado) setMaes(data);
@@ -37,7 +47,7 @@ export function useParentesCandidatos(especieId: string | undefined) {
     return () => {
       cancelado = true;
     };
-  }, [especieId]);
+  }, [especieId, status]);
 
   return { pais, maes };
 }
