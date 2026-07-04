@@ -6,6 +6,7 @@ import {
   assertPaiCompativel,
 } from "@/lib/aves/compatibility";
 import { RegistroNaoEncontradoError } from "@/lib/aves/errors";
+import { calcularCoeficienteParentescoEntreAves } from "@/lib/parentesco/service";
 import { calcularTaxaEclosao } from "./calculos";
 import { gerarProximoCodNinhada } from "./codigo";
 import { CodNinhadaDuplicadoError } from "./errors";
@@ -105,7 +106,25 @@ export async function getNinhada(id: string) {
     where: { id },
     include: INCLUDE_CASAL,
   });
-  return ninhada ? comTaxaEclosao(ninhada) : null;
+  if (!ninhada) return null;
+
+  const coeficienteParentesco = await calcularCoeficienteParentescoEntreAves(
+    ninhada.anilhaMachoId,
+    ninhada.anilhaFemeaId,
+  );
+
+  return { ...comTaxaEclosao(ninhada), coeficienteParentesco };
+}
+
+/** Aves geradas por este casal (filhas cadastradas com este macho como pai e esta fêmea como mãe). */
+export async function listFilhotesGerados(
+  anilhaMachoId: string,
+  anilhaFemeaId: string,
+) {
+  return await prisma.ave.findMany({
+    where: { anilhaPaiId: anilhaMachoId, anilhaMaeId: anilhaFemeaId },
+    orderBy: { createdAt: "asc" },
+  });
 }
 
 export async function updateNinhada(id: string, input: unknown) {

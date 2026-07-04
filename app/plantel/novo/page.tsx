@@ -4,7 +4,11 @@ import { prisma } from "@/lib/prisma";
 import AppShell from "@/components/nav/AppShell";
 import NovoCadastroForm from "./NovoCadastroForm";
 
-export default async function NovoCadastroPage() {
+interface PageProps {
+  searchParams: Promise<{ paiId?: string; maeId?: string; especieId?: string }>;
+}
+
+export default async function NovoCadastroPage({ searchParams }: PageProps) {
   const user = await getCurrentUser();
   if (!user) {
     redirect("/login");
@@ -16,10 +20,14 @@ export default async function NovoCadastroPage() {
   }
 
   const especies = await prisma.especie.findMany({ orderBy: { nome: "asc" } });
+  const { paiId, maeId, especieId } = await searchParams;
 
   return (
     <AppShell tenantName={tenant.name ?? "Ninhal"}>
-      <NovoCadastroForm especies={especies} />
+      <NovoCadastroForm
+        especies={especies}
+        preselecao={{ paiId, maeId, especieId }}
+      />
     </AppShell>
   );
 }

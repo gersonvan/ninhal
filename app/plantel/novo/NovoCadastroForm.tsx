@@ -12,18 +12,34 @@ interface Especie {
   nome: string;
 }
 
+export interface PreselecaoNovaAve {
+  especieId?: string;
+  paiId?: string;
+  maeId?: string;
+}
+
 const selectClass =
   "w-full box-border appearance-none font-sans text-[15px] px-4 py-3.5 rounded-[10px] border-[1.5px] border-input-border bg-white text-text-primary";
 
-export default function NovoCadastroForm({ especies }: { especies: Especie[] }) {
+export default function NovoCadastroForm({
+  especies,
+  preselecao,
+}: {
+  especies: Especie[];
+  preselecao?: PreselecaoNovaAve;
+}) {
   const [state, formAction, pending] = useActionState(createAveAction, null);
 
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
-  const [especieId, setEspecieId] = useState(especies[0]?.id ?? "");
+  const [especieId, setEspecieId] = useState(
+    preselecao?.especieId ?? especies[0]?.id ?? "",
+  );
   const [sexo, setSexo] = useState<"MACHO" | "FEMEA" | "NAO_SEXADO">("FEMEA");
   const [origem, setOrigem] = useState<"NASCIDA_NO_CRIATORIO" | "ADQUIRIDA">(
     "NASCIDA_NO_CRIATORIO",
   );
+  const [paiId, setPaiId] = useState(preselecao?.paiId ?? "");
+  const [maeId, setMaeId] = useState(preselecao?.maeId ?? "");
   const { pais, maes } = useParentesCandidatos(especieId);
 
   function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -151,7 +167,12 @@ export default function NovoCadastroForm({ especies }: { especies: Especie[] }) 
                 Pai (machos da espécie selecionada no plantel)
               </label>
               <div className="relative">
-                <select name="anilhaPaiId" defaultValue="" className={selectClass}>
+                <select
+                  name="anilhaPaiId"
+                  value={paiId}
+                  onChange={(e) => setPaiId(e.target.value)}
+                  className={selectClass}
+                >
                   <option value="">Nenhum / desconhecido</option>
                   {pais.map((ave) => (
                     <option key={ave.id} value={ave.id}>
@@ -167,7 +188,12 @@ export default function NovoCadastroForm({ especies }: { especies: Especie[] }) 
                 Mãe (fêmeas da espécie selecionada no plantel)
               </label>
               <div className="relative">
-                <select name="anilhaMaeId" defaultValue="" className={selectClass}>
+                <select
+                  name="anilhaMaeId"
+                  value={maeId}
+                  onChange={(e) => setMaeId(e.target.value)}
+                  className={selectClass}
+                >
                   <option value="">Nenhuma / desconhecida</option>
                   {maes.map((ave) => (
                     <option key={ave.id} value={ave.id}>
