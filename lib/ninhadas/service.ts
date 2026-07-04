@@ -179,6 +179,31 @@ export async function aveEstaEmNinhadaAndamento(aveId: string): Promise<boolean>
   return resultado.has(aveId);
 }
 
+/**
+ * A Ninhada em andamento (filhotesNascidos nulo) mais recente que referencia a ave
+ * informada como macho ou fêmea, com o coeficiente de parentesco do casal já
+ * calculado — usada pelo banner de ninhada ativa na Árvore Genealógica (Task 4.2).
+ * Retorna null se a ave não estiver em nenhuma ninhada em andamento.
+ */
+export async function buscarNinhadaAtivaDaAve(aveId: string) {
+  const ninhada = await prisma.ninhada.findFirst({
+    where: {
+      filhotesNascidos: null,
+      OR: [{ anilhaMachoId: aveId }, { anilhaFemeaId: aveId }],
+    },
+    include: INCLUDE_CASAL,
+    orderBy: { createdAt: "desc" },
+  });
+  if (!ninhada) return null;
+
+  const coeficienteParentesco = await calcularCoeficienteParentescoEntreAves(
+    ninhada.anilhaMachoId,
+    ninhada.anilhaFemeaId,
+  );
+
+  return { ...comTaxaEclosao(ninhada), coeficienteParentesco };
+}
+
 export async function updateNinhada(id: string, input: unknown) {
   const data: UpdateNinhadaInput = updateNinhadaSchema.parse(input);
 

@@ -191,7 +191,7 @@ export default function FichaNinhada({
             </Link>
 
             <Link
-              href="/arvore"
+              href={`/arvore/${dados.femea.id}`}
               className="flex items-center justify-center gap-2 no-underline font-sans font-bold text-sm text-oliva-600 border-[1.5px] border-oliva-600 rounded-[10px] p-3"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4B5D3A" strokeWidth={2}>
