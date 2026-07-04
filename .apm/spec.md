@@ -1,6 +1,6 @@
 ---
 title: Ninhal
-modified: Spec updated by the Planner after design material review.
+modified: Clarified "em andamento" for Ninhada as filhotes_nascidos being null, since the Task 3.1 schema has no separate closure field. Modified by the Manager based on task-03-01.log.md findings.
 ---
 
 # APM Spec
@@ -52,6 +52,8 @@ A pasta `design/` no workspace contém o design final aprovado: mockups HTML de 
 | `taxa_eclosao` | calculado = `filhotes_nascidos / ovos_botados`, exibido como percentual. Só exibido quando ambos os valores estão preenchidos (evitar divisão por zero/indefinido). |
 
 Uma ninhada é criada com informação parcial e atualizada ao longo do tempo conforme os dados ficam disponíveis (postura → ovoscopia → nascimento). Enquanto uma Ninhada está em andamento (sem data de encerramento/resultado final), as duas aves referenciadas (`anilha_macho`, `anilha_femea`) exibem o indicador calculado "Em ninhada" na interface, sem alterar o campo `status` armazenado.
+
+Não há campo de encerramento/status separado no modelo de Ninhada — "em andamento" é determinado diretamente pelos dados de preenchimento progressivo já existentes: uma Ninhada está em andamento enquanto `filhotes_nascidos` estiver nulo (o resultado final ainda não foi registrado); passa a ser considerada encerrada assim que `filhotes_nascidos` é preenchido. Esta é a definição operacional usada por qualquer funcionalidade que precise distinguir ninhadas em andamento de encerradas (indicador "Em ninhada" no Cadastro Geral, banner de ninhada ativa na Árvore Genealógica).
 
 ### Trava 1 — Restrição de seleção de reprodutores
 
