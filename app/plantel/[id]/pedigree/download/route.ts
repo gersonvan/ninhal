@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { runWithTenant } from "@/lib/tenant/context";
 import { montarDadosPedigree } from "@/lib/pedigree/service";
+import { resolverNomeResponsavel } from "@/lib/pedigree/responsavel";
 import PedigreeDocument from "@/lib/pedigree/PedigreeDocument";
 import { RegistroNaoEncontradoError } from "@/lib/aves/errors";
 
@@ -28,10 +29,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
   const { id } = await params;
 
   try {
-    // O nome completo do responsável não é coletado/armazenado hoje pelo
-    // fluxo de cadastro (ver Task Log) — usamos o e-mail autenticado como
-    // melhor alternativa disponível até essa lacuna ser resolvida.
-    const responsavelNome = user.email ?? "Responsável não identificado";
+    const responsavelNome = resolverNomeResponsavel(user);
 
     const dados = await runWithTenant(tenant.id, () =>
       montarDadosPedigree(id, tenant.id, responsavelNome),
