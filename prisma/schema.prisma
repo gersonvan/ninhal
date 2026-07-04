@@ -16,16 +16,18 @@ datasource db {
 /// Toda tabela de domínio (aves, ninhadas, ...) deve referenciar um Tenant via `tenantId`
 /// e ser filtrada por ele através do middleware de isolamento (ver lib/tenant/).
 model Tenant {
-  id        String    @id @default(uuid())
+  id                             String    @id @default(uuid())
   /// ID do usuário do Supabase Auth (auth.users.id) dono deste tenant.
-  ownerId   String    @unique
-  name      String?
-  focus     String?
-  logoUrl   String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  aves      Ave[]
-  ninhadas  Ninhada[]
+  ownerId                        String    @unique
+  name                           String?
+  focus                          String?
+  logoUrl                        String?
+  /// Preferência: exibir alerta de consanguinidade ao formar um casal com parentesco próximo.
+  alertasConsanguinidadeAtivados Boolean   @default(true)
+  createdAt                      DateTime  @default(now())
+  updatedAt                      DateTime  @updatedAt
+  aves                           Ave[]
+  ninhadas                       Ninhada[]
 }
 
 /// Lista extensível de espécies (catálogo compartilhado, não isolado por tenant),
