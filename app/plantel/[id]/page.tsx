@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { runWithTenant } from "@/lib/tenant/context";
 import { getAve } from "@/lib/aves/service";
+import { aveEstaEmNinhadaAndamento } from "@/lib/ninhadas/service";
 import AppShell from "@/components/nav/AppShell";
 import FichaAve from "./FichaAve";
 
@@ -27,11 +28,14 @@ export default async function FichaAvePage({ params }: PageProps) {
     notFound();
   }
 
-  const especies = await prisma.especie.findMany({ orderBy: { nome: "asc" } });
+  const [especies, emNinhada] = await Promise.all([
+    prisma.especie.findMany({ orderBy: { nome: "asc" } }),
+    runWithTenant(tenant.id, () => aveEstaEmNinhadaAndamento(id)),
+  ]);
 
   return (
     <AppShell tenantName={tenant.name ?? "Ninhal"}>
-      <FichaAve ave={ave} especies={especies} />
+      <FichaAve ave={ave} especies={especies} emNinhada={emNinhada} />
     </AppShell>
   );
 }

@@ -48,9 +48,11 @@ function formatarData(data: Date | string | null): string {
 export default function FichaAve({
   ave,
   especies,
+  emNinhada,
 }: {
   ave: AveDetalhe;
   especies: Especie[];
+  emNinhada: boolean;
 }) {
   const [editando, setEditando] = useState(false);
 
@@ -114,7 +116,10 @@ export default function FichaAve({
               {ave.especie.nome} · {SEXO_AVE_LABELS[ave.sexo]}
             </div>
           </div>
-          <Badge variant={badgeVariant}>{statusLabel}</Badge>
+          <div className="flex gap-1.5 shrink-0">
+            {emNinhada && <Badge variant="warning">Em ninhada</Badge>}
+            <Badge variant={badgeVariant}>{statusLabel}</Badge>
+          </div>
         </div>
 
         <div className="font-mono font-semibold text-[15px] text-oliva-600 bg-[#DCE5D2] inline-block px-3 py-1.5 rounded-lg mt-3">

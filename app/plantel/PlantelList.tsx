@@ -22,6 +22,8 @@ interface AveListItem {
   status: keyof typeof STATUS_AVE_LABELS;
   foto: string | null;
   especie: Especie;
+  /** Indicador calculado (não é o campo `status`): a ave está em uma Ninhada em andamento. */
+  emNinhada: boolean;
 }
 
 const SEXO_FILTROS = [
@@ -196,7 +198,10 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
                   <div className="font-mono text-xs text-text-secondary">
                     {ave.anilha}
                   </div>
-                  <Badge variant={badgeVariant}>{statusLabel}</Badge>
+                  <div className="flex gap-1.5">
+                    {ave.emNinhada && <Badge variant="warning">Em ninhada</Badge>}
+                    <Badge variant={badgeVariant}>{statusLabel}</Badge>
+                  </div>
                 </div>
               </Card>
             </Link>

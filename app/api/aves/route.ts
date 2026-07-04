@@ -4,6 +4,7 @@ import { requireTenantId } from "@/lib/tenant/request-context";
 import { createAve, listAves, type ListAvesFiltros } from "@/lib/aves/service";
 import { aveErrorResponse } from "@/lib/aves/http";
 import { SEXO_AVE_VALUES, STATUS_AVE_VALUES } from "@/lib/aves/schema";
+import { listAveIdsEmNinhadaAndamento } from "@/lib/ninhadas/service";
 
 function parseFiltros(searchParams: URLSearchParams): ListAvesFiltros {
   const filtros: ListAvesFiltros = {};
@@ -32,7 +33,11 @@ export async function GET(request: NextRequest) {
   if ("response" in ctx) return ctx.response;
 
   const filtros = parseFiltros(request.nextUrl.searchParams);
-  const aves = await runWithTenant(ctx.tenantId, () => listAves(filtros));
+  const aves = await runWithTenant(ctx.tenantId, async () => {
+    const lista = await listAves(filtros);
+    const emAndamento = await listAveIdsEmNinhadaAndamento(lista.map((ave) => ave.id));
+    return lista.map((ave) => ({ ...ave, emNinhada: emAndamento.has(ave.id) }));
+  });
   return NextResponse.json(aves);
 }
 

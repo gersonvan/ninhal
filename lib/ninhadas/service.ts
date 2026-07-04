@@ -127,6 +127,47 @@ export async function listFilhotesGerados(
   });
 }
 
+/**
+ * Determina quais das aves informadas (por ID) estão referenciadas como macho ou
+ * fêmea em uma Ninhada em andamento (`filhotesNascidos` nulo — ver Task 3.1/3.5
+ * para a definição operacional). Indicador puramente de exibição: não lê nem
+ * altera o campo `status` armazenado da ave.
+ */
+export async function listAveIdsEmNinhadaAndamento(
+  aveIds: string[],
+): Promise<Set<string>> {
+  if (aveIds.length === 0) return new Set();
+
+  const ninhadasEmAndamento = await prisma.ninhada.findMany({
+    where: {
+      filhotesNascidos: null,
+      OR: [
+        { anilhaMachoId: { in: aveIds } },
+        { anilhaFemeaId: { in: aveIds } },
+      ],
+    },
+    select: { anilhaMachoId: true, anilhaFemeaId: true },
+  });
+
+  const idsConsultados = new Set(aveIds);
+  const emAndamento = new Set<string>();
+  for (const ninhada of ninhadasEmAndamento) {
+    if (idsConsultados.has(ninhada.anilhaMachoId)) {
+      emAndamento.add(ninhada.anilhaMachoId);
+    }
+    if (idsConsultados.has(ninhada.anilhaFemeaId)) {
+      emAndamento.add(ninhada.anilhaFemeaId);
+    }
+  }
+  return emAndamento;
+}
+
+/** Variante para uma única ave — ver listAveIdsEmNinhadaAndamento. */
+export async function aveEstaEmNinhadaAndamento(aveId: string): Promise<boolean> {
+  const resultado = await listAveIdsEmNinhadaAndamento([aveId]);
+  return resultado.has(aveId);
+}
+
 export async function updateNinhada(id: string, input: unknown) {
   const data: UpdateNinhadaInput = updateNinhadaSchema.parse(input);
 
