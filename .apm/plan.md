@@ -1,6 +1,6 @@
 ---
 title: Ninhal
-modified: Added Task 3.6 (hardening of tenant-isolation middleware) after the await-forgetting bug pattern recurred across Tasks 2.1 and 3.5 (both fail-safe, no data leak). Modified by the Manager with User approval.
+modified: Added Task 4.5 (persist responsible name for the pedigree certificate) after Task 4.3 found the name field from Task 1.3 was never persisted. Modified by the Manager with User approval.
 ---
 
 # APM Plan
@@ -18,7 +18,7 @@ modified: Added Task 3.6 (hardening of tenant-isolation middleware) after the aw
 | 1 | Fundação Técnica e Autenticação | 5 | Fullstack Agent |
 | 2 | Cadastro Geral (Aves) | 4 | Fullstack Agent |
 | 3 | Reprodução e Travas de Segurança | 6 | Fullstack Agent |
-| 4 | Árvore Genealógica e Pedigree Exportável | 4 | Fullstack Agent |
+| 4 | Árvore Genealógica e Pedigree Exportável | 5 | Fullstack Agent |
 | 5 | Validação Ponta a Ponta e Entrega | 4 | Fullstack Agent |
 
 ## Dependency Graph
@@ -55,6 +55,7 @@ subgraph S4["Stage 4: Árvore Genealógica e Pedigree Exportável"]
   T4_1["4.1 Serviço de árvore genealógica<br/><i>Fullstack Agent</i>"] --> T4_2["4.2 Tela Árvore Genealógica<br/><i>Fullstack Agent</i>"]
   T4_1 --> T4_3["4.3 Geração do Pedigree PDF<br/><i>Fullstack Agent</i>"]
   T4_3 --> T4_4["4.4 Tela Exportar Pedigree<br/><i>Fullstack Agent</i>"]
+  T4_3 --> T4_5["4.5 Nome do responsável no pedigree<br/><i>Fullstack Agent</i>"]
 end
 
 subgraph S5["Stage 5: Validação Ponta a Ponta e Entrega"]
@@ -98,6 +99,7 @@ style T4_1 fill:#7C9364,color:#000
 style T4_2 fill:#7C9364,color:#000
 style T4_3 fill:#7C9364,color:#000
 style T4_4 fill:#7C9364,color:#000
+style T4_5 fill:#7C9364,color:#000
 style T5_1 fill:#7C9364,color:#000
 style T5_2 fill:#7C9364,color:#000
 style T5_3 fill:#7C9364,color:#000
@@ -355,6 +357,19 @@ style T5_4 fill:#7C9364,color:#000
 
 1. Construir a tela com as ações de exportação.
 2. Ligar a ação "Exportar PDF" ao gerador da Task 4.3.
+
+### Task 4.5: Persistir nome do responsável e corrigir o pedigree - Fullstack Agent
+
+* **Objective:** Persistir o nome completo do responsável, coletado no formulário de cadastro desde a Task 1.3, e atualizar o gerador de pedigree (Task 4.3) para usá-lo em vez do e-mail do usuário.
+* **Output:** Nome completo persistido em algum lugar acessível sem consulta extra por requisição (ex: `user_metadata` do Supabase Auth, atualizado durante o cadastro); `lib/pedigree/service.ts` (`montarDadosPedigree`) atualizado para ler esse nome real, com fallback para o e-mail apenas quando o nome não estiver disponível (contas criadas antes desta correção).
+* **Validation:** Testes automatizados confirmando que o nome do responsável é persistido no cadastro e que o serviço de pedigree o usa quando disponível, com fallback correto para o e-mail em contas sem esse dado.
+* **Guidance:** Esta Task corrige uma deficiência descoberta na Task 4.3: o campo "Nome completo" já existe no formulário de cadastro (Task 1.3) mas nunca foi persistido — nem no Supabase Auth nem no `Tenant`. Referenciar `lib/auth/actions.ts` (`signUpAction`, Task 1.2/1.3) para o ponto de persistência; a Task 1.3 original permanece concluída, esta Task apenas fecha a lacuna. Preferir persistir via `user_metadata` do Supabase Auth (já disponível na sessão/JWT sem round-trip extra) sobre um campo novo no `Tenant`, a menos que a investigação mostre uma razão concreta para a segunda opção.
+* **Dependencies:** Task 4.3.
+
+1. Investigar o ponto exato onde o nome completo é coletado no cadastro e por que não é persistido atualmente.
+2. Implementar a persistência do nome do responsável no cadastro.
+3. Atualizar `montarDadosPedigree` para usar o nome real, com fallback para o e-mail quando ausente.
+4. Escrever testes automatizados cobrindo a persistência e o fallback.
 
 ## Stage 5: Validação Ponta a Ponta e Entrega
 
