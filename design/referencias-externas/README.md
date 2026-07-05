@@ -12,12 +12,12 @@ atualização do design aprovado antes de qualquer trabalho de interface.
 - `carteira-mybirds-exemplo.pdf` — exemplo de "carteira" (cartão de identificação
   compacto com foto/dados da ave + árvore genealógica resumida ao lado), formato de
   cartão menor que o certificado de pedigree completo.
+- `certificado-mybirds-exemplo.jpeg` — exemplo de "Certificado" maior da mesma
+  ferramenta, com árvore genealógica completa.
 
 ## Observações (2026-07-05)
 
-O usuário também compartilhou, na mesma conversa, uma imagem de um "Certificado"
-maior da mesma ferramenta (não salva em arquivo — veio colada na conversa, sem
-caminho de disco). Esse certificado mostra:
+O certificado grande (`certificado-mybirds-exemplo.jpeg`) mostra:
 
 - Árvore genealógica de **5 gerações** (o Spec do Ninhal define 3 gerações).
 - Selo/logo do criatório, QR code, dados de contato e CTF do responsável.
