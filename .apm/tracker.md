@@ -39,5 +39,6 @@ title: Ninhal
 
 - Repositório remoto `origin` configurado em `https://github.com/gersonvan/ninhal.git`; pushes somente quando explicitamente solicitados pelo usuário.
 - Confirmação de e-mail obrigatória do Supabase Auth foi desabilitada pelo usuário e verificada via teste real de cadastro — resolvido, não bloqueia mais a Stage 5 (testes E2E). Regra permanece ativa no CLAUDE.md para usar e-mails reais em testes de cadastro.
+- Usuário trouxe materiais de referência de uma ferramenta concorrente (MyBirds) — salvos em `design/referencias-externas/` (não fazem parte do design aprovado). Mostram um formato de "carteira" compacta e uma árvore de 5 gerações (vs. as 3 gerações do Spec atual). Nenhuma decisão de escopo tomada; só relevante se o usuário quiser discutir extensões futuras do pedigree.
 - Políticas de RLS do bucket `fotos-aves` corrigidas e verificadas (upload autenticado + leitura pública funcionando via teste real). Não há policy de DELETE — fora do escopo atual, considerar se um recurso de remoção de foto for adicionado no futuro. As policies do bucket `logos` (Onboarding, Stage 1) ainda não foram re-verificadas com o mesmo teste real — considerar checar se surgir algum problema relatado de upload de logo.
 
