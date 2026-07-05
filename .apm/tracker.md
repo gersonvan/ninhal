@@ -21,7 +21,7 @@ title: Ninhal
 | 5.1 | Done | fullstack-agent | feat/configuracoes-conta |
 | 5.2 | Done | fullstack-agent | feat/configuracoes-conta |
 | 5.3 | Done | fullstack-agent | feat/configuracoes-conta |
-| 5.4 | Active | fullstack-agent | feat/configuracoes-conta |
+| 5.4 | Active | fullstack-agent | feat/deploy-final-checklist |
 
 ## Worker Tracking
 
