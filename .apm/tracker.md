@@ -12,14 +12,14 @@ title: Ninhal
 
 | Task | Status | Agent | Branch |
 |------|--------|-------|--------|
-| 1.1 | Ready | fullstack-agent | |
-| 1.2 | Waiting: 1.1 | fullstack-agent | |
+| 1.1 | Active | fullstack-agent | feat/fase2-especies-e-schema |
+| 1.2 | Active | fullstack-agent | feat/fase2-especies-e-schema |
 
 **Stage 2 (Fase 2):**
 
 | Task | Status | Agent | Branch |
 |------|--------|-------|--------|
-| 2.1 | Ready | fullstack-agent | |
+| 2.1 | Active | fullstack-agent | feat/fase2-especies-e-schema |
 | 2.2 | Waiting: 2.1 | fullstack-agent | |
 | 2.3 | Waiting: 2.2, 1.1 | fullstack-agent | |
 | 2.4 | Waiting: 2.3 | fullstack-agent | |
