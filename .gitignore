@@ -45,3 +45,6 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+
+# documentos de referência com dados pessoais de terceiros — nunca versionar
+docs/relação de aves.pdf
