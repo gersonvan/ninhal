@@ -1,6 +1,6 @@
 # Solicitação — Fase 2 do Ninhal (pós-MVP)
 
-Este documento reúne o pedido de duas melhorias trazidas por usuários reais que já
+Este documento reúne o pedido de melhorias trazidas por usuários reais que já
 estão testando o MVP do Ninhal (`https://plantelboard.vercel.app`), para servir de
 insumo a uma nova sessão de planejamento (`/apm-1-initiate-planner`). O MVP original
 está descrito em `.apm/spec.md` e `.apm/plan.md` (sessão anterior, completa) — este
@@ -8,7 +8,7 @@ pedido não os substitui, é uma extensão sobre o produto já em produção.
 
 ## Contexto de origem
 
-Durante os testes iniciais com usuários reais, surgiram três observações:
+Durante os testes iniciais com usuários reais, surgiram quatro observações:
 
 1. Faltava a categoria "Silvestres" nas opções de foco de criação do onboarding —
    **já corrigido diretamente** (ajuste de conteúdo trivial, sem impacto de escopo),
@@ -20,8 +20,11 @@ Durante os testes iniciais com usuários reais, surgiram três observações:
    criador (documento oficial de controle de plantel via SISPASS/CTF) como forma de
    já iniciar o cadastro do plantel durante o onboarding, em vez do usuário digitar
    ave por ave.
+4. O usuário perguntou sobre gerar um "crachá" (carteira compacta) da ave, além do
+   certificado de pedigree completo já existente — inspirado em um exemplo de uma
+   ferramenta concorrente.
 
-Os itens 2 e 3 são o escopo desta solicitação.
+Os itens 2, 3 e 4 são o escopo desta solicitação (Pedidos A, B e C abaixo).
 
 ## Pedido A — Cadastro de espécies pelo usuário
 
@@ -83,9 +86,36 @@ necessário para entender o formato.**
 - Tratamento de duplicatas: o que fazer se uma anilha do documento já existir no
   plantel do tenant (reimportação, ou erro do usuário)?
 
+## Pedido C — "Crachá" (carteira compacta) como formato adicional de exportação
+
+**Problema:** hoje o Ninhal só exporta o Certificado de Pedigree completo (PDF com a
+árvore de 3 gerações, `lib/pedigree/PedigreeDocument.tsx`, Task 4.3/4.4). O usuário
+trouxe, como referência de uma ferramenta concorrente (MyBirds), um segundo formato
+menor — uma "carteira"/crachá compacto: cartão de identificação da ave (foto, nome,
+anilha, espécie, nascimento, sexo, dados do proprietário) com uma árvore genealógica
+resumida ao lado, num layout mais compacto que o certificado atual.
+
+Os dois arquivos de referência (não fazem parte do design aprovado do Ninhal) estão
+em `design/referencias-externas/`:
+- `carteira-mybirds-exemplo.pdf` — o formato de carteira compacta em si.
+- `certificado-mybirds-exemplo.jpeg` — um certificado maior da mesma ferramenta, com
+  árvore de 5 gerações (fora do escopo deste pedido C, mas relevante se a
+  conversa também tocar em aumentar a profundidade da árvore do Ninhal).
+
+**Decisões em aberto para a sessão de planejamento:**
+- É um formato adicional (usuário escolhe "Certificado" ou "Crachá" na tela de
+  Exportar Pedigree, `app/plantel/[id]/pedigree/`), ou substitui o certificado atual?
+- Que dados do crachá de referência fazem sentido manter — o layout do Ninhal usa a
+  identidade visual do Design System aprovado, não o do exemplo trazido (regra de
+  fidelidade ao design already estabelecida no projeto); o exemplo serve só de
+  inspiração de conteúdo/estrutura, não de estilo visual.
+- A árvore genealógica resumida do crachá pode reaproveitar o mesmo serviço de 3
+  gerações já existente (`lib/arvore/service.ts`, Task 4.1) — não deveria exigir
+  lógica de dados nova, só um layout mais compacto.
+
 ## Recomendação
 
-Como os dois pedidos têm decisões de schema e fluxo de produto (não são ajustes de
+Como os três pedidos têm decisões de schema e/ou fluxo de produto (não são ajustes de
 conteúdo), o caminho apropriado é uma nova sessão de planejamento
 (`/apm-1-initiate-planner`, em uma conversa nova) para conduzir o Context Gathering
 com o usuário sobre os pontos em aberto acima, e produzir um Spec/Plan incremental
