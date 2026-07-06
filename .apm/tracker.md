@@ -1,21 +1,36 @@
 ---
 title: Ninhal
-completed_at: 2026-07-06T02:22:56Z
 ---
 
 # APM Tracker
 
 ## Task Tracking
 
-**Stage 1:** Complete
+**Fase 1 (concluída em 2026-07-06):** Stages 1-5 completas — ver `.apm/memory/index.md` para o histórico completo.
 
-**Stage 2:** Complete
+**Stage 1 (Fase 2):**
 
-**Stage 3:** Complete
+| Task | Status | Agent | Branch |
+|------|--------|-------|--------|
+| 1.1 | Ready | fullstack-agent | |
+| 1.2 | Waiting: 1.1 | fullstack-agent | |
 
-**Stage 4:** Complete
+**Stage 2 (Fase 2):**
 
-**Stage 5:** Complete
+| Task | Status | Agent | Branch |
+|------|--------|-------|--------|
+| 2.1 | Ready | fullstack-agent | |
+| 2.2 | Waiting: 2.1 | fullstack-agent | |
+| 2.3 | Waiting: 2.2, 1.1 | fullstack-agent | |
+| 2.4 | Waiting: 2.3 | fullstack-agent | |
+| 2.5 | Waiting: 2.4 | fullstack-agent | |
+
+**Stage 3 (Fase 2):**
+
+| Task | Status | Agent | Branch |
+|------|--------|-------|--------|
+| 3.1 | Waiting: 2.1 | fullstack-agent | |
+| 3.2 | Waiting: 3.1, 2.1 | fullstack-agent | |
 
 ## Worker Tracking
 
