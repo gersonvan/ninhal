@@ -17,6 +17,10 @@ title: Ninhal
 - O nome completo do responsável é coletado no cadastro (Task 1.3) mas nunca foi persistido — deficiência descoberta na Task 4.3 (o certificado de pedigree usava o e-mail como alternativa). Corrigido pela Task 4.5, adicionada ao Plano com aprovação do usuário.
 - As fontes do certificado de pedigree (`@react-pdf/renderer`) usam as famílias embutidas (Times/Helvetica/Courier) em vez de Source Serif 4/Manrope/Space Grotesk do design, por falta de arquivo de fonte licenciado disponível — aceito pelo usuário por ora. Revisitar se o usuário fornecer os arquivos TTF/OTF das fontes corretas.
 - Políticas de RLS de bucket do Supabase Storage criadas pela UI podem ficar restritas a um nome de pasta literal (padrão de policy "dar acesso à pasta X" gerado pelo wizard), em vez de liberar o bucket inteiro — isso bloqueia uploads para caminhos diferentes do esperado mesmo com uma policy aparentemente correta. Ao configurar Storage, preferir policies explícitas por `bucket_id` (`with check (bucket_id = 'nome-do-bucket')`) em vez de aceitar o padrão de pasta do wizard. Vale reconferir o bucket `logos` (Onboarding, Stage 1) com o mesmo teste real usado para `fotos-aves`, caso surjam problemas de upload de logo.
+- Ambiente de testes (Vitest/E2E) compartilha o mesmo banco/pool do Supabase com produção — causa raiz de contenção transitória (`EMAXCONNSESSION`) observada repetidamente desde a Stage 3. Usuário decidiu adiar a separação de ambientes (exigiria projeto Supabase dedicado a testes, com credencial nova) para depois do MVP.
+- Suíte E2E (`e2e/fluxo-completo.spec.ts`, Playwright) tem os 7 testes validados individualmente contra produção real, mas nunca todos juntos em uma única rodada 100% limpa (mesma contenção do item acima, não erro de lógica). Por decisão do usuário, rodar a suíte completa novamente sempre que uma nova melhoria/funcionalidade for adicionada ao projeto.
+- Catálogo de `Especie` em produção precisou ser semeado manualmente pelo Manager antes do lançamento (Canário Belga, Calopsita, Periquito Australiano) — nenhuma Task do Plano incluía um passo explícito de seed inicial; qualquer evolução futura do catálogo de espécies deve ser feita com o mesmo cuidado (dado real, não placeholder).
+- Usuário trouxe materiais de referência de uma ferramenta concorrente (MyBirds) — salvos em `design/referencias-externas/` (não fazem parte do design aprovado). Mostram um formato de "carteira" compacta e uma árvore de 5 gerações (vs. as 3 gerações do MVP atual) — relevante apenas se houver interesse em discutir extensões futuras do pedigree.
 
 ## Stage Summaries
 
@@ -71,3 +75,17 @@ Durante a Task 4.3, o Worker descobriu que o nome completo do responsável — c
 - task-04-03.log.md
 - task-04-04.log.md
 - task-04-05.log.md
+
+### Stage 5 - Validação Ponta a Ponta e Entrega
+
+Stage concluída com as 4 Tasks executadas sequencialmente pelo Fullstack Agent (mesma instância, sem Handoffs), consolidadas nas branches `feat/configuracoes-conta` e `feat/deploy-final-checklist`, ambas mergeadas para `main`. Entregou: a tela de Configurações (edição de perfil/criatório, primeira escrita da preferência de alertas de consanguinidade, logout); o guia de uso do produto para o usuário final; a suíte de testes E2E Playwright cobrindo o fluxo completo (cadastro → onboarding → cadastro de ave → ninhada com as duas Travas → árvore genealógica → pedigree); e o deploy final com o checklist de aceite do MVP preenchido e confirmado contra a URL pública de produção (`https://plantelboard.vercel.app`).
+
+Uma verificação holística durante a revisão da Task 5.3 encontrou dois problemas de infraestrutura fora do escopo de qualquer Task individual: (1) o banco de produção continha tenants/aves/ninhadas de teste órfãos, resultado de execuções anteriores de Vitest e da própria suíte E2E contra o mesmo banco compartilhado — removidos diretamente pelo Manager; (2) o catálogo de `Especie` em produção, com o lixo de teste removido, ficou vazio, pois nenhuma Task do Plano incluía um passo de seed inicial — semeado pelo Manager com a lista de exemplo do Spec (Canário Belga, Calopsita, Periquito Australiano) antes do deploy final. A causa raiz da instabilidade transitória observada em múltiplas Stages (`EMAXCONNSESSION`) foi finalmente identificada: falta de separação entre os ambientes de desenvolvimento, teste e produção, todos compartilhando o mesmo projeto Supabase — o usuário decidiu adiar essa separação para depois do MVP. A suíte E2E teve todos os 7 testes validados individualmente contra produção real, mas nunca uma execução completa 100% limpa da suíte inteira em uma única rodada; o usuário aceitou essa evidência como suficiente, com a orientação de rodar a suíte completa novamente a cada nova funcionalidade futura. A Task 5.4 também corrigiu, por conta própria, um deploy de produção desatualizado (redeploy feito antes da verificação final) e documentou de forma transparente uma limitação de ferramental (automação de upload de arquivo real não suportada pelo navegador de teste) sem mascará-la como item concluído.
+
+Durante a Stage, o usuário também compartilhou materiais de referência de uma ferramenta concorrente (MyBirds) — um "Certificado" de 5 gerações e uma "carteira" compacta — salvos em `design/referencias-externas/` apenas como inspiração para consideração futura, sem qualquer alteração de escopo do MVP atual.
+
+**Task Logs:**
+- task-05-01.log.md
+- task-05-02.log.md
+- task-05-03.log.md
+- task-05-04.log.md
