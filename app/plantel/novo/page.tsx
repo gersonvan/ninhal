@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
+import { listarEspecies } from "@/lib/especies/service";
 import AppShell from "@/components/nav/AppShell";
 import NovoCadastroForm from "./NovoCadastroForm";
 
@@ -19,7 +20,7 @@ export default async function NovoCadastroPage({ searchParams }: PageProps) {
     redirect("/onboarding");
   }
 
-  const especies = await prisma.especie.findMany({ orderBy: { nome: "asc" } });
+  const especies = await listarEspecies();
   const { paiId, maeId, especieId } = await searchParams;
 
   return (

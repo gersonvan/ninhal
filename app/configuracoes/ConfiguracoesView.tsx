@@ -10,6 +10,7 @@ import {
   updateCriatorioAction,
   updateProfileAction,
 } from "@/lib/settings/actions";
+import { criarEspecie, type EspecieResumo } from "@/lib/especies/client";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import Toggle from "@/components/ui/Toggle";
@@ -18,10 +19,12 @@ export default function ConfiguracoesView({
   user,
   tenant,
   alertasAtivadosInicial,
+  especiesIniciais,
 }: {
   user: User;
   tenant: Tenant;
   alertasAtivadosInicial: boolean;
+  especiesIniciais: EspecieResumo[];
 }) {
   return (
     <div className="max-w-[640px] mx-auto px-5 pt-5 pb-6 flex flex-col gap-5">
@@ -31,6 +34,7 @@ export default function ConfiguracoesView({
 
       <PerfilCard user={user} />
       <CriatorioSection tenant={tenant} />
+      <EspeciesSection especiesIniciais={especiesIniciais} />
       <PreferenciasSection alertasAtivadosInicial={alertasAtivadosInicial} />
 
       <form action={signOut}>
@@ -201,6 +205,102 @@ function CriatorioSection({ tenant }: { tenant: Tenant }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function EspeciesSection({
+  especiesIniciais,
+}: {
+  especiesIniciais: EspecieResumo[];
+}) {
+  const [listaEspecies, setListaEspecies] = useState(especiesIniciais);
+  const [adicionando, setAdicionando] = useState(false);
+  const [nome, setNome] = useState("");
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+
+  async function handleAdicionar() {
+    const nomeAparado = nome.trim();
+    if (!nomeAparado) return;
+
+    setSalvando(true);
+    setErro(null);
+    try {
+      const especie = await criarEspecie(nomeAparado);
+      setListaEspecies((atual) => {
+        if (atual.some((e) => e.id === especie.id)) return atual;
+        return [...atual, especie].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      });
+      setNome("");
+      setAdicionando(false);
+    } catch (error) {
+      setErro(error instanceof Error ? error.message : "Não foi possível adicionar a espécie.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  return (
+    <div>
+      <div className="font-sans font-bold text-[11px] tracking-[0.06em] uppercase text-text-muted mb-2.5">
+        Espécies
+      </div>
+      <div className="bg-surface border border-border rounded-[14px] overflow-hidden">
+        {listaEspecies.map((especie, indice) => (
+          <div
+            key={especie.id}
+            className={`px-4 py-3.5 ${
+              indice < listaEspecies.length - 1 ? "border-b border-border-subtle" : ""
+            }`}
+          >
+            <span className="font-sans text-sm text-text-primary">{especie.nome}</span>
+          </div>
+        ))}
+        <div className="px-4 py-3.5 border-t border-border-subtle">
+          {adicionando ? (
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <TextField
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  placeholder="Nome da nova espécie"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  size="small"
+                  onClick={handleAdicionar}
+                  disabled={salvando || !nome.trim()}
+                >
+                  {salvando ? "Adicionando..." : "Adicionar"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="tertiary"
+                  size="small"
+                  onClick={() => {
+                    setAdicionando(false);
+                    setNome("");
+                    setErro(null);
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </div>
+              {erro && <p className="text-xs font-semibold text-terracota m-0">{erro}</p>}
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAdicionando(true)}
+              className="bg-transparent border-none font-sans font-bold text-sm text-oliva-600 cursor-pointer p-0"
+            >
+              Adicionar espécie
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

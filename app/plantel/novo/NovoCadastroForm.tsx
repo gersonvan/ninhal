@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import { createAveAction } from "@/lib/aves/actions";
 import { useParentesCandidatos } from "@/lib/aves/useParentesCandidatos";
+import { criarEspecie } from "@/lib/especies/client";
 
 interface Especie {
   id: string;
@@ -31,6 +32,7 @@ export default function NovoCadastroForm({
   const [state, formAction, pending] = useActionState(createAveAction, null);
 
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
+  const [listaEspecies, setListaEspecies] = useState(especies);
   const [especieId, setEspecieId] = useState(
     preselecao?.especieId ?? especies[0]?.id ?? "",
   );
@@ -42,9 +44,38 @@ export default function NovoCadastroForm({
   const [maeId, setMaeId] = useState(preselecao?.maeId ?? "");
   const { pais, maes } = useParentesCandidatos(especieId);
 
+  const [adicionandoEspecie, setAdicionandoEspecie] = useState(false);
+  const [novaEspecieNome, setNovaEspecieNome] = useState("");
+  const [salvandoEspecie, setSalvandoEspecie] = useState(false);
+  const [erroEspecie, setErroEspecie] = useState<string | null>(null);
+
   function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     setFotoPreview(file ? URL.createObjectURL(file) : null);
+  }
+
+  async function handleAdicionarEspecie() {
+    const nome = novaEspecieNome.trim();
+    if (!nome) return;
+
+    setSalvandoEspecie(true);
+    setErroEspecie(null);
+    try {
+      const especie = await criarEspecie(nome);
+      setListaEspecies((atual) => {
+        if (atual.some((e) => e.id === especie.id)) return atual;
+        return [...atual, especie].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      });
+      setEspecieId(especie.id);
+      setNovaEspecieNome("");
+      setAdicionandoEspecie(false);
+    } catch (error) {
+      setErroEspecie(
+        error instanceof Error ? error.message : "Não foi possível adicionar a espécie.",
+      );
+    } finally {
+      setSalvandoEspecie(false);
+    }
   }
 
   return (
@@ -135,7 +166,7 @@ export default function NovoCadastroForm({
               onChange={(e) => setEspecieId(e.target.value)}
               className={selectClass}
             >
-              {especies.map((especie) => (
+              {listaEspecies.map((especie) => (
                 <option key={especie.id} value={especie.id}>
                   {especie.nome}
                 </option>
@@ -143,6 +174,50 @@ export default function NovoCadastroForm({
             </select>
             <ChevronDown />
           </div>
+
+          {adicionandoEspecie ? (
+            <div className="flex flex-col gap-2 mt-1">
+              <div className="flex gap-2">
+                <TextField
+                  value={novaEspecieNome}
+                  onChange={(e) => setNovaEspecieNome(e.target.value)}
+                  placeholder="Nome da nova espécie"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  size="small"
+                  onClick={handleAdicionarEspecie}
+                  disabled={salvandoEspecie || !novaEspecieNome.trim()}
+                >
+                  {salvandoEspecie ? "Adicionando..." : "Adicionar"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="tertiary"
+                  size="small"
+                  onClick={() => {
+                    setAdicionandoEspecie(false);
+                    setNovaEspecieNome("");
+                    setErroEspecie(null);
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </div>
+              {erroEspecie && (
+                <p className="text-xs font-semibold text-terracota m-0">{erroEspecie}</p>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAdicionandoEspecie(true)}
+              className="self-start bg-transparent border-none font-sans font-bold text-[13px] text-oliva-600 cursor-pointer p-0 mt-1"
+            >
+              Não encontrou sua espécie? Adicione aqui
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3.5">

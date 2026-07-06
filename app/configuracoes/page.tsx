@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { alertasConsanguinidadeAtivados } from "@/lib/tenant/preferences";
+import { listarEspecies } from "@/lib/especies/service";
 import AppShell from "@/components/nav/AppShell";
 import ConfiguracoesView from "./ConfiguracoesView";
 
@@ -16,7 +17,10 @@ export default async function ConfiguracoesPage() {
     redirect("/onboarding");
   }
 
-  const alertasAtivadosInicial = await alertasConsanguinidadeAtivados(tenant.id);
+  const [alertasAtivadosInicial, especies] = await Promise.all([
+    alertasConsanguinidadeAtivados(tenant.id),
+    listarEspecies(),
+  ]);
 
   return (
     <AppShell tenantName={tenant.name ?? "Ninhal"}>
@@ -24,6 +28,7 @@ export default async function ConfiguracoesPage() {
         user={user}
         tenant={tenant}
         alertasAtivadosInicial={alertasAtivadosInicial}
+        especiesIniciais={especies}
       />
     </AppShell>
   );
