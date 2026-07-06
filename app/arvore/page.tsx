@@ -19,7 +19,7 @@ export default async function ArvoreGenealogicaIndexPage() {
   );
 
   if (!primeiraAve) {
-    redirect("/plantel");
+    redirect("/plantel?aviso=sem-aves-para-arvore");
   }
 
   redirect(`/arvore/${primeiraAve.id}`);
