@@ -91,6 +91,7 @@ function readAveInput(formData: FormData) {
     anilhaPaiId: readOptionalString(formData, "anilhaPaiId"),
     anilhaMaeId: readOptionalString(formData, "anilhaMaeId"),
     status: readOptionalString(formData, "status"),
+    registro: readOptionalString(formData, "registro"),
   };
 }
 

@@ -57,6 +57,7 @@ export async function updateCriatorioAction(
 
   const name = String(formData.get("name") ?? "").trim();
   const focus = String(formData.get("focus") ?? "").trim();
+  const telefone = String(formData.get("telefone") ?? "").trim();
   const logo = formData.get("logo");
 
   if (!name) {
@@ -81,6 +82,7 @@ export async function updateCriatorioAction(
     data: {
       name,
       focus: focus || null,
+      telefone: telefone || null,
       ...(logoUrl ? { logoUrl } : {}),
     },
   });

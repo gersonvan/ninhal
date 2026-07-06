@@ -22,6 +22,8 @@ export const createAveSchema = z.object({
   anilhaMaeId: z.string().trim().min(1).optional(),
   status: z.enum(STATUS_AVE_VALUES).optional(),
   foto: z.string().trim().url().optional(),
+  // Número de registro do criador/plantel junto ao IBAMA — preenchido manualmente pelo usuário.
+  registro: z.string().trim().min(1).optional(),
 });
 
 export const updateAveSchema = createAveSchema.partial();

@@ -22,6 +22,7 @@ model Tenant {
   name                           String?
   focus                          String?
   logoUrl                        String?
+  telefone                       String?
   /// Preferência: exibir alerta de consanguinidade ao formar um casal com parentesco próximo.
   alertasConsanguinidadeAtivados Boolean   @default(true)
   createdAt                      DateTime  @default(now())
@@ -69,6 +70,14 @@ model Ave {
   especieId      String
   especie        Especie   @relation(fields: [especieId], references: [id])
   mutacaoCor     String?
+  /// Nome científico da espécie/subespécie — preenchido pela importação via IBAMA (Stage 2).
+  nomeCientifico String?
+  /// Tipo da anilha (ex: fechada, aberta) — preenchido pela importação via IBAMA (Stage 2).
+  tipoAnilha     String?
+  /// Diâmetro da anilha em mm, como texto livre (ex: "5,5") — preenchido pela importação via IBAMA (Stage 2).
+  diametroAnilha String?
+  /// Número de registro do criador/plantel junto ao IBAMA — preenchido manualmente pelo usuário.
+  registro       String?
   sexo           SexoAve
   dataNascimento DateTime? @db.Date
   origem         OrigemAve

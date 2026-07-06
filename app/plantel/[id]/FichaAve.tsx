@@ -30,6 +30,7 @@ interface AveDetalhe {
   origem: keyof typeof ORIGEM_AVE_LABELS;
   status: keyof typeof STATUS_AVE_LABELS;
   foto: string | null;
+  registro: string | null;
   anilhaPaiId: string | null;
   paiAve: { id: string; nomeApelido: string | null; anilha: string } | null;
   anilhaMaeId: string | null;
@@ -132,6 +133,11 @@ export default function FichaAve({
           <InfoCard
             label="Origem"
             valor={ORIGEM_AVE_LABELS[ave.origem]}
+            className="col-span-2"
+          />
+          <InfoCard
+            label="Registro (IBAMA)"
+            valor={ave.registro || "Não informado"}
             className="col-span-2"
           />
         </div>
@@ -341,6 +347,12 @@ function EdicaoAve({
             defaultValue={dataNascimentoValue || ""}
           />
         </div>
+
+        <TextField
+          name="registro"
+          label="Registro (IBAMA)"
+          defaultValue={ave.registro ?? ""}
+        />
 
         <div className="h-px bg-border" />
 

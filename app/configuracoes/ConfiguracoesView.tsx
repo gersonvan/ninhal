@@ -135,6 +135,13 @@ function CriatorioSection({ tenant }: { tenant: Tenant }) {
           <form action={formAction} className="flex flex-col gap-3.5">
             <TextField name="name" label="Nome do criatório" defaultValue={tenant.name ?? ""} required />
             <TextField name="focus" label="Foco de criação" defaultValue={tenant.focus ?? ""} />
+            <TextField
+              name="telefone"
+              label="Telefone"
+              type="tel"
+              defaultValue={tenant.telefone ?? ""}
+              placeholder="Ex: (11) 91234-5678"
+            />
             <div className="flex items-center gap-3">
               <label
                 htmlFor="logo"
@@ -197,10 +204,16 @@ function CriatorioSection({ tenant }: { tenant: Tenant }) {
               Alterar
             </button>
           </div>
-          <div className="px-4 py-3.5 flex justify-between items-center">
+          <div className="px-4 py-3.5 flex justify-between items-center border-b border-border-subtle">
             <span className="font-sans text-sm text-text-primary">Foco de criação</span>
             <span className="font-sans text-sm text-text-secondary">
               {tenant.focus || "Não informado"}
+            </span>
+          </div>
+          <div className="px-4 py-3.5 flex justify-between items-center">
+            <span className="font-sans text-sm text-text-primary">Telefone</span>
+            <span className="font-sans text-sm text-text-secondary">
+              {tenant.telefone || "Não informado"}
             </span>
           </div>
         </div>
