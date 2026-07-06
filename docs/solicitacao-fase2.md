@@ -102,6 +102,9 @@ em `design/referencias-externas/`:
   árvore de 5 gerações (fora do escopo deste pedido C, mas relevante se a
   conversa também tocar em aumentar a profundidade da árvore do Ninhal).
 
+**Tamanho definido pelo usuário:** 10x6 cm (formato carteira/cartão físico, para
+impressão — bem menor que uma página do certificado atual).
+
 **Decisões em aberto para a sessão de planejamento:**
 - É um formato adicional (usuário escolhe "Certificado" ou "Crachá" na tela de
   Exportar Pedigree, `app/plantel/[id]/pedigree/`), ou substitui o certificado atual?
