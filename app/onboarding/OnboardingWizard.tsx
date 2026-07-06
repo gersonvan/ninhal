@@ -9,6 +9,7 @@ const SPECIES = [
   { name: "Canários", emoji: "🐤" },
   { name: "Calopsitas", emoji: "🦜" },
   { name: "Psitacídeos", emoji: "🦚" },
+  { name: "Silvestres", emoji: "🦅" },
   { name: "Outras aves ornamentais", emoji: "🐦" },
 ];
 
