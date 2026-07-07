@@ -1,3 +1,4 @@
+import "./pdf-polyfills";
 import { PDFParse, type TableArray } from "pdf-parse";
 
 export interface AveExtraidaIbama {
