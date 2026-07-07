@@ -84,13 +84,21 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
 
   return (
     <div className="pb-6 min-[900px]:pb-0">
-      <div className="max-w-[900px] mx-auto px-5 pt-5 pb-2">
-        <div className="font-serif font-semibold text-2xl text-text-primary">
-          Plantel
+      <div className="max-w-[900px] mx-auto px-5 pt-5 pb-2 flex items-start justify-between gap-3">
+        <div>
+          <div className="font-serif font-semibold text-2xl text-text-primary">
+            Plantel
+          </div>
+          <div className="font-sans text-[13px] text-text-muted mt-0.5">
+            {aves === null ? "Carregando…" : `${aves.length} aves cadastradas`}
+          </div>
         </div>
-        <div className="font-sans text-[13px] text-text-muted mt-0.5">
-          {aves === null ? "Carregando…" : `${aves.length} aves cadastradas`}
-        </div>
+        <Link
+          href="/configuracoes/importar-ibama"
+          className="no-underline shrink-0 font-sans font-bold text-[13px] text-oliva-600 border-[1.5px] border-oliva-600 px-4 py-2.5 rounded-lg"
+        >
+          Importar do IBAMA
+        </Link>
       </div>
 
       <div className="max-w-[900px] mx-auto px-5 py-3 flex flex-col gap-3">

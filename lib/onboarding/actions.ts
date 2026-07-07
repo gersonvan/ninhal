@@ -51,5 +51,13 @@ export async function completeOnboardingAction(
     },
   });
 
+  // Passo opcional do onboarding (Task 2.7): o usuário pode escolher importar
+  // o plantel do IBAMA agora, ou pular e ir direto para o Dashboard (mesmo
+  // comportamento de sempre para quem não usa a opção).
+  const redirecionarPara = String(formData.get("redirecionarPara") ?? "dashboard");
+  if (redirecionarPara === "importar-ibama") {
+    redirect("/configuracoes/importar-ibama");
+  }
+
   redirect("/dashboard");
 }

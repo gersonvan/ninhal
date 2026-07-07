@@ -44,7 +44,7 @@ export default function OnboardingWizard() {
   }
 
   function handleNext() {
-    if (step < 3) {
+    if (step < 4) {
       setStep(step + 1);
     }
   }
@@ -57,7 +57,7 @@ export default function OnboardingWizard() {
     <div className="min-h-screen flex items-center justify-center p-6 box-border bg-background">
       <div className="w-full max-w-[460px] flex flex-col gap-6">
         <div className="flex gap-2">
-          {[1, 2, 3].map((n) => (
+          {[1, 2, 3, 4].map((n) => (
             <div
               key={n}
               className="flex-1 h-[5px] rounded-full"
@@ -73,7 +73,7 @@ export default function OnboardingWizard() {
           {step === 1 && (
             <div className="flex flex-col gap-2">
               <div className="font-sans font-bold text-xs tracking-[0.06em] uppercase text-[#8B6A2F]">
-                Passo 1 de 3
+                Passo 1 de 4
               </div>
               <h1 className="font-serif font-semibold text-[28px] text-text-primary m-0">
                 Como se chama seu criatório?
@@ -94,7 +94,7 @@ export default function OnboardingWizard() {
           {step === 2 && (
             <div className="flex flex-col gap-2">
               <div className="font-sans font-bold text-xs tracking-[0.06em] uppercase text-[#8B6A2F]">
-                Passo 2 de 3
+                Passo 2 de 4
               </div>
               <h1 className="font-serif font-semibold text-[28px] text-text-primary m-0">
                 Qual seu foco de criação?
@@ -141,7 +141,7 @@ export default function OnboardingWizard() {
           {step === 3 && (
             <div className="flex flex-col gap-2">
               <div className="font-sans font-bold text-xs tracking-[0.06em] uppercase text-[#8B6A2F]">
-                Passo 3 de 3
+                Passo 3 de 4
               </div>
               <h1 className="font-serif font-semibold text-[28px] text-text-primary m-0">
                 Adicione o logo do seu criatório
@@ -178,6 +178,22 @@ export default function OnboardingWizard() {
             </div>
           )}
 
+          {step === 4 && (
+            <div className="flex flex-col gap-2">
+              <div className="font-sans font-bold text-xs tracking-[0.06em] uppercase text-[#8B6A2F]">
+                Passo 4 de 4
+              </div>
+              <h1 className="font-serif font-semibold text-[28px] text-text-primary m-0">
+                Já tem seu plantel registrado no IBAMA?
+              </h1>
+              <p className="font-sans text-sm text-text-secondary m-0 mb-2 leading-normal">
+                Você pode importar sua Relação de Passeriformes agora e
+                cadastrar suas aves automaticamente, ou pular e fazer isso
+                depois em Configurações.
+              </p>
+            </div>
+          )}
+
           {state?.error && (
             <p className="text-sm font-semibold text-terracota">
               {state.error}
@@ -194,7 +210,7 @@ export default function OnboardingWizard() {
             >
               Voltar
             </Button>
-            {step < 3 ? (
+            {step < 4 ? (
               <Button
                 type="button"
                 onClick={handleNext}
@@ -204,9 +220,27 @@ export default function OnboardingWizard() {
                 Continuar
               </Button>
             ) : (
-              <Button type="submit" disabled={pending} className="flex-1">
-                {pending ? "Concluindo..." : "Concluir"}
-              </Button>
+              <>
+                <Button
+                  type="submit"
+                  name="redirecionarPara"
+                  value="dashboard"
+                  variant="secondary"
+                  disabled={pending}
+                  className="flex-1"
+                >
+                  {pending ? "Concluindo..." : "Pular por agora"}
+                </Button>
+                <Button
+                  type="submit"
+                  name="redirecionarPara"
+                  value="importar-ibama"
+                  disabled={pending}
+                  className="flex-1"
+                >
+                  {pending ? "Concluindo..." : "Importar do IBAMA"}
+                </Button>
+              </>
             )}
           </div>
         </form>
