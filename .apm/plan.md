@@ -1,6 +1,6 @@
 ---
 title: Ninhal
-modified: Added Task 2.5 (fix hyphenation corruption in IBAMA PDF extraction) after manual verification found pdf-parse inserts a spurious hyphen at mid-word line wraps, corrupting long anilha codes. Original Task 2.6 renumbered from 2.5. Modified by the Manager with User approval.
+modified: Added Task 2.6 (fix silent truncation past 20 chars with no natural break in the anilha column, pdf-parse/getTable) after Manager confirmed a deterministic repro during Task 2.5 review. Original Task 2.6 (access points) renumbered to 2.7. Modified by the Manager with User approval.
 ---
 
 # APM Plan
@@ -16,7 +16,7 @@ modified: Added Task 2.5 (fix hyphenation corruption in IBAMA PDF extraction) af
 | Stage | Name | Tasks | Agents |
 |---|---|---|---|
 | 1 | Cadastro de Espécies pelo Usuário | 2 | Fullstack Agent |
-| 2 | Importação do Plantel via IBAMA | 6 | Fullstack Agent |
+| 2 | Importação do Plantel via IBAMA | 7 | Fullstack Agent |
 | 3 | Crachá — Formato de Exportação Compacto | 2 | Fullstack Agent |
 
 ## Dependency Graph
@@ -35,7 +35,8 @@ subgraph S2["Stage 2: Importação do Plantel via IBAMA"]
   T2_2 --> T2_3["2.3 Criação automática de espécies<br/><i>Fullstack Agent</i>"]
   T2_3 --> T2_4["2.4 Tela de revisão/edição<br/><i>Fullstack Agent</i>"]
   T2_2 --> T2_5["2.5 Corrigir corrupção de hífen na extração<br/><i>Fullstack Agent</i>"]
-  T2_4 --> T2_6["2.6 Acesso ao fluxo<br/><i>Fullstack Agent</i>"]
+  T2_5 --> T2_6["2.6 Corrigir truncamento silencioso na coluna anilha<br/><i>Fullstack Agent</i>"]
+  T2_4 --> T2_7["2.7 Acesso ao fluxo<br/><i>Fullstack Agent</i>"]
 end
 
 subgraph S3["Stage 3: Crachá — Formato de Exportação Compacto"]
@@ -55,6 +56,7 @@ style T2_3 fill:#7C9364,color:#000
 style T2_4 fill:#7C9364,color:#000
 style T2_5 fill:#7C9364,color:#000
 style T2_6 fill:#7C9364,color:#000
+style T2_7 fill:#7C9364,color:#000
 style T3_1 fill:#7C9364,color:#000
 style T3_2 fill:#7C9364,color:#000
 ```
@@ -157,7 +159,21 @@ style T3_2 fill:#7C9364,color:#000
 3. Implementar a correção, distinguindo hífen espúrio de quebra de linha de um hífen legítimo já presente no valor original.
 4. Confirmar que os testes já existentes da Task 2.2 continuam passando sem alteração de comportamento para os casos que já funcionavam corretamente.
 
-### Task 2.6: Acesso ao fluxo de importação - Onboarding e Plantel - Fullstack Agent
+### Task 2.6: Corrigir truncamento silencioso na coluna de anilha - Fullstack Agent
+
+* **Objective:** Corrigir uma perda de dados confirmada e reproduzida de forma determinística: `pdf-parse`/`getTable()` corta silenciosamente (sem quebra de linha, sem hífen, sem qualquer marcador) qualquer trecho de texto sem espaço (nem hífen) maior que **20 caracteres** na coluna de anilha — os caracteres além do vigésimo são perdidos, não apenas mal-formatados.
+* **Output:** `lib/importacao-ibama/parser.ts` (ou a extração da tabela em geral) corrigido para não perder dados nesse cenário — ex: detectando o truncamento e reportando a linha em `linhasComErro` em vez de silenciosamente aceitar um valor incompleto, ou uma abordagem de extração que não sofra desse limite (a decidir após investigação).
+* **Validation:** Teste automatizado reproduzindo a reprodução determinística já confirmada pelo Manager: uma string sem espaço de exatamente 21, 23, 25 e 30 caracteres na coluna de anilha — confirma que nenhum desses casos resulta em perda silenciosa de caracteres (o valor é extraído corretamente, ou a linha é sinalizada como erro para revisão manual, nunca aceito incompleto sem aviso).
+* **Guidance:** Reprodução confirmada pelo Manager: gerando linhas com anilha `"A".repeat(n)` para `n` em `[16, 18, 20, 21, 23, 25, 30]` e chamando `getTable()` diretamente, os casos `n <= 20` retornam o valor completo; todos os casos `n > 20` retornam exatamente os primeiros 20 caracteres, sem quebra de linha nem hífen. Investigue se esse limite de 20 caracteres é uma constante do `pdf-parse`/`pdfjs-dist` relacionada à largura da coluna (a coluna de anilha na fixture sintética, `celAnilha`, tem 90pt de largura) — pode ser necessário ajustar a largura da coluna na fixture e/ou no parsing para not hit esse limite, ou detectar o caso e tratá-lo como erro de extração em vez de aceitar o valor truncado. A revisão manual (Task 2.4) continua sendo uma rede de segurança, mas não deve ser a única defesa contra uma perda silenciosa de dados no identificador físico único da ave.
+* **Dependencies:** Task 2.5.
+
+1. Reproduzir o truncamento com um teste automatizado, usando a reprodução determinística já confirmada (valores de 21+ caracteres sem espaço).
+2. Investigar a causa raiz exata (limite do `pdf-parse`, largura de coluna, ou outro fator).
+3. Implementar a correção — preferencialmente sem perda de dados; se isso não for viável com o parser atual, sinalizar a linha em `linhasComErro` em vez de aceitar o valor truncado silenciosamente.
+4. Escrever testes cobrindo os casos de 16 a 30 caracteres (limite conhecido e além dele).
+5. Confirmar que os testes já existentes das Tasks 2.2/2.5 continuam passando sem alteração de comportamento.
+
+### Task 2.7: Acesso ao fluxo de importação - Onboarding e Plantel - Fullstack Agent
 
 * **Objective:** Disponibilizar o fluxo de importação em dois pontos de entrada.
 * **Output:** Passo opcional extra no Onboarding (pulável, mantendo o comportamento atual de terminar em Dashboard vazio se não usado); ação separada de importação acessível a partir da área do Plantel. Um terceiro ponto de entrada já existe em Configurações (`/configuracoes/importar-ibama`, adicionado pela Task 2.4 por não haver, no momento daquela Task, uma decisão explícita de posicionamento) — mantenha-o, não é necessário removê-lo.

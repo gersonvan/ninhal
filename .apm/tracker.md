@@ -18,8 +18,9 @@ title: Ninhal
 | 2.2 | Done | fullstack-agent | feat/fase2-especies-e-schema |
 | 2.3 | Done | fullstack-agent | feat/fase2-especies-e-schema |
 | 2.4 | Done | fullstack-agent | feat/fase2-especies-e-schema |
-| 2.5 | Active | fullstack-agent | feat/fase2-especies-e-schema |
-| 2.6 | Waiting: 2.4 | fullstack-agent | |
+| 2.5 | Done | fullstack-agent | feat/fase2-especies-e-schema |
+| 2.6 | Active | fullstack-agent | feat/fase2-especies-e-schema |
+| 2.7 | Waiting: 2.4 | fullstack-agent | |
 
 **Stage 3 (Fase 2):** Complete
 
