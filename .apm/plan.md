@@ -1,6 +1,6 @@
 ---
 title: Ninhal
-modified: Plan rewritten by the Planner for Fase 2 (incremental cycle on top of the completed and deployed MVP).
+modified: Added Task 2.5 (fix hyphenation corruption in IBAMA PDF extraction) after manual verification found pdf-parse inserts a spurious hyphen at mid-word line wraps, corrupting long anilha codes. Original Task 2.6 renumbered from 2.5. Modified by the Manager with User approval.
 ---
 
 # APM Plan
@@ -16,7 +16,7 @@ modified: Plan rewritten by the Planner for Fase 2 (incremental cycle on top of 
 | Stage | Name | Tasks | Agents |
 |---|---|---|---|
 | 1 | Cadastro de Espécies pelo Usuário | 2 | Fullstack Agent |
-| 2 | Importação do Plantel via IBAMA | 5 | Fullstack Agent |
+| 2 | Importação do Plantel via IBAMA | 6 | Fullstack Agent |
 | 3 | Crachá — Formato de Exportação Compacto | 2 | Fullstack Agent |
 
 ## Dependency Graph
@@ -34,7 +34,8 @@ subgraph S2["Stage 2: Importação do Plantel via IBAMA"]
   T2_1["2.1 Migração de schema<br/><i>Fullstack Agent</i>"] --> T2_2["2.2 Serviço de extração do PDF<br/><i>Fullstack Agent</i>"]
   T2_2 --> T2_3["2.3 Criação automática de espécies<br/><i>Fullstack Agent</i>"]
   T2_3 --> T2_4["2.4 Tela de revisão/edição<br/><i>Fullstack Agent</i>"]
-  T2_4 --> T2_5["2.5 Acesso ao fluxo<br/><i>Fullstack Agent</i>"]
+  T2_2 --> T2_5["2.5 Corrigir corrupção de hífen na extração<br/><i>Fullstack Agent</i>"]
+  T2_4 --> T2_6["2.6 Acesso ao fluxo<br/><i>Fullstack Agent</i>"]
 end
 
 subgraph S3["Stage 3: Crachá — Formato de Exportação Compacto"]
@@ -53,6 +54,7 @@ style T2_2 fill:#7C9364,color:#000
 style T2_3 fill:#7C9364,color:#000
 style T2_4 fill:#7C9364,color:#000
 style T2_5 fill:#7C9364,color:#000
+style T2_6 fill:#7C9364,color:#000
 style T3_1 fill:#7C9364,color:#000
 style T3_2 fill:#7C9364,color:#000
 ```
@@ -142,17 +144,30 @@ style T3_2 fill:#7C9364,color:#000
 4. Implementar a exibição e confirmação da sugestão de dados do responsável.
 5. Implementar a gravação final no plantel ao confirmar.
 
-### Task 2.5: Acesso ao fluxo de importação - Onboarding e Plantel - Fullstack Agent
+### Task 2.5: Corrigir corrupção de hífen na extração do PDF - Fullstack Agent
+
+* **Objective:** Corrigir uma corrupção de dados confirmada na extração: `pdf-parse` insere um hífen literal (`-\n`) quando um valor de célula quebra em duas linhas sem um espaço natural no ponto de quebra (ex: `"VERIFY-E2E-0001"` → `"VERI-\nFY-E2E-0001"`); a normalização atual (`\s+` → espaço único) só trata quebras com espaço natural, deixando o hífen espúrio no resultado (`"VERI- FY-E2E-0001"`). Reproduzido também com um código de anilha no formato real do IBAMA (23 caracteres) e com um nome comum de espécie longo — ambos os tipos de campo são afetados.
+* **Output:** `lib/importacao-ibama/parser.ts` corrigido para detectar e remover o hífen espúrio de quebra de linha (não confundir com um hífen real que já fizesse parte do valor original, ex: em "Galo-da-campina" o hífen é legítimo e deve ser preservado — a correção deve distinguir os dois casos, não remover todo hífen indiscriminadamente).
+* **Validation:** Teste automatizado que reproduz deliberadamente um valor longo o bastante para quebrar de linha sem espaço natural na célula (anilha e nome de espécie) e confirma que o valor extraído é reconstruído exatamente igual ao original, sem hífen espúrio; teste confirmando que um hífen legítimo já presente no valor original (ex: "Galo-da-campina") é preservado.
+* **Guidance:** Investigar a saída bruta de `getTable()` do `pdf-parse` para confirmar o padrão exato de inserção do hífen (aparenta ser sempre `-` imediatamente seguido de `\n`) antes de implementar a correção — não assumir, verificar. A defesa da revisão manual (Task 2.4) continua existindo, mas não deve ser a única proteção contra esta corrupção específica, já que o valor corrompido ainda parece plausível a um usuário revisando rapidamente.
+* **Dependencies:** Task 2.2.
+
+1. Reproduzir a corrupção com um teste automatizado usando um valor sintético longo o bastante para quebrar de linha na célula sem espaço natural.
+2. Investigar o padrão exato de inserção do hífen na saída de `getTable()`.
+3. Implementar a correção, distinguindo hífen espúrio de quebra de linha de um hífen legítimo já presente no valor original.
+4. Confirmar que os testes já existentes da Task 2.2 continuam passando sem alteração de comportamento para os casos que já funcionavam corretamente.
+
+### Task 2.6: Acesso ao fluxo de importação - Onboarding e Plantel - Fullstack Agent
 
 * **Objective:** Disponibilizar o fluxo de importação em dois pontos de entrada.
-* **Output:** Passo opcional extra no Onboarding (pulável, mantendo o comportamento atual de terminar em Dashboard vazio se não usado); ação separada de importação acessível a partir da área do Plantel.
-* **Validation:** Ambos os pontos de entrada levam ao mesmo fluxo (Task 2.4) e funcionam corretamente; pular a etapa no Onboarding não quebra o fluxo original da Fase 1.
+* **Output:** Passo opcional extra no Onboarding (pulável, mantendo o comportamento atual de terminar em Dashboard vazio se não usado); ação separada de importação acessível a partir da área do Plantel. Um terceiro ponto de entrada já existe em Configurações (`/configuracoes/importar-ibama`, adicionado pela Task 2.4 por não haver, no momento daquela Task, uma decisão explícita de posicionamento) — mantenha-o, não é necessário removê-lo.
+* **Validation:** Os três pontos de entrada (Onboarding, Plantel, Configurações) levam ao mesmo fluxo (Task 2.4) e funcionam corretamente; pular a etapa no Onboarding não quebra o fluxo original da Fase 1.
 * **Guidance:** Per Spec §Pedido B.
 * **Dependencies:** Task 2.4.
 
 1. Adicionar o passo opcional de importação ao fluxo de Onboarding.
 2. Adicionar a ação de importação na área do Plantel.
-3. Verificar que ambos os pontos de entrada levam ao mesmo fluxo.
+3. Verificar que todos os pontos de entrada levam ao mesmo fluxo.
 
 ## Stage 3: Crachá — Formato de Exportação Compacto
 
