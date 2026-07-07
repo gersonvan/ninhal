@@ -8,19 +8,14 @@ title: Ninhal
 
 **Fase 1 (concluída em 2026-07-06):** Stages 1-5 completas — ver `.apm/memory/index.md` para o histórico completo.
 
-**Stage 1 (Fase 2):**
-
-| Task | Status | Agent | Branch |
-|------|--------|-------|--------|
-| 1.1 | Active | fullstack-agent | feat/fase2-especies-e-schema |
-| 1.2 | Active | fullstack-agent | feat/fase2-especies-e-schema |
+**Stage 1 (Fase 2):** Complete
 
 **Stage 2 (Fase 2):**
 
 | Task | Status | Agent | Branch |
 |------|--------|-------|--------|
-| 2.1 | Active | fullstack-agent | feat/fase2-especies-e-schema |
-| 2.2 | Waiting: 2.1 | fullstack-agent | |
+| 2.1 | Done | fullstack-agent | feat/fase2-especies-e-schema |
+| 2.2 | Active | fullstack-agent | feat/fase2-especies-e-schema |
 | 2.3 | Waiting: 2.2, 1.1 | fullstack-agent | |
 | 2.4 | Waiting: 2.3 | fullstack-agent | |
 | 2.5 | Waiting: 2.4 | fullstack-agent | |
@@ -29,7 +24,7 @@ title: Ninhal
 
 | Task | Status | Agent | Branch |
 |------|--------|-------|--------|
-| 3.1 | Waiting: 2.1 | fullstack-agent | |
+| 3.1 | Active | fullstack-agent | feat/fase2-especies-e-schema |
 | 3.2 | Waiting: 3.1, 2.1 | fullstack-agent | |
 
 ## Worker Tracking
