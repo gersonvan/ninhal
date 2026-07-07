@@ -6,6 +6,8 @@ title: Ninhal
 
 ## Memory Notes
 
+- **Fase 2:** a biblioteca `pdf-parse` (v2.4.5, `lib/importacao-ibama/parser.ts`) trava com `DataCloneError` se `getText()` e `getTable()` forem chamados em paralelo (`Promise.all`) na mesma instância do parser — descoberto na Task 2.2. Chamar sempre sequencialmente na mesma instância. Relevante para qualquer Task futura que reaproveite este parser (ex: Task 2.4, tela de revisão da importação).
+
 - Prisma 7 removeu o middleware `$use` e o `Prisma.dmmf` público no client gerado; `PrismaClient` exige um adapter de driver explícito (`@prisma/adapter-pg`). O isolamento multi-tenant é aplicado via `$extends` sobre uma lista manual de modelos (`lib/tenant/scoped-models.ts`, `TENANT_SCOPED_MODELS`) — toda tabela de domínio nova (Ave, Ninhada) precisa ser registrada manualmente nessa lista além de ganhar o campo `tenantId`; não há detecção automática.
 - A conexão do Prisma com o Supabase só funciona neste ambiente via connection pooler (Supavisor) — o host de conexão direta resolve apenas por IPv6, inalcançável na rede local. Qualquer nova configuração de ambiente (local, CI, deploy) deve usar a string do pooler.
 - Cadastros de teste contra o projeto Supabase devem usar e-mails reais e entregáveis (ex: alias `+` em um endereço real) — o projeto recebeu aviso de alta taxa de bounce por testes com endereços fabricados, com risco de restrição do envio de e-mails. Regra registrada em CLAUDE.md.
