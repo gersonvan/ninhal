@@ -18,6 +18,7 @@ export interface DadosPedigreeAve {
   dataNascimentoLabel: string;
   origemLabel: string;
   fotoUrl: string | null;
+  registro: string | null;
 }
 
 export interface DadosPedigree {
@@ -26,6 +27,7 @@ export interface DadosPedigree {
   criatorioNome: string;
   criatorioLogoUrl: string | null;
   responsavelNome: string;
+  responsavelTelefone: string | null;
   emitidoEmLabel: string;
   codigoVerificacao: string;
 }
@@ -75,11 +77,13 @@ export async function montarDadosPedigree(
       dataNascimentoLabel: formatarData(ave.dataNascimento),
       origemLabel: ORIGEM_AVE_LABELS[ave.origem],
       fotoUrl: ave.foto,
+      registro: ave.registro,
     },
     arvore,
     criatorioNome,
     criatorioLogoUrl: tenant.logoUrl,
     responsavelNome,
+    responsavelTelefone: tenant.telefone,
     emitidoEmLabel: formatarDataPorExtenso(new Date()),
     codigoVerificacao: gerarCodigoVerificacao(ave.anilha, criatorioNome),
   };

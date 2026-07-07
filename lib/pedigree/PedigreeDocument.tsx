@@ -2,7 +2,7 @@ import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/render
 import type { NoArvore } from "@/lib/arvore/construir";
 import type { DadosPedigree } from "./service";
 
-const CORES = {
+export const CORES = {
   fundoPagina: "#DCD5C1",
   fundoCertificado: "#FBF8F0",
   bordaPrincipal: "#4B5D3A",

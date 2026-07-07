@@ -61,12 +61,12 @@ function MenuExportar({ aveId }: { aveId: string }) {
           >
             Certificado
           </a>
-          <div className="font-sans text-[13px] text-text-muted px-4 py-3 flex items-center justify-between gap-2">
+          <a
+            href={`/plantel/${aveId}/pedigree/cracha`}
+            className="no-underline block font-sans font-bold text-[13px] text-text-primary px-4 py-3 hover:bg-background"
+          >
             Crachá
-            <span className="font-sans font-bold text-[10px] uppercase text-text-muted bg-background px-2 py-0.5 rounded">
-              Em breve
-            </span>
-          </div>
+          </a>
         </div>
       )}
     </div>
