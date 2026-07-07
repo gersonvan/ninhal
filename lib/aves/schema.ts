@@ -24,6 +24,10 @@ export const createAveSchema = z.object({
   foto: z.string().trim().url().optional(),
   // Número de registro do criador/plantel junto ao IBAMA — preenchido manualmente pelo usuário.
   registro: z.string().trim().min(1).optional(),
+  // Preenchidos pela importação da Relação de Passeriformes do IBAMA (Task 2.4).
+  nomeCientifico: z.string().trim().min(1).optional(),
+  tipoAnilha: z.string().trim().min(1).optional(),
+  diametroAnilha: z.string().trim().min(1).optional(),
 });
 
 export const updateAveSchema = createAveSchema.partial();

@@ -10,6 +10,7 @@ import {
   updateCriatorioAction,
   updateProfileAction,
 } from "@/lib/settings/actions";
+import Link from "next/link";
 import { criarEspecie, type EspecieResumo } from "@/lib/especies/client";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
@@ -35,6 +36,22 @@ export default function ConfiguracoesView({
       <PerfilCard user={user} />
       <CriatorioSection tenant={tenant} />
       <EspeciesSection especiesIniciais={especiesIniciais} />
+
+      <div>
+        <div className="font-sans font-bold text-[11px] tracking-[0.06em] uppercase text-text-muted mb-2.5">
+          Plantel
+        </div>
+        <Link
+          href="/configuracoes/importar-ibama"
+          className="no-underline bg-surface border border-border rounded-[14px] px-4 py-3.5 flex justify-between items-center"
+        >
+          <span className="font-sans text-sm text-text-primary">
+            Importar do IBAMA
+          </span>
+          <span className="font-sans font-bold text-sm text-oliva-600">Importar</span>
+        </Link>
+      </div>
+
       <PreferenciasSection alertasAtivadosInicial={alertasAtivadosInicial} />
 
       <form action={signOut}>

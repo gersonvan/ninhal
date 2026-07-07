@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
 import { runWithTenant } from "@/lib/tenant/context";
 import { createAve, updateAve } from "./service";
 import { AnilhaDuplicadaError, RegistroNaoEncontradoError } from "./errors";
 import { ParentescoInvalidoError } from "./compatibility";
+import { requireTenantOrRedirect } from "./require-tenant";
 
 export type AveFormState = { error: string } | null;
 
@@ -31,24 +31,6 @@ function mapAveServiceError(error: unknown): AveFormState {
     return { error: error.message };
   }
   throw error;
-}
-
-async function requireTenantOrRedirect() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const tenant = await prisma.tenant.findUnique({ where: { ownerId: user.id } });
-  if (!tenant) {
-    redirect("/onboarding");
-  }
-
-  return { supabase, tenant };
 }
 
 async function uploadFotoSeEnviada(

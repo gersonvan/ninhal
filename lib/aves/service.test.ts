@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { runWithTenant } from "@/lib/tenant/context";
 import { ParentescoInvalidoError } from "./compatibility";
 import { AnilhaDuplicadaError } from "./errors";
-import { createAve } from "./service";
+import { buscarAvePorAnilha, createAve } from "./service";
 
 /**
  * Testes de integração contra o banco Postgres real (Supabase), exercitando as
@@ -192,5 +192,61 @@ describe("createAve", () => {
 
     expect(filho.anilhaPaiId).toBe(pai.id);
     expect(filho.anilhaMaeId).toBe(mae.id);
+  });
+});
+
+describe("buscarAvePorAnilha", () => {
+  const suffix = randomUUID();
+  let tenant: { id: string };
+  let outroTenant: { id: string };
+  let especie: { id: string };
+
+  beforeAll(async () => {
+    tenant = await prisma.tenant.create({
+      data: { ownerId: `test-owner-anilha-${suffix}`, name: "Tenant de teste" },
+    });
+    outroTenant = await prisma.tenant.create({
+      data: { ownerId: `test-owner-anilha-outro-${suffix}`, name: "Outro tenant" },
+    });
+    especie = await prisma.especie.create({
+      data: { nome: `Espécie busca anilha ${suffix}` },
+    });
+  });
+
+  afterAll(async () => {
+    await runWithTenant(tenant.id, () => prisma.ave.deleteMany({}));
+    await runWithTenant(outroTenant.id, () => prisma.ave.deleteMany({}));
+    await prisma.tenant.deleteMany({ where: { id: { in: [tenant.id, outroTenant.id] } } });
+    await prisma.especie.delete({ where: { id: especie.id } });
+  });
+
+  it("encontra a ave pela anilha dentro do tenant atual", async () => {
+    const anilha = `BR-BUSCA-${suffix}`;
+    const criada = await runWithTenant(tenant.id, () =>
+      createAve({ anilha, especieId: especie.id, sexo: "MACHO", origem: "ADQUIRIDA" }),
+    );
+
+    const encontrada = await runWithTenant(tenant.id, () => buscarAvePorAnilha(anilha));
+
+    expect(encontrada?.id).toBe(criada.id);
+  });
+
+  it("retorna null quando a anilha não existe no tenant atual", async () => {
+    const encontrada = await runWithTenant(tenant.id, () =>
+      buscarAvePorAnilha(`BR-INEXISTENTE-${suffix}`),
+    );
+
+    expect(encontrada).toBeNull();
+  });
+
+  it("não encontra uma anilha cadastrada em outro tenant (isolamento)", async () => {
+    const anilha = `BR-ISOLAMENTO-${suffix}`;
+    await runWithTenant(outroTenant.id, () =>
+      createAve({ anilha, especieId: especie.id, sexo: "MACHO", origem: "ADQUIRIDA" }),
+    );
+
+    const encontrada = await runWithTenant(tenant.id, () => buscarAvePorAnilha(anilha));
+
+    expect(encontrada).toBeNull();
   });
 });

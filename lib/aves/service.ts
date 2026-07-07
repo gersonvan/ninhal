@@ -91,6 +91,11 @@ export async function getAve(id: string) {
   });
 }
 
+/** Usado pela importação do IBAMA (Task 2.4) para detectar anilha já cadastrada no tenant atual. */
+export async function buscarAvePorAnilha(anilha: string) {
+  return await prisma.ave.findFirst({ where: { anilha } });
+}
+
 export async function updateAve(id: string, input: unknown) {
   const data: UpdateAveInput = updateAveSchema.parse(input);
 
