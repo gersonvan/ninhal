@@ -173,7 +173,7 @@ export default function FichaAve({
             href={`/plantel/${ave.id}/pedigree`}
             className="flex-1 text-center no-underline font-sans font-bold text-sm text-background bg-oliva-600 px-4 py-3.5 rounded-[10px]"
           >
-            Gerar pedigree
+            Origem
           </Link>
         </div>
       </div>

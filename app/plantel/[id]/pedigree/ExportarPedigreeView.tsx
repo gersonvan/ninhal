@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import type { NoArvore } from "@/lib/arvore/construir";
 import type { DadosPedigree } from "@/lib/pedigree/service";
@@ -38,6 +41,38 @@ function CartaoAvo({ rotulo, no }: { rotulo: string; no: NoArvore }) {
   );
 }
 
+function MenuExportar({ aveId }: { aveId: string }) {
+  const [aberto, setAberto] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setAberto((atual) => !atual)}
+        className="font-sans font-bold text-[13px] bg-oliva-600 text-background px-4 py-2.5 rounded-lg cursor-pointer flex items-center gap-1.5"
+      >
+        Exportar
+      </button>
+      {aberto && (
+        <div className="absolute right-0 top-[calc(100%+6px)] z-10 bg-white border border-border rounded-lg shadow-lg overflow-hidden min-w-[180px]">
+          <a
+            href={`/plantel/${aveId}/pedigree/download`}
+            className="no-underline block font-sans font-bold text-[13px] text-text-primary px-4 py-3 border-b border-border-subtle hover:bg-background"
+          >
+            Certificado
+          </a>
+          <div className="font-sans text-[13px] text-text-muted px-4 py-3 flex items-center justify-between gap-2">
+            Crachá
+            <span className="font-sans font-bold text-[10px] uppercase text-text-muted bg-background px-2 py-0.5 rounded">
+              Em breve
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ExportarPedigreeView({
   aveId,
   dados,
@@ -62,26 +97,10 @@ export default function ExportarPedigreeView({
           </svg>
           Voltar
         </Link>
-        <div className="flex gap-2.5">
-          <button
-            type="button"
-            className="font-sans font-bold text-[13px] bg-white text-oliva-600 border-[1.5px] border-oliva-600 px-4 py-2.5 rounded-lg cursor-pointer flex items-center gap-1.5"
-          >
-            Imagem
-          </button>
-          <a
-            href={`/plantel/${aveId}/pedigree/download`}
-            className="no-underline font-sans font-bold text-[13px] bg-oliva-600 text-background px-4 py-2.5 rounded-lg flex items-center gap-1.5"
-          >
-            Exportar PDF
-          </a>
-          <button
-            type="button"
-            className="font-sans font-bold text-[13px] bg-white text-oliva-600 border-[1.5px] border-oliva-600 px-4 py-2.5 rounded-lg cursor-pointer flex items-center gap-1.5"
-          >
-            Compartilhar
-          </button>
+        <div className="font-serif font-semibold text-xl text-text-primary">
+          Origem
         </div>
+        <MenuExportar aveId={aveId} />
       </div>
 
       <div
