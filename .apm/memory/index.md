@@ -95,16 +95,19 @@ Durante a Stage, o usuário também compartilhou materiais de referência de uma
 - task-05-03.log.md
 - task-05-04.log.md
 
-### Fase 2 — Stage 1 (Cadastro de Espécies) e Stage 3 (Crachá) - concluídas
+### Fase 2 — Espécies, Importação IBAMA e Crachá (completa)
 
-Ciclo incremental sobre o MVP já em produção (Fase 1 completa acima). As Stages 1 e 3 da Fase 2 foram concluídas na branch `feat/fase2-especies-e-schema` (ainda não mergeada para `main` — Stage 2 segue em andamento na mesma branch).
+Ciclo incremental sobre o MVP já em produção (Fase 1 completa acima), originado de feedback de usuários reais testando o sistema (`docs/solicitacao-fase2.md`). 3 Stages, 11 Tasks (2 adicionadas durante a execução), todas na branch `feat/fase2-especies-e-schema`, mergeada para `main` e publicada em produção ao final do ciclo.
 
 **Stage 1 (Cadastro de Espécies pelo Usuário):** `criarOuReaproveitarEspecie` (`lib/especies/service.ts`) normaliza capitalização e evita duplicatas por grafia/caixa; endpoint `POST /api/especies`; duas superfícies de UI (inline no Novo Cadastro de Ave, e uma seção de gestão em Configurações), ambas reaproveitando o mesmo endpoint. De passagem, corrigido um bug real: `vitest.config.ts` tentava executar a suíte Playwright (`e2e/`) como parte da suíte do Vitest.
 
+**Stage 2 (Importação do Plantel via IBAMA):** schema estendido com `nomeCientifico`/`tipoAnilha`/`diametroAnilha`/`registro` (`Ave`) e `telefone` (`Tenant`); serviço de extração do PDF oficial do IBAMA por posição de coluna (`pdf-parse`); criação automática de espécies ausentes durante a importação (reaproveitando a Stage 1); tela de revisão/edição obrigatória antes de qualquer gravação (detecção de anilha duplicada com confirmação explícita, vínculo opcional de pai/mãe restrito a aves já existentes, sugestão de responsável com confirmação); três pontos de entrada (Onboarding opcional, Plantel, Configurações). Esta foi a Stage de maior risco técnico do ciclo — duas verificações manuais do Manager (bypassando a limitação de automação de upload de arquivo) encontraram e corrigiram dois bugs reais e sérios na extração do PDF: (1) `pdf-parse` inserindo um hífen espúrio em quebras de linha sem espaço natural, corrompendo códigos de anilha e nomes de espécie (Task 2.5); (2) `@react-pdf/renderer` truncando silenciosamente, na própria geração do PDF, qualquer texto sem espaço acima de um limiar de largura de coluna — perda de dados irrecuperável pela extração, mitigada com detecção heurística e reporte para revisão manual (Task 2.6). Nenhum dos dois bugs foi pego pelos próprios testes automatizados das Tasks originais (2.2), só pela verificação manual ponta a ponta do Manager.
+
 **Stage 3 (Crachá — Formato de Exportação Compacto):** tela de exportação renomeada de "Pedigree" para "Origem", com ação única "Exportar" oferecendo Certificado (Fase 1, inalterado — regressão confirmada explicitamente) e Crachá (novo, PDF de 10x6cm reaproveitando a árvore de 3 gerações e a infraestrutura de PDF já existentes). O Manager verificou manualmente a renderização do Crachá (a ferramenta de preview não consegue renderizar PDF embutido) — todos os campos corretos e estilo consistente com o Design System.
 
+Um achado de coordenação notável: a Task 2.4 construiu um ponto de entrada em Configurações não especificado em nenhum Task Prompt (a decisão de posicionamento — Onboarding + Plantel — já estava resolvida no Spec desta Fase, mas não foi reafirmada explicitamente na Task 2.4); resolvido mantendo os três pontos de entrada em vez de descartar trabalho válido. A suíte de testes permanece em 139 testes ao final da Fase (vs. 100 ao final da Fase 1).
+
 **Task Logs:**
-- task-01-01.log.md
-- task-01-02.log.md (`.apm/memory/fase2-stage-01/`)
-- task-03-01.log.md
-- task-03-02.log.md (`.apm/memory/fase2-stage-03/`)
+- task-01-01.log.md, task-01-02.log.md (`.apm/memory/fase2-stage-01/`)
+- task-02-01.log.md a task-02-07.log.md (`.apm/memory/fase2-stage-02/`)
+- task-03-01.log.md, task-03-02.log.md (`.apm/memory/fase2-stage-03/`)
