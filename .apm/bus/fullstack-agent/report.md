@@ -1,11 +1,11 @@
 ---
 stage: 2
-task: 4
+task: 5
 agent: fullstack-agent
 status: Success
-log_path: ".apm/memory/fase2-stage-02/task-02-04.log.md"
+log_path: ".apm/memory/fase2-stage-02/task-02-05.log.md"
 important_findings: true
-compatibility_issues: true
+compatibility_issues: false
 ---
 
-Fluxo completo de importação do IBAMA implementado (upload → revisão/edição por ave → confirmação explícita → gravação), em `/configuracoes/importar-ibama`. Duplicata de anilha exige confirmação explícita para atualizar; pai/mãe restrito a aves já existentes; sugestão de responsável só é gravada mediante confirmação. Important Finding: o local de entrada da tela não estava especificado em nenhum Task Prompt anterior — decisão registrada no Task Log. Compatibility Concern: a etapa de revisão não pôde ser verificada visualmente via automação (upload de arquivo real não é simulável por script) — recomendada verificação manual pontual.
+Corrigida a corrupção de hífen espúrio na extração do PDF do IBAMA (valores longos sem espaço natural no ponto de quebra de linha, ex: código de anilha, eram reconstruídos com "- " em vez do valor original). Reproduzida a corrupção antes de corrigir, conforme instruído; hífens legítimos continuam preservados. Important Finding: identificado durante a investigação um problema separado e mais severo — truncamento silencioso de valores muito longos na coluna de anilha, sem quebra nem hífen — fora do escopo desta Task, recomendada uma Task futura dedicada (ver Task Log).
