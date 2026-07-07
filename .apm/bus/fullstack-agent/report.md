@@ -1,16 +1,13 @@
 ---
 batch: true
-batch_size: 3
-completed: 3
+batch_size: 2
+completed: 2
 stopped_early: false
 tasks:
-  - stage: 1
-    task: 1
-    status: Success
-  - stage: 1
+  - stage: 2
     task: 2
     status: Success
-  - stage: 2
+  - stage: 3
     task: 1
     status: Success
 ---
@@ -18,24 +15,19 @@ tasks:
 # Batch Report
 
 ## Summary
-3 de 3 Tasks concluídas com sucesso.
+2 de 2 Tasks concluídas com sucesso.
 
 ## Task Outcomes
 
-### Task 1.1 - API de criação de espécie com normalização e checagem de duplicata
+### Task 2.2 - Serviço de extração do PDF do IBAMA
 **Status:** Success
-**Task Log:** `.apm/memory/fase2-stage-01/task-01-01.log.md`
-`POST /api/especies` implementado com normalização de capitalização e reaproveitamento de entrada existente equivalente (dedup case-insensitive); lógica exposta em `lib/especies/service.ts` para reaproveitamento pela importação em lote (Task 2.3). Corrigido também `vitest.config.ts`, que tentava executar a suíte Playwright (`e2e/`) como parte da suíte do Vitest.
+**Task Log:** `.apm/memory/fase2-stage-02/task-02-02.log.md`
+`extrairDadosIbama` implementado usando detecção geométrica de tabelas (`pdf-parse`/`pdfjs-dist`) para extrair a tabela de aves por posição de coluna e a identificação do responsável (nome/telefone, sem CPF/endereço). Fixture de PDF sintético gerada em memória para os testes — `docs/relação de aves.pdf` nunca foi lido ou referenciado. Achado importante: bug de compatibilidade real no `pdf-parse` (chamadas paralelas `getText()`/`getTable()` na mesma instância travam o worker interno) documentado no Task Log para Tasks futuras que reaproveitem este parser.
 
-### Task 1.2 - UI de adicionar espécie — inline e em Configurações
+### Task 3.1 - Reestruturação da tela de exportação — "Origem" com ação "Exportar"
 **Status:** Success
-**Task Log:** `.apm/memory/fase2-stage-01/task-01-02.log.md`
-Ação "não encontrou sua espécie? adicione aqui" no Novo Cadastro de Ave, e seção de gestão do catálogo em Configurações — ambas ligadas ao endpoint da Task 1.1, reaproveitando os componentes de formulário/lista já existentes.
-
-### Task 2.1 - Migração de schema — novos campos em Ave e Tenant
-**Status:** Success
-**Task Log:** `.apm/memory/fase2-stage-02/task-02-01.log.md`
-Migração aplicada em produção adicionando `nomeCientifico`, `tipoAnilha`, `diametroAnilha`, `registro` (Ave) e `telefone` (Tenant), todos opcionais. `registro` exposto na Ficha da Ave e `telefone` em Configurações; os demais reservados para a importação da Stage 2.
+**Task Log:** `.apm/memory/fase2-stage-03/task-03-01.log.md`
+Tela renomeada de "Pedigree" para "Origem"; ação única "Exportar" oferecendo "Certificado" (comportamento inalterado, confirmado via teste de regressão explícito) e "Crachá" (novo formato, "Em breve" até a Task 3.2).
 
 ## Batch Notes
-Nenhuma Task exigiu desvio da abordagem sugerida no Task Prompt. Validação completa (`tsc`, `eslint`, `vitest`, `build`) passou em todas as três Tasks; a suíte de testes apresentou uma falha intermitente de `EMAXCONNSESSION` (contenção do pooler do Supabase) durante a validação da Task 2.1, resolvida ao reexecutar — mesma categoria de contenção transitória já documentada em Stages/Fases anteriores.
+Nenhuma Task exigiu desvio da abordagem sugerida no Task Prompt. Validação completa (`tsc`, `eslint`, `vitest`, `build`) passou em ambas as Tasks, incluindo verificação visual via preview para a Task 3.1.
