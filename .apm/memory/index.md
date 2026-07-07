@@ -91,3 +91,17 @@ Durante a Stage, o usuário também compartilhou materiais de referência de uma
 - task-05-02.log.md
 - task-05-03.log.md
 - task-05-04.log.md
+
+### Fase 2 — Stage 1 (Cadastro de Espécies) e Stage 3 (Crachá) - concluídas
+
+Ciclo incremental sobre o MVP já em produção (Fase 1 completa acima). As Stages 1 e 3 da Fase 2 foram concluídas na branch `feat/fase2-especies-e-schema` (ainda não mergeada para `main` — Stage 2 segue em andamento na mesma branch).
+
+**Stage 1 (Cadastro de Espécies pelo Usuário):** `criarOuReaproveitarEspecie` (`lib/especies/service.ts`) normaliza capitalização e evita duplicatas por grafia/caixa; endpoint `POST /api/especies`; duas superfícies de UI (inline no Novo Cadastro de Ave, e uma seção de gestão em Configurações), ambas reaproveitando o mesmo endpoint. De passagem, corrigido um bug real: `vitest.config.ts` tentava executar a suíte Playwright (`e2e/`) como parte da suíte do Vitest.
+
+**Stage 3 (Crachá — Formato de Exportação Compacto):** tela de exportação renomeada de "Pedigree" para "Origem", com ação única "Exportar" oferecendo Certificado (Fase 1, inalterado — regressão confirmada explicitamente) e Crachá (novo, PDF de 10x6cm reaproveitando a árvore de 3 gerações e a infraestrutura de PDF já existentes). O Manager verificou manualmente a renderização do Crachá (a ferramenta de preview não consegue renderizar PDF embutido) — todos os campos corretos e estilo consistente com o Design System.
+
+**Task Logs:**
+- task-01-01.log.md
+- task-01-02.log.md (`.apm/memory/fase2-stage-01/`)
+- task-03-01.log.md
+- task-03-02.log.md (`.apm/memory/fase2-stage-03/`)
