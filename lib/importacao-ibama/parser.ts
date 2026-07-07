@@ -30,6 +30,13 @@ export interface ResultadoExtracaoIbama {
 const NUMERO_COLUNAS = 8;
 
 /**
+ * Limite de comprimento acima do qual um valor de anilha sem espaço interno é
+ * tratado como possivelmente truncado (ver `pareceTruncada` abaixo) — ver
+ * achado da Task 2.5 / correção da Task 2.6.
+ */
+const LIMITE_SUSPEITO_ANILHA = 20;
+
+/**
  * Extrai aves e a identificação do responsável do PDF oficial "Relação de
  * Passeriformes" do IBAMA. A extração é por posição de coluna (via detecção
  * geométrica de tabelas do `pdf-parse`), não por OCR — o leiaute pode variar
@@ -101,6 +108,27 @@ function normalizarCelula(celula: string): string {
     .replace(/\s+/g, " ");
 }
 
+/**
+ * Detecta perda silenciosa de caracteres: confirmado empiricamente (Task 2.6)
+ * que, para um trecho de texto sem nenhum espaço interno que excede a largura
+ * da célula, o PDF pode ser renderizado sem os caracteres excedentes — sem
+ * quebra de linha, sem hífen, sem qualquer marcador (diferente da corrupção
+ * de hífen da Task 2.5, que preserva todos os caracteres). Não há como
+ * recuperar os caracteres perdidos nem distinguir com certeza um valor
+ * genuinamente longo de um valor truncado apenas pelo texto extraído — a
+ * defesa aqui é heurística: um valor sem espaço interno com comprimento
+ * acima do limite observado é tratado como suspeito e a linha é reportada
+ * para revisão manual em vez de aceita silenciosamente.
+ */
+function pareceTruncada(valor: string): boolean {
+  // >= (não >): o valor truncado sempre sai com exatamente
+  // LIMITE_SUSPEITO_ANILHA caracteres (é o próprio ponto de corte) — um
+  // valor genuíno de exatamente esse comprimento é indistinguível de um
+  // valor truncado a partir desse ponto, então também é tratado como
+  // suspeito por precaução (defesa deliberadamente conservadora).
+  return valor.length >= LIMITE_SUSPEITO_ANILHA && !/\s/.test(valor);
+}
+
 function parseLinhaAve(celulas: string[]): { ave: AveExtraidaIbama } | { erro: string } {
   if (celulas.length !== NUMERO_COLUNAS) {
     return {
@@ -120,6 +148,12 @@ function parseLinhaAve(celulas: string[]): { ave: AveExtraidaIbama } | { erro: s
 
   if (!anilha) {
     return { erro: "Código de anilha ausente." };
+  }
+
+  if (pareceTruncada(anilha)) {
+    return {
+      erro: `Código de anilha "${anilha}" pode estar truncado (mais de ${LIMITE_SUSPEITO_ANILHA} caracteres sem espaço) — confira o valor no documento original antes de cadastrar manualmente.`,
+    };
   }
 
   return {

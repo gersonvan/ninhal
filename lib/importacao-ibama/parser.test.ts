@@ -263,4 +263,69 @@ describe("extrairDadosIbama", () => {
 
     expect(resultado.responsavel).toEqual({ nome: null, telefone: null });
   });
+
+  describe("truncamento silencioso da coluna de anilha (Task 2.6)", () => {
+    // Confirmado empiricamente: nesta fixture, um valor de anilha sem espaço
+    // com até 20 caracteres é extraído por completo; acima de 20, o
+    // pdf-parse/getTable() corta o valor para exatamente 20 caracteres, sem
+    // quebra de linha nem hífen — perda real de caracteres, não apenas
+    // formatação incorreta (achado da Task 2.5, corrigido nesta Task). Um
+    // valor truncado sempre sai com exatamente 20 caracteres — o mesmo
+    // comprimento de um valor genuinamente correto de 20 caracteres — então
+    // o limite de detecção é deliberadamente conservador (>=, não >) e
+    // também sinaliza o caso-limite de exatamente 20 caracteres.
+    it.each([16, 18])(
+      "extrai corretamente um valor de %i caracteres (claramente dentro do limite)",
+      async (n) => {
+        const anilha = "A".repeat(n);
+        const pdf = await gerarPdfSinteticoIbama({
+          linhas: [
+            {
+              numero: "1",
+              nomeCientifico: "Sicalis flaveola",
+              nomeComum: "Canario",
+              sexo: "M",
+              nascimento: "15/03/2022",
+              tipoAnilha: "Fechada",
+              diametro: "2,5",
+              anilha,
+            },
+          ],
+        });
+
+        const resultado = await extrairDadosIbama(pdf);
+
+        expect(resultado.linhasComErro).toEqual([]);
+        expect(resultado.aves[0].anilha).toBe(anilha);
+      },
+    );
+
+    it.each([20, 21, 23, 25, 30])(
+      "reporta a linha como erro em vez de aceitar silenciosamente um valor possivelmente truncado (%i caracteres)",
+      async (n) => {
+        const anilha = "A".repeat(n);
+        const pdf = await gerarPdfSinteticoIbama({
+          linhas: [
+            {
+              numero: "1",
+              nomeCientifico: "Sicalis flaveola",
+              nomeComum: "Canario",
+              sexo: "M",
+              nascimento: "15/03/2022",
+              tipoAnilha: "Fechada",
+              diametro: "2,5",
+              anilha,
+            },
+          ],
+        });
+
+        const resultado = await extrairDadosIbama(pdf);
+
+        // Nunca deve aparecer em `aves` com um valor incompleto (perda silenciosa).
+        expect(resultado.aves).toHaveLength(0);
+        expect(resultado.linhasComErro).toHaveLength(1);
+        expect(resultado.linhasComErro[0].motivo).toMatch(/truncad/i);
+      },
+    );
+  });
 });
