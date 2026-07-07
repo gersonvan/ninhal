@@ -83,6 +83,24 @@ function extrairAves(linhas: TableArray): {
   return { aves, linhasComErro };
 }
 
+/**
+ * Normaliza o texto de uma célula extraída via `getTable()`. O `pdf-parse`
+ * insere um hífen literal seguido de quebra de linha ("-\n") quando um valor
+ * sem espaço natural no ponto de quebra (ex: um código de anilha longo) é
+ * dividido entre duas linhas dentro da célula — esse hífen não faz parte do
+ * valor original e precisa ser removido sem deixar espaço no lugar
+ * (reconstituindo a palavra partida). Já uma quebra de linha em um espaço
+ * natural (ex: "SISPASS 2.6\nCE/A 004802") vira um espaço único, como antes.
+ * Um hífen legítimo do valor original (ex: "Galo-da-campina") nunca é
+ * seguido de quebra de linha imediatamente, então é preservado.
+ */
+function normalizarCelula(celula: string): string {
+  return celula
+    .trim()
+    .replace(/-\n/g, "")
+    .replace(/\s+/g, " ");
+}
+
 function parseLinhaAve(celulas: string[]): { ave: AveExtraidaIbama } | { erro: string } {
   if (celulas.length !== NUMERO_COLUNAS) {
     return {
@@ -93,7 +111,7 @@ function parseLinhaAve(celulas: string[]): { ave: AveExtraidaIbama } | { erro: s
   // Nomes longos podem quebrar em mais de uma linha dentro da célula (largura
   // de coluna variável entre versões do documento) — normaliza para espaço único.
   const [numero, nomeCientifico, nomeComum, sexoRaw, nascimentoRaw, tipoAnilha, diametroAnilha, anilha] =
-    celulas.map((celula) => celula.trim().replace(/\s+/g, " "));
+    celulas.map(normalizarCelula);
 
   const sexo = mapearSexo(sexoRaw);
   if (!sexo) {

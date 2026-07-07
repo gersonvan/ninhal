@@ -169,6 +169,80 @@ describe("extrairDadosIbama", () => {
     expect(resultado.aves[0].dataNascimento).toBeNull();
   });
 
+  it("reconstrói corretamente um código de anilha longo que quebra de linha sem espaço natural (sem hífen espúrio)", async () => {
+    // Confirmado empiricamente: uma anilha longa sem espaços quebra de linha
+    // dentro da célula e o pdf-parse insere um hífen literal no ponto da
+    // quebra (ex: "VERIFYE2E0001234" → "VERI-\nFYE2E0001234" na saída bruta
+    // de getTable()) — sem a correção, isso vira "VERI- FYE2E0001234".
+    const anilhaOriginal = "VERIFYE2E0001234";
+    const pdf = await gerarPdfSinteticoIbama({
+      linhas: [
+        {
+          numero: "1",
+          nomeCientifico: "Sicalis flaveola",
+          nomeComum: "Canário",
+          sexo: "M",
+          nascimento: "15/03/2022",
+          tipoAnilha: "Fechada",
+          diametro: "2,5",
+          anilha: anilhaOriginal,
+        },
+      ],
+    });
+
+    const resultado = await extrairDadosIbama(pdf);
+
+    expect(resultado.linhasComErro).toEqual([]);
+    expect(resultado.aves[0].anilha).toBe(anilhaOriginal);
+  });
+
+  it("preserva um hífen legítimo do valor original mesmo quando a célula quebra de linha em outro ponto", async () => {
+    // Confirmado empiricamente: "GaloXXXXXXXX-da-campina" quebra de linha em
+    // dois pontos que não coincidem com o hífen legítimo "-da-" (saída bruta:
+    // "Ga-\nloXXXXXXXX-da-camp-\nina") — o hífen legítimo deve sobreviver.
+    const nomeComumOriginal = "GaloXXXXXXXX-da-campina";
+    const pdf = await gerarPdfSinteticoIbama({
+      linhas: [
+        {
+          numero: "1",
+          nomeCientifico: "Paroaria dominicana",
+          nomeComum: nomeComumOriginal,
+          sexo: "M",
+          nascimento: "15/03/2022",
+          tipoAnilha: "Fechada",
+          diametro: "2,5",
+          anilha: "BR12345678",
+        },
+      ],
+    });
+
+    const resultado = await extrairDadosIbama(pdf);
+
+    expect(resultado.linhasComErro).toEqual([]);
+    expect(resultado.aves[0].nomeComum).toBe(nomeComumOriginal);
+  });
+
+  it("preserva um hífen legítimo curto sem nenhuma quebra de linha (caso trivial)", async () => {
+    const pdf = await gerarPdfSinteticoIbama({
+      linhas: [
+        {
+          numero: "1",
+          nomeCientifico: "Paroaria dominicana",
+          nomeComum: "Galo-da-campina",
+          sexo: "M",
+          nascimento: "15/03/2022",
+          tipoAnilha: "Fechada",
+          diametro: "2,5",
+          anilha: "BR12345678",
+        },
+      ],
+    });
+
+    const resultado = await extrairDadosIbama(pdf);
+
+    expect(resultado.aves[0].nomeComum).toBe("Galo-da-campina");
+  });
+
   it("retorna nome/telefone nulos quando a seção de identificação não está presente", async () => {
     const pdf = await gerarPdfSinteticoIbama({
       linhas: [
