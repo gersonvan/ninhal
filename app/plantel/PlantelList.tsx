@@ -44,6 +44,8 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
   const [statusAtivo, setStatusAtivo] = useState<string | null>(null);
   const [aves, setAves] = useState<AveListItem[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  // Query dos dados exibidos; enquanto difere da query atual, há uma busca em voo.
+  const [queryCarregada, setQueryCarregada] = useState<string | null>(null);
 
   useEffect(() => {
     const handle = setTimeout(() => setBuscaDebounced(busca.trim()), 300);
@@ -75,12 +77,17 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
       })
       .catch(() => {
         if (!cancelado) setErro("Não foi possível carregar o plantel.");
+      })
+      .finally(() => {
+        if (!cancelado) setQueryCarregada(queryString);
       });
 
     return () => {
       cancelado = true;
     };
   }, [queryString]);
+
+  const atualizando = queryCarregada !== queryString;
 
   return (
     <div className="pb-6 min-[900px]:pb-0">
@@ -164,8 +171,16 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
         </div>
       </div>
 
-      <div className="max-w-[900px] mx-auto px-5 pb-6 pt-2 flex flex-col gap-2.5">
+      <div
+        className={`max-w-[900px] mx-auto px-5 pb-6 pt-2 flex flex-col gap-2.5 transition-opacity ${
+          atualizando && aves !== null ? "opacity-60" : ""
+        }`}
+      >
         {erro && <p className="text-sm font-semibold text-terracota">{erro}</p>}
+
+        {aves === null &&
+          !erro &&
+          [0, 1, 2, 3].map((n) => <SkeletonCard key={n} />)}
 
         {aves !== null &&
           aves.length === 0 &&
@@ -264,6 +279,19 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white border border-border rounded-2xl p-3 flex items-center gap-3.5 animate-pulse">
+      <div className="w-[52px] h-[52px] rounded-[10px] bg-border shrink-0" />
+      <div className="flex-1 flex flex-col gap-2">
+        <div className="h-3.5 w-2/5 rounded bg-border" />
+        <div className="h-3 w-3/5 rounded bg-[#F0EBDD]" />
+      </div>
+      <div className="h-3 w-16 rounded bg-[#F0EBDD] shrink-0" />
     </div>
   );
 }

@@ -163,7 +163,7 @@ export default function OnboardingWizard() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    "Arraste o logo"
+                    "Toque para escolher"
                   )}
                 </label>
                 <input

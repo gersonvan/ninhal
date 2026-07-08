@@ -52,15 +52,18 @@ export default function FichaNinhada({
   ninhada,
   filhotes,
   alertasAtivados,
+  mensagemSucesso = null,
 }: {
   ninhada: NinhadaDetalhe;
   filhotes: AveFilhote[];
   alertasAtivados: boolean;
+  mensagemSucesso?: string | null;
 }) {
   const [dados, setDados] = useState(ninhada);
   const [editando, setEditando] = useState(false);
   const [pending, setPending] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [sucesso, setSucesso] = useState<string | null>(mensagemSucesso);
 
   const status = determinarStatusNinhada(dados, alertasAtivados);
   const mostrarAlerta = alertasAtivados && dados.coeficienteParentesco > 0;
@@ -68,6 +71,7 @@ export default function FichaNinhada({
   async function salvarProgresso(formData: FormData) {
     setPending(true);
     setErro(null);
+    setSucesso(null);
 
     const campos: Record<string, number> = {};
     for (const campo of ["ovosPrevistos", "ovosBotados", "ovosFerteis", "filhotesNascidos"]) {
@@ -90,6 +94,7 @@ export default function FichaNinhada({
       const atualizada = await res.json();
       setDados((anterior) => ({ ...anterior, ...atualizada }));
       setEditando(false);
+      setSucesso("Progresso salvo.");
     } catch (error) {
       setErro(error instanceof Error ? error.message : "Não foi possível salvar.");
     } finally {
@@ -122,6 +127,7 @@ export default function FichaNinhada({
       </div>
 
       <div className="p-5 flex flex-col gap-5">
+        {sucesso && <Alert variant="success" title={sucesso} />}
         {mostrarAlerta && (
           <Alert
             variant="warning"
@@ -152,7 +158,10 @@ export default function FichaNinhada({
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setEditando(true)}
+              onClick={() => {
+                setEditando(true);
+                setSucesso(null);
+              }}
             >
               Atualizar acompanhamento
             </Button>

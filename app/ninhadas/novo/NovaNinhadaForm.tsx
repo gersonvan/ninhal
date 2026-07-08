@@ -87,7 +87,7 @@ export default function NovaNinhadaForm({ especies }: { especies: Especie[] }) {
         throw new Error(body?.error ?? "Não foi possível criar a ninhada.");
       }
       const ninhada = await res.json();
-      router.push(`/ninhadas/${ninhada.id}`);
+      router.push(`/ninhadas/${ninhada.id}?salva=criada`);
     } catch (error) {
       setErro(
         error instanceof Error ? error.message : "Não foi possível criar a ninhada.",

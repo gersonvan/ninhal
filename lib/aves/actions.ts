@@ -99,7 +99,7 @@ export async function createAveAction(
 
   try {
     const ave = await runWithTenant(tenant.id, () => createAve(input));
-    redirect(`/plantel/${ave.id}`);
+    redirect(`/plantel/${ave.id}?salva=criada`);
   } catch (error) {
     return mapAveServiceError(error);
   }
@@ -133,7 +133,7 @@ export async function updateAveAction(
   }
 
   revalidatePath(`/plantel/${id}`);
-  redirect(`/plantel/${id}`);
+  redirect(`/plantel/${id}?salva=editada`);
 }
 
 export async function deleteAveAction(

@@ -9,9 +9,10 @@ import FichaNinhada from "./FichaNinhada";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ salva?: string }>;
 }
 
-export default async function FichaNinhadaPage({ params }: PageProps) {
+export default async function FichaNinhadaPage({ params, searchParams }: PageProps) {
   const user = await getCurrentUser();
   if (!user) {
     redirect("/login");
@@ -23,6 +24,7 @@ export default async function FichaNinhadaPage({ params }: PageProps) {
   }
 
   const { id } = await params;
+  const { salva } = await searchParams;
 
   const [ninhada, alertasAtivados] = await Promise.all([
     runWithTenant(tenant.id, () => getNinhada(id)),
@@ -43,6 +45,7 @@ export default async function FichaNinhadaPage({ params }: PageProps) {
         ninhada={ninhada}
         filhotes={filhotes}
         alertasAtivados={alertasAtivados}
+        mensagemSucesso={salva === "criada" ? "Ninhada registrada." : null}
       />
     </AppShell>
   );

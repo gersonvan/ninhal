@@ -9,9 +9,10 @@ import FichaAve from "./FichaAve";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ salva?: string }>;
 }
 
-export default async function FichaAvePage({ params }: PageProps) {
+export default async function FichaAvePage({ params, searchParams }: PageProps) {
   const user = await getCurrentUser();
   if (!user) {
     redirect("/login");
@@ -23,10 +24,18 @@ export default async function FichaAvePage({ params }: PageProps) {
   }
 
   const { id } = await params;
+  const { salva } = await searchParams;
   const ave = await runWithTenant(tenant.id, () => getAve(id));
   if (!ave) {
     notFound();
   }
+
+  const mensagemSucesso =
+    salva === "criada"
+      ? "Ave cadastrada no plantel."
+      : salva === "editada"
+        ? "Alterações salvas."
+        : null;
 
   const [especies, emNinhada] = await Promise.all([
     prisma.especie.findMany({ orderBy: { nome: "asc" } }),
@@ -35,7 +44,12 @@ export default async function FichaAvePage({ params }: PageProps) {
 
   return (
     <AppShell tenantName={tenant.name ?? "Ninhal"}>
-      <FichaAve ave={ave} especies={especies} emNinhada={emNinhada} />
+      <FichaAve
+        ave={ave}
+        especies={especies}
+        emNinhada={emNinhada}
+        mensagemSucesso={mensagemSucesso}
+      />
     </AppShell>
   );
 }

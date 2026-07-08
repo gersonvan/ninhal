@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
+import Alert from "@/components/ui/Alert";
 import Badge, { BIRD_STATUS_BADGE } from "@/components/ui/Badge";
 import {
   ORIGEM_AVE_LABELS,
@@ -50,10 +51,12 @@ export default function FichaAve({
   ave,
   especies,
   emNinhada,
+  mensagemSucesso = null,
 }: {
   ave: AveDetalhe;
   especies: Especie[];
   emNinhada: boolean;
+  mensagemSucesso?: string | null;
 }) {
   const [editando, setEditando] = useState(false);
 
@@ -108,6 +111,11 @@ export default function FichaAve({
       </div>
 
       <div className="p-5">
+        {mensagemSucesso && (
+          <div className="mb-4">
+            <Alert variant="success" title={mensagemSucesso} />
+          </div>
+        )}
         <div className="flex items-start justify-between">
           <div>
             <div className="font-serif font-semibold text-[28px] text-text-primary">
