@@ -175,13 +175,19 @@ export default function FichaAve({
             href="/plantel"
             className="flex-1 text-center no-underline font-sans font-bold text-sm text-text-secondary border-[1.5px] border-border px-4 py-3.5 rounded-[10px]"
           >
-            Voltar ao plantel
+            Voltar ao Plantel
           </Link>
           <Link
-            href={`/plantel/${ave.id}/pedigree`}
+            href={`/plantel/${ave.id}/pedigree/cracha`}
             className="flex-1 text-center no-underline font-sans font-bold text-sm text-background bg-oliva-600 px-4 py-3.5 rounded-[10px]"
           >
-            Origem
+            Gerar Crachá
+          </Link>
+          <Link
+            href={`/plantel/${ave.id}/pedigree/download`}
+            className="flex-1 text-center no-underline font-sans font-bold text-sm text-background bg-oliva-600 px-4 py-3.5 rounded-[10px]"
+          >
+            Gerar Certificado
           </Link>
         </div>
 

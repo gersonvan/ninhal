@@ -273,7 +273,7 @@ export default function PedigreeDocument({ dados }: { dados: DadosPedigree }) {
                 {dados.criatorioNome.toUpperCase()}
               </Text>
               <View style={styles.divisor} />
-              <Text style={styles.tituloCertificado}>Certificado de Pedigree</Text>
+              <Text style={styles.tituloCertificado}>Certificado</Text>
               <Text style={styles.emitidoEm}>
                 Registro genealógico emitido em {dados.emitidoEmLabel}
               </Text>
