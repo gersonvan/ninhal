@@ -5,8 +5,12 @@ import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { runWithTenant } from "@/lib/tenant/context";
-import { createAve, updateAve } from "./service";
-import { AnilhaDuplicadaError, RegistroNaoEncontradoError } from "./errors";
+import { createAve, deleteAve, updateAve } from "./service";
+import {
+  AnilhaDuplicadaError,
+  AveComVinculosError,
+  RegistroNaoEncontradoError,
+} from "./errors";
 import { ParentescoInvalidoError } from "./compatibility";
 import { requireTenantOrRedirect } from "./require-tenant";
 
@@ -25,6 +29,7 @@ function mapAveServiceError(error: unknown): AveFormState {
   }
   if (
     error instanceof AnilhaDuplicadaError ||
+    error instanceof AveComVinculosError ||
     error instanceof ParentescoInvalidoError ||
     error instanceof RegistroNaoEncontradoError
   ) {
@@ -129,4 +134,23 @@ export async function updateAveAction(
 
   revalidatePath(`/plantel/${id}`);
   redirect(`/plantel/${id}`);
+}
+
+export async function deleteAveAction(
+  _prevState: AveFormState,
+  formData: FormData,
+): Promise<AveFormState> {
+  const { tenant } = await requireTenantOrRedirect();
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { error: "Ave inválida." };
+
+  try {
+    await runWithTenant(tenant.id, () => deleteAve(id));
+  } catch (error) {
+    return mapAveServiceError(error);
+  }
+
+  revalidatePath("/plantel");
+  redirect("/plantel");
 }

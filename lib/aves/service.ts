@@ -1,7 +1,11 @@
 import { Prisma, type SexoAve, type StatusAve } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { assertMaeCompativel, assertPaiCompativel } from "./compatibility";
-import { AnilhaDuplicadaError, RegistroNaoEncontradoError } from "./errors";
+import {
+  AnilhaDuplicadaError,
+  AveComVinculosError,
+  RegistroNaoEncontradoError,
+} from "./errors";
 import {
   createAveSchema,
   updateAveSchema,
@@ -115,4 +119,37 @@ export async function updateAve(id: string, input: unknown) {
     if (isAnilhaDuplicada(error)) throw new AnilhaDuplicadaError();
     throw error;
   }
+}
+
+/**
+ * Exclui uma ave, destinada a corrigir cadastros errados. A exclusão é
+ * bloqueada quando a ave já participa da genealogia (é pai/mãe de outra ave)
+ * ou de uma ninhada — apagar nesses casos corromperia o histórico do plantel;
+ * para o ciclo de vida real existe o campo `status` (óbito, vendido, etc.).
+ */
+export async function deleteAve(id: string) {
+  const ave = await prisma.ave.findUnique({ where: { id } });
+  if (!ave) throw new RegistroNaoEncontradoError("Ave");
+
+  const [filhos, ninhadas] = await Promise.all([
+    prisma.ave.count({
+      where: { OR: [{ anilhaPaiId: id }, { anilhaMaeId: id }] },
+    }),
+    prisma.ninhada.count({
+      where: { OR: [{ anilhaMachoId: id }, { anilhaFemeaId: id }] },
+    }),
+  ]);
+
+  if (filhos > 0) {
+    throw new AveComVinculosError(
+      "Esta ave é pai ou mãe de outras aves do plantel e não pode ser excluída. Para registrar óbito ou venda, altere o status dela.",
+    );
+  }
+  if (ninhadas > 0) {
+    throw new AveComVinculosError(
+      "Esta ave participa de ninhadas registradas e não pode ser excluída. Exclua as ninhadas primeiro, ou altere o status da ave.",
+    );
+  }
+
+  await prisma.ave.delete({ where: { id } });
 }

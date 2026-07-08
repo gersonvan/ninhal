@@ -229,3 +229,15 @@ export async function updateNinhada(id: string, input: unknown) {
     throw error;
   }
 }
+
+/**
+ * Exclui uma ninhada, destinada a corrigir registros errados. Os filhotes já
+ * cadastrados a partir dela não são afetados: a genealogia vive nos campos
+ * pai/mãe das próprias aves, sem chave estrangeira para a ninhada.
+ */
+export async function deleteNinhada(id: string) {
+  const ninhada = await prisma.ninhada.findUnique({ where: { id } });
+  if (!ninhada) throw new RegistroNaoEncontradoError("Ninhada");
+
+  await prisma.ninhada.delete({ where: { id } });
+}

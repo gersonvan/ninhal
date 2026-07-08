@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
@@ -202,6 +203,8 @@ export default function FichaNinhada({
               </svg>
               Ver na árvore genealógica
             </Link>
+
+            <ExcluirNinhada ninhadaId={dados.id} />
           </>
         ) : (
           <form action={salvarProgresso} className="flex flex-col gap-4">
@@ -256,6 +259,81 @@ export default function FichaNinhada({
             </div>
           </form>
         )}
+      </div>
+    </div>
+  );
+}
+
+function ExcluirNinhada({ ninhadaId }: { ninhadaId: string }) {
+  const router = useRouter();
+  const [confirmando, setConfirmando] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+
+  async function excluir() {
+    setPending(true);
+    setErro(null);
+    try {
+      const res = await fetch(`/api/ninhadas/${ninhadaId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "Não foi possível excluir.");
+      }
+      router.push("/ninhadas");
+      router.refresh();
+    } catch (error) {
+      setErro(
+        error instanceof Error ? error.message : "Não foi possível excluir.",
+      );
+      setPending(false);
+    }
+  }
+
+  if (!confirmando) {
+    return (
+      <div className="text-center">
+        <button
+          type="button"
+          onClick={() => setConfirmando(true)}
+          className="bg-transparent border-none font-sans font-bold text-[13px] text-terracota cursor-pointer p-2"
+        >
+          Excluir esta ninhada
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white border-[1.5px] border-terracota rounded-xl p-4 flex flex-col gap-3">
+      <p className="font-sans text-sm text-text-primary m-0">
+        Excluir esta ninhada remove o registro definitivamente. Filhotes já
+        cadastrados no plantel não são afetados. Tem certeza?
+      </p>
+      {erro && (
+        <p className="text-sm font-semibold text-terracota m-0">{erro}</p>
+      )}
+      <div className="flex gap-3">
+        <Button
+          type="button"
+          variant="tertiary"
+          onClick={() => {
+            setConfirmando(false);
+            setErro(null);
+          }}
+          className="flex-1 !text-text-secondary"
+        >
+          Cancelar
+        </Button>
+        <button
+          type="button"
+          onClick={excluir}
+          disabled={pending}
+          className="flex-1 font-sans font-bold text-sm text-white bg-terracota border-none px-4 py-3 rounded-[10px] cursor-pointer disabled:opacity-60"
+        >
+          {pending ? "Excluindo..." : "Excluir definitivamente"}
+        </button>
       </div>
     </div>
   );

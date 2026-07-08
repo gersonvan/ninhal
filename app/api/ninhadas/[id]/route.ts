@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runWithTenant } from "@/lib/tenant/context";
 import { requireTenantId } from "@/lib/tenant/request-context";
-import { getNinhada, updateNinhada } from "@/lib/ninhadas/service";
+import { deleteNinhada, getNinhada, updateNinhada } from "@/lib/ninhadas/service";
 import { ninhadaErrorResponse } from "@/lib/ninhadas/http";
 
 interface RouteParams {
@@ -29,6 +29,19 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const ninhada = await runWithTenant(ctx.tenantId, () => updateNinhada(id, body));
     return NextResponse.json(ninhada);
+  } catch (error) {
+    return ninhadaErrorResponse(error);
+  }
+}
+
+export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+  const ctx = await requireTenantId();
+  if ("response" in ctx) return ctx.response;
+
+  const { id } = await params;
+  try {
+    await runWithTenant(ctx.tenantId, () => deleteNinhada(id));
+    return NextResponse.json({ ok: true });
   } catch (error) {
     return ninhadaErrorResponse(error);
   }

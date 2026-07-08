@@ -11,7 +11,7 @@ import {
   STATUS_AVE_LABELS,
 } from "@/lib/aves/labels";
 import { useParentesCandidatos } from "@/lib/aves/useParentesCandidatos";
-import { updateAveAction } from "@/lib/aves/actions";
+import { deleteAveAction, updateAveAction } from "@/lib/aves/actions";
 
 interface Especie {
   id: string;
@@ -176,6 +176,61 @@ export default function FichaAve({
             Origem
           </Link>
         </div>
+
+        <ExcluirAve aveId={ave.id} />
+      </div>
+    </div>
+  );
+}
+
+function ExcluirAve({ aveId }: { aveId: string }) {
+  const [confirmando, setConfirmando] = useState(false);
+  const [state, formAction, pending] = useActionState(deleteAveAction, null);
+
+  if (!confirmando) {
+    return (
+      <div className="mt-4 text-center">
+        <button
+          type="button"
+          onClick={() => setConfirmando(true)}
+          className="bg-transparent border-none font-sans font-bold text-[13px] text-terracota cursor-pointer p-2"
+        >
+          Excluir esta ave
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 bg-white border-[1.5px] border-terracota rounded-xl p-4 flex flex-col gap-3">
+      <p className="font-sans text-sm text-text-primary m-0">
+        Excluir esta ave remove o cadastro definitivamente. Para registrar
+        óbito ou venda, use a edição de status. Tem certeza?
+      </p>
+      {state?.error && (
+        <p className="text-sm font-semibold text-terracota m-0">
+          {state.error}
+        </p>
+      )}
+      <div className="flex gap-3">
+        <Button
+          type="button"
+          variant="tertiary"
+          onClick={() => setConfirmando(false)}
+          className="flex-1 !text-text-secondary"
+        >
+          Cancelar
+        </Button>
+        <form action={formAction} className="flex-1 flex">
+          <input type="hidden" name="id" value={aveId} />
+          <button
+            type="submit"
+            disabled={pending}
+            className="flex-1 font-sans font-bold text-sm text-white bg-terracota border-none px-4 py-3 rounded-[10px] cursor-pointer disabled:opacity-60"
+          >
+            {pending ? "Excluindo..." : "Excluir definitivamente"}
+          </button>
+        </form>
       </div>
     </div>
   );

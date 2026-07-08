@@ -11,3 +11,10 @@ export class RegistroNaoEncontradoError extends Error {
     this.name = "RegistroNaoEncontradoError";
   }
 }
+
+export class AveComVinculosError extends Error {
+  constructor(mensagem: string) {
+    super(mensagem);
+    this.name = "AveComVinculosError";
+  }
+}
