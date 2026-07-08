@@ -240,7 +240,12 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
           const statusLabel = STATUS_AVE_LABELS[ave.status];
           const badgeVariant = BIRD_STATUS_BADGE[statusLabel] ?? "neutral";
           return (
-            <Link key={ave.id} href={`/plantel/${ave.id}`} className="no-underline">
+            <Link
+              key={ave.id}
+              href={`/plantel/${ave.id}`}
+              prefetch={false}
+              className="no-underline"
+            >
               <Card className="p-3 flex items-center gap-3.5">
                 {ave.foto ? (
                   // eslint-disable-next-line @next/next/no-img-element
