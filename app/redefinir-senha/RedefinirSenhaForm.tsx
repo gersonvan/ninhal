@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { updatePasswordAction } from "@/lib/auth/actions";
 import Button from "@/components/ui/Button";
-import TextField from "@/components/ui/TextField";
+import PasswordField from "@/components/ui/PasswordField";
 
 export default function RedefinirSenhaForm() {
   const [state, formAction, pending] = useActionState(
@@ -20,19 +20,17 @@ export default function RedefinirSenhaForm() {
         Escolha uma nova senha para a sua conta. Você entrará automaticamente
         após confirmar.
       </p>
-      <TextField
+      <PasswordField
         id="nova-senha"
         name="password"
-        type="password"
         required
         minLength={6}
         label="Nova senha"
         placeholder="Mínimo de 6 caracteres"
       />
-      <TextField
+      <PasswordField
         id="confirmar-senha"
         name="passwordConfirm"
-        type="password"
         required
         minLength={6}
         label="Confirmar nova senha"

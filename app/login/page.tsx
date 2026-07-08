@@ -7,6 +7,7 @@ import {
   signUpAction,
 } from "@/lib/auth/actions";
 import Button from "@/components/ui/Button";
+import PasswordField from "@/components/ui/PasswordField";
 import TextField from "@/components/ui/TextField";
 
 type Tab = "login" | "signup" | "recover";
@@ -94,10 +95,9 @@ export default function LoginPage() {
                 label="E-mail"
                 placeholder="voce@aviario.com.br"
               />
-              <TextField
+              <PasswordField
                 id="login-password"
                 name="password"
-                type="password"
                 required
                 label="Senha"
                 placeholder="••••••••"
@@ -137,10 +137,9 @@ export default function LoginPage() {
                 label="E-mail"
                 placeholder="voce@aviario.com.br"
               />
-              <TextField
+              <PasswordField
                 id="signup-password"
                 name="password"
-                type="password"
                 required
                 minLength={6}
                 label="Senha"

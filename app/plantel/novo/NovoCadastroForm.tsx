@@ -22,6 +22,9 @@ export interface PreselecaoNovaAve {
 const selectClass =
   "w-full box-border appearance-none font-sans text-[15px] px-4 py-3.5 rounded-[10px] border-[1.5px] border-input-border bg-white text-text-primary";
 
+/** Valor sentinela da opção "Adicionar nova espécie" — nunca é submetido como especieId. */
+const ADICIONAR_ESPECIE_VALUE = "__adicionar_especie__";
+
 export default function NovoCadastroForm({
   especies,
   preselecao,
@@ -163,7 +166,16 @@ export default function NovoCadastroForm({
             <select
               name="especieId"
               value={especieId}
-              onChange={(e) => setEspecieId(e.target.value)}
+              onChange={(e) => {
+                // A opção de adicionar vive dentro do próprio dropdown porque é
+                // ali que o usuário está olhando quando não encontra a espécie;
+                // ela abre o formulário inline sem trocar a seleção atual.
+                if (e.target.value === ADICIONAR_ESPECIE_VALUE) {
+                  setAdicionandoEspecie(true);
+                  return;
+                }
+                setEspecieId(e.target.value);
+              }}
               className={selectClass}
             >
               {listaEspecies.map((especie) => (
@@ -171,6 +183,9 @@ export default function NovoCadastroForm({
                   {especie.nome}
                 </option>
               ))}
+              <option value={ADICIONAR_ESPECIE_VALUE}>
+                ＋ Adicionar nova espécie…
+              </option>
             </select>
             <ChevronDown />
           </div>

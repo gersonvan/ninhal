@@ -167,11 +167,59 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
       <div className="max-w-[900px] mx-auto px-5 pb-6 pt-2 flex flex-col gap-2.5">
         {erro && <p className="text-sm font-semibold text-terracota">{erro}</p>}
 
-        {aves !== null && aves.length === 0 && !erro && (
-          <p className="font-sans text-sm text-text-secondary text-center py-8">
-            Nenhuma ave encontrada com esses filtros.
-          </p>
-        )}
+        {aves !== null &&
+          aves.length === 0 &&
+          !erro &&
+          (buscaDebounced || chipAtivo || statusAtivo ? (
+            <p className="font-sans text-sm text-text-secondary text-center py-8">
+              Nenhuma ave encontrada com esses filtros.
+            </p>
+          ) : (
+            <div className="flex flex-col items-center gap-4 py-10 text-center">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(135deg,#E4DCC8,#C9BB9A)",
+                }}
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#4B5D3A"
+                  strokeWidth={1.8}
+                >
+                  <path d="M12 3c-3 2-5 5-5 9a5 5 0 0010 0c0-4-2-7-5-9z" />
+                  <path d="M12 12v9" />
+                  <path d="M8 21h8" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-serif font-semibold text-lg text-text-primary m-0">
+                  Seu plantel está vazio
+                </p>
+                <p className="font-sans text-sm text-text-secondary m-0 mt-1">
+                  Cadastre sua primeira ave ou importe sua Relação de
+                  Passeriformes do IBAMA.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2.5 w-full max-w-[300px]">
+                <Link
+                  href="/plantel/novo"
+                  className="no-underline font-sans font-bold text-sm bg-oliva-600 text-background py-3 rounded-xl"
+                >
+                  Cadastrar primeira ave
+                </Link>
+                <Link
+                  href="/configuracoes/importar-ibama"
+                  className="no-underline font-sans font-bold text-sm text-oliva-600 border-[1.5px] border-oliva-600 py-3 rounded-xl"
+                >
+                  Importar do IBAMA
+                </Link>
+              </div>
+            </div>
+          ))}
 
         {aves?.map((ave) => {
           const statusLabel = STATUS_AVE_LABELS[ave.status];
