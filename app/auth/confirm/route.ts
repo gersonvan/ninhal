@@ -1,13 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server";
+import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
 /**
  * Destino dos links de autenticação enviados por e-mail (ex: recuperação de
- * senha). Troca o código PKCE da URL por uma sessão e encaminha o usuário
- * para o destino indicado em `next`.
+ * senha). Aceita dois formatos e encaminha para o destino indicado em `next`:
+ *
+ * - `token_hash` + `type` (template de e-mail customizado): validado via
+ *   verifyOtp — funciona em qualquer navegador/dispositivo.
+ * - `code` (fluxo PKCE padrão): trocado por sessão — só funciona no mesmo
+ *   navegador em que o link foi solicitado, pois depende do cookie com o
+ *   code verifier criado no pedido.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
+  const tokenHash = searchParams.get("token_hash");
+  const type = searchParams.get("type") as EmailOtpType | null;
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
 
@@ -15,8 +23,17 @@ export async function GET(request: NextRequest) {
   // manipulado para redirecionar a outro site.
   const destino = next.startsWith("/") ? next : "/dashboard";
 
-  if (code) {
-    const supabase = await createClient();
+  const supabase = await createClient();
+
+  if (tokenHash && type) {
+    const { error } = await supabase.auth.verifyOtp({
+      type,
+      token_hash: tokenHash,
+    });
+    if (!error) {
+      return NextResponse.redirect(new URL(destino, request.url));
+    }
+  } else if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       return NextResponse.redirect(new URL(destino, request.url));
