@@ -30,6 +30,7 @@ export default function ImportarIbamaView({ especies }: { especies: Especie[] })
     processarPdfIbamaAction,
     null,
   );
+  const [nomeArquivo, setNomeArquivo] = useState<string | null>(null);
   const [linhas, setLinhas] = useState<LinhaConfirmacaoIbama[] | null>(null);
   const [linhasComErro, setLinhasComErro] = useState<
     { linha: string; motivo: string }[]
@@ -114,12 +115,25 @@ export default function ImportarIbamaView({ especies }: { especies: Especie[] })
           cada ave antes de confirmar.
         </p>
         <form action={uploadAction} className="flex flex-col gap-4">
+          <label
+            htmlFor="arquivo"
+            className="flex items-center gap-3 border-[1.5px] border-dashed border-input-border rounded-[10px] px-4 py-4 cursor-pointer bg-white hover:border-oliva-600 transition-colors"
+          >
+            <span className="shrink-0 font-sans font-bold text-sm text-background bg-oliva-600 px-4 py-2 rounded-[10px]">
+              Escolher arquivo
+            </span>
+            <span className="font-sans text-sm text-text-secondary truncate">
+              {nomeArquivo ?? "Nenhum arquivo selecionado"}
+            </span>
+          </label>
           <input
+            id="arquivo"
             type="file"
             name="arquivo"
             accept="application/pdf"
             required
-            className="font-sans text-sm"
+            onChange={(e) => setNomeArquivo(e.target.files?.[0]?.name ?? null)}
+            className="hidden"
           />
           {uploadState && "error" in uploadState && (
             <p className="text-sm font-semibold text-terracota m-0">
