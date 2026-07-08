@@ -1,11 +1,18 @@
 import { Document, Page, renderToBuffer, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 /**
- * Gera, em memória, um PDF sintético reproduzindo a estrutura geral do
- * documento oficial "Relação de Passeriformes" do IBAMA (tabela de colunas
- * fixas + seção de identificação do responsável) — com dados fictícios,
- * usado apenas nos testes automatizados. Nunca usar `docs/relação de
- * aves.pdf` (dados pessoais reais) como fixture.
+ * Gera, em memória, um PDF sintético reproduzindo a estrutura de texto do
+ * documento oficial "Relação de Passeriformes" do IBAMA (uma linha de texto
+ * por ave, seguida da seção de identificação do responsável) — com dados
+ * fictícios, usado apenas nos testes automatizados. Nunca usar `docs/relação
+ * de aves.pdf` (dados pessoais reais) como fixture.
+ *
+ * A extração (`parser.ts`) lê o texto puro da página (`getText()`), não a
+ * geometria de uma tabela — por isso esta fixture renderiza cada ave como
+ * uma única linha de texto com valores separados por espaço, exatamente como
+ * o texto bruto do documento real, em vez de uma grade de células com
+ * largura fixa (que quebra de linha para valores mais longos e não reflete
+ * o documento real, cujas colunas são largas o suficiente para não quebrar).
  */
 
 export interface LinhaSinteticaIbama {
@@ -22,50 +29,23 @@ export interface LinhaSinteticaIbama {
 const styles = StyleSheet.create({
   page: { padding: 24, fontFamily: "Courier", fontSize: 9 },
   titulo: { fontSize: 12, marginBottom: 12 },
-  linha: { flexDirection: "row" },
-  cabecalho: { fontFamily: "Courier-Bold" },
-  cel: { border: "1px solid #333", padding: 3 },
-  celNumero: { width: 24 },
-  celCientifico: { width: 140 },
-  celComum: { width: 130 },
-  celSexo: { width: 32 },
-  celNascimento: { width: 70 },
-  celTipoAnilha: { width: 70 },
-  celDiametro: { width: 42 },
-  celAnilha: { width: 90 },
+  identificacao: { marginBottom: 12 },
+  cabecalho: { fontFamily: "Courier-Bold", marginBottom: 4 },
+  linha: { marginBottom: 2 },
   responsavel: { marginTop: 24, fontSize: 10 },
 });
 
-const CABECALHO: LinhaSinteticaIbama = {
-  numero: "#",
-  nomeCientifico: "Nome científico",
-  nomeComum: "Nome comum",
-  sexo: "Sexo",
-  nascimento: "Nascimento",
-  tipoAnilha: "Tipo anilha",
-  diametro: "Diam.",
-  anilha: "Código de anilha",
-};
-
-function LinhaTabela({
-  linha,
-  cabecalho = false,
-}: {
-  linha: LinhaSinteticaIbama;
-  cabecalho?: boolean;
-}) {
-  return (
-    <View style={[styles.linha, ...(cabecalho ? [styles.cabecalho] : [])]}>
-      <Text style={[styles.cel, styles.celNumero]}>{linha.numero}</Text>
-      <Text style={[styles.cel, styles.celCientifico]}>{linha.nomeCientifico}</Text>
-      <Text style={[styles.cel, styles.celComum]}>{linha.nomeComum}</Text>
-      <Text style={[styles.cel, styles.celSexo]}>{linha.sexo}</Text>
-      <Text style={[styles.cel, styles.celNascimento]}>{linha.nascimento}</Text>
-      <Text style={[styles.cel, styles.celTipoAnilha]}>{linha.tipoAnilha}</Text>
-      <Text style={[styles.cel, styles.celDiametro]}>{linha.diametro}</Text>
-      <Text style={[styles.cel, styles.celAnilha]}>{linha.anilha}</Text>
-    </View>
-  );
+function linhaTexto(linha: LinhaSinteticaIbama): string {
+  return [
+    linha.numero,
+    linha.nomeCientifico,
+    linha.nomeComum,
+    linha.sexo,
+    linha.nascimento,
+    linha.tipoAnilha,
+    linha.diametro,
+    linha.anilha,
+  ].join(" ");
 }
 
 export interface DadosPdfSintetico {
@@ -79,14 +59,29 @@ export async function gerarPdfSinteticoIbama(dados: DadosPdfSintetico): Promise<
     <Document>
       <Page size="A4" style={styles.page}>
         <Text style={styles.titulo}>Relação de Passeriformes (documento sintético de teste)</Text>
-        <LinhaTabela linha={CABECALHO} cabecalho />
+        {(dados.nomeResponsavel || dados.telefoneResponsavel) && (
+          <View style={styles.identificacao}>
+            {dados.nomeResponsavel && (
+              <Text>Nome: {dados.nomeResponsavel} CPF: 000.000.000-00 registro CTF: 0000000</Text>
+            )}
+            {dados.telefoneResponsavel && (
+              <Text>Telefone: {dados.telefoneResponsavel} Fax: E-mail: teste@example.invalid</Text>
+            )}
+          </View>
+        )}
+        <Text style={styles.cabecalho}>
+          # Nome científico Nome comum Sexo Nascimento Tipo anilha Diam. Código de anilha
+        </Text>
         {dados.linhas.map((linha) => (
-          <LinhaTabela key={linha.numero} linha={linha} />
+          <Text key={linha.numero} style={styles.linha}>
+            {linhaTexto(linha)}
+          </Text>
         ))}
-        <View style={styles.responsavel}>
-          {dados.nomeResponsavel && <Text>Nome do Criador: {dados.nomeResponsavel}</Text>}
-          {dados.telefoneResponsavel && <Text>Telefone: {dados.telefoneResponsavel}</Text>}
-        </View>
+        <Text style={styles.responsavel}>
+          Observações: Esta relação é válida exclusivamente no território brasileiro, sem emendas ou
+          rasuras. Não autoriza a exposição dos espécimes nela relacionados em logradouros públicos ou
+          privados.
+        </Text>
       </Page>
     </Document>
   );

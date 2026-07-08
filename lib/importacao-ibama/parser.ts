@@ -1,5 +1,5 @@
 import "./pdf-polyfills";
-import { PDFParse, type TableArray } from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 
 export interface AveExtraidaIbama {
   numero: string;
@@ -28,8 +28,6 @@ export interface ResultadoExtracaoIbama {
   responsavel: ResponsavelExtraido;
 }
 
-const NUMERO_COLUNAS = 8;
-
 /**
  * Limite de comprimento acima do qual um valor de anilha sem espaço interno é
  * tratado como possivelmente truncado (ver `pareceTruncada` abaixo) — ver
@@ -38,28 +36,48 @@ const NUMERO_COLUNAS = 8;
 const LIMITE_SUSPEITO_ANILHA = 20;
 
 /**
+ * Casa uma linha de dados da tabela a partir do texto puro da página (ver
+ * nota abaixo sobre por que não usamos a detecção geométrica de tabela do
+ * `pdf-parse`). Âncoras estruturais fortes: o sexo é sempre um único
+ * caractere/token isolado (validado separadamente por `mapearSexo`, para
+ * produzir um erro específico em vez de rejeitar a linha inteira na
+ * estrutura — mas o regex ainda exige que seja um token de um só caractere,
+ * senão a captura não-gulosa anterior consumiria colunas demais); o diâmetro
+ * (padrão N,N) nunca varia de formato. O trecho entre o número da linha e o
+ * sexo é "Nome científico" + "Nome comum" combinados; o trecho entre o sexo e
+ * o diâmetro é "Nascimento" + "Tipo anilha" combinados (a data em si não é
+ * usada como âncora — um formato inesperado não deve impedir o
+ * reconhecimento das demais colunas, `parseData` trata a conversão à parte);
+ * o resto da linha é o Código de anilha (pode ficar vazio, validado à parte).
+ */
+const LINHA_REGEX =
+  /^(\d+)\s+(.+?)\s+(\S)\s+(\S+)\s+(.+?)\s+(\d+,\d+)\s*(.*)$/;
+
+/**
  * Extrai aves e a identificação do responsável do PDF oficial "Relação de
- * Passeriformes" do IBAMA. A extração é por posição de coluna (via detecção
- * geométrica de tabelas do `pdf-parse`), não por OCR — o leiaute pode variar
- * entre versões do documento, então linhas que não seguem a estrutura
- * esperada são reportadas em `linhasComErro` em vez de interromper a
- * extração (a defesa principal contra erro é a revisão manual, Task 2.4).
+ * Passeriformes" do IBAMA, a partir do texto puro da página (`getText()`),
+ * não da detecção geométrica de tabela do `pdf-parse` (`getTable()`).
+ *
+ * Descoberto por verificação manual contra o documento real: `getTable()`
+ * fragmenta a tabela real do IBAMA em dezenas de "tabelas" de 1-4 linhas
+ * cada (provavelmente por causa do sombreamento alternado entre linhas, que
+ * confunde a detecção de bordas geométrica), fazendo com que só uma fração
+ * das linhas reais fosse reconhecida como parte de uma tabela válida de 8
+ * colunas — na prática, isso derrubava uma relação de 23 aves para pouco
+ * mais de 10. O texto puro da página, por outro lado, preserva cada ave em
+ * uma linha de texto completa e bem formada, então analisamos essas linhas
+ * diretamente por posição de âncoras confiáveis (sexo, data), sem depender
+ * da geometria de células. O leiaute pode variar entre versões do
+ * documento; linhas que não seguem a estrutura esperada são reportadas em
+ * `linhasComErro` em vez de interromper a extração (a defesa principal
+ * contra erro é a revisão manual, Task 2.4).
  */
 export async function extrairDadosIbama(buffer: Buffer): Promise<ResultadoExtracaoIbama> {
   const parser = new PDFParse({ data: new Uint8Array(buffer) });
   try {
-    // Chamadas sequenciais (não em paralelo): rodar getText/getTable
-    // concorrentemente na mesma instância do parser trava o worker interno
-    // do pdf.js (confirmado empiricamente durante o desenvolvimento).
     const textoResultado = await parser.getText();
-    const tabelaResultado = await parser.getTable();
-
-    const linhas = tabelaResultado.pages.flatMap((pagina) =>
-      pagina.tables.flatMap((tabela) => tabela),
-    );
-
     return {
-      ...extrairAves(linhas),
+      ...extrairAves(textoResultado.text),
       responsavel: extrairResponsavel(textoResultado.text),
     };
   } finally {
@@ -67,22 +85,75 @@ export async function extrairDadosIbama(buffer: Buffer): Promise<ResultadoExtrac
   }
 }
 
-function extrairAves(linhas: TableArray): {
+/**
+ * Uma linha de ave muito longa (nome científico de 3 palavras + código de
+ * anilha longo, por exemplo) pode ultrapassar a largura da página e quebrar
+ * em uma linha de texto adicional dentro do mesmo parágrafo — a quebra cai
+ * no meio da linha de dados, não necessariamente em um espaço "seguro", e a
+ * parte após a quebra não começa com um número, então uma divisão ingênua
+ * por `\n` a descarta silenciosamente (achado confirmado empiricamente).
+ * Em vez de dividir por quebra de linha física, localizamos o início de
+ * cada linha de ave pela sequência numérica estritamente crescente a partir
+ * de 1 (1, 2, 3, ...) seguida de uma palavra iniciada por maiúscula (começo
+ * do nome científico) — uma âncora que não depende de onde o texto quebrou.
+ */
+function dividirEmLinhasDeAve(textoCompleto: string): string[] {
+  // O pdf-parse insere marcadores de página ("-- 1 of 2 --") entre o texto
+  // de páginas diferentes ao concatenar via getText() — não fazem parte do
+  // conteúdo do documento e precisam ser removidos antes de qualquer coisa,
+  // senão podem ser capturados junto com a última linha de uma página.
+  const textoSemMarcadores = textoCompleto.replace(/--\s*\d+\s*of\s*\d+\s*--/gi, " ");
+  const textoAchatado = textoSemMarcadores.replace(/\s*\n\s*/g, " ");
+  // Exclui dígitos imediatamente precedidos por ",", "." ou outro dígito —
+  // evita colidir com a parte fracionária do "Diam." (ex: "2,6 SISPASS...")
+  // ou com um número de versão embutido no próprio código de anilha (ex:
+  // "SISPASS 2.6 CE/A..." — o "6" após o ponto fica seguido de espaço e uma
+  // palavra maiúscula, coincidindo com o início real da próxima linha;
+  // achados empíricos contra o documento real do IBAMA).
+  const marcador = /(?<![,.\d])\b(\d+)\s+(?=[A-ZÀ-Ý])/g;
+
+  const posicoes: number[] = [];
+  let proximoEsperado = 1;
+  let m: RegExpExecArray | null;
+  while ((m = marcador.exec(textoAchatado))) {
+    if (Number(m[1]) === proximoEsperado) {
+      posicoes.push(m.index);
+      proximoEsperado += 1;
+    }
+  }
+
+  // A última linha da ave em cada página não tem uma próxima posição de
+  // corte natural DENTRO da mesma página — a "próxima posição" encontrada
+  // (se houver) já está na página seguinte, com todo o rodapé/cabeçalho de
+  // página no meio do caminho (achado empírico: o texto entre elas incluía
+  // o bloco de "Observações"/identificação do responsável repetido na
+  // página seguinte). Por isso, o limite de cada linha é sempre o *menor*
+  // entre: a próxima posição de linha encontrada, o início do primeiro
+  // rótulo de rodapé conhecido ("Observações:"/"Atenção:") e um teto de
+  // caracteres como rede de segurança caso o rótulo varie entre versões.
+  const RODAPE_REGEX = /\b(Observações|Atenção)\s*:/i;
+  const LIMITE_LINHA = 220;
+
+  return posicoes.map((inicio, i) => {
+    const limitePorPosicao = i + 1 < posicoes.length ? posicoes[i + 1] : textoAchatado.length;
+    const trecho = textoAchatado.slice(inicio, Math.min(limitePorPosicao, inicio + LIMITE_LINHA));
+    const rodape = trecho.match(RODAPE_REGEX);
+    const fim = rodape ? rodape.index! : trecho.length;
+    return trecho.slice(0, fim).trim();
+  });
+}
+
+function extrairAves(texto: string): {
   aves: AveExtraidaIbama[];
   linhasComErro: LinhaComErro[];
 } {
   const aves: AveExtraidaIbama[] = [];
   const linhasComErro: LinhaComErro[] = [];
 
-  for (const celulas of linhas) {
-    const numero = celulas[0]?.trim() ?? "";
-    // Linhas de cabeçalho ("#", "Nome científico", ...) não têm número na
-    // primeira coluna — ignoradas silenciosamente, não são um erro de dado.
-    if (!/^\d+$/.test(numero)) continue;
-
-    const resultado = parseLinhaAve(celulas);
+  for (const linhaLimpa of dividirEmLinhasDeAve(texto)) {
+    const resultado = parseLinhaAve(linhaLimpa);
     if ("erro" in resultado) {
-      linhasComErro.push({ linha: celulas.join(" | "), motivo: resultado.erro });
+      linhasComErro.push({ linha: linhaLimpa, motivo: resultado.erro });
     } else {
       aves.push(resultado.ave);
     }
@@ -92,34 +163,15 @@ function extrairAves(linhas: TableArray): {
 }
 
 /**
- * Normaliza o texto de uma célula extraída via `getTable()`. O `pdf-parse`
- * insere um hífen literal seguido de quebra de linha ("-\n") quando um valor
- * sem espaço natural no ponto de quebra (ex: um código de anilha longo) é
- * dividido entre duas linhas dentro da célula — esse hífen não faz parte do
- * valor original e precisa ser removido sem deixar espaço no lugar
- * (reconstituindo a palavra partida). Já uma quebra de linha em um espaço
- * natural (ex: "SISPASS 2.6\nCE/A 004802") vira um espaço único, como antes.
- * Um hífen legítimo do valor original (ex: "Galo-da-campina") nunca é
- * seguido de quebra de linha imediatamente, então é preservado.
- */
-function normalizarCelula(celula: string): string {
-  return celula
-    .trim()
-    .replace(/-\n/g, "")
-    .replace(/\s+/g, " ");
-}
-
-/**
  * Detecta perda silenciosa de caracteres: confirmado empiricamente (Task 2.6)
  * que, para um trecho de texto sem nenhum espaço interno que excede a largura
  * da célula, o PDF pode ser renderizado sem os caracteres excedentes — sem
- * quebra de linha, sem hífen, sem qualquer marcador (diferente da corrupção
- * de hífen da Task 2.5, que preserva todos os caracteres). Não há como
- * recuperar os caracteres perdidos nem distinguir com certeza um valor
- * genuinamente longo de um valor truncado apenas pelo texto extraído — a
- * defesa aqui é heurística: um valor sem espaço interno com comprimento
- * acima do limite observado é tratado como suspeito e a linha é reportada
- * para revisão manual em vez de aceita silenciosamente.
+ * quebra de linha, sem hífen, sem qualquer marcador. Não há como recuperar os
+ * caracteres perdidos nem distinguir com certeza um valor genuinamente longo
+ * de um valor truncado apenas pelo texto extraído — a defesa aqui é
+ * heurística: um valor sem espaço interno com comprimento acima do limite
+ * observado é tratado como suspeito e a linha é reportada para revisão
+ * manual em vez de aceita silenciosamente.
  */
 function pareceTruncada(valor: string): boolean {
   // >= (não >): o valor truncado sempre sai com exatamente
@@ -130,30 +182,40 @@ function pareceTruncada(valor: string): boolean {
   return valor.length >= LIMITE_SUSPEITO_ANILHA && !/\s/.test(valor);
 }
 
-function parseLinhaAve(celulas: string[]): { ave: AveExtraidaIbama } | { erro: string } {
-  if (celulas.length !== NUMERO_COLUNAS) {
+function parseLinhaAve(linha: string): { ave: AveExtraidaIbama } | { erro: string } {
+  const match = linha.match(LINHA_REGEX);
+  if (!match) {
     return {
-      erro: `Esperado ${NUMERO_COLUNAS} colunas (#, Nome científico, Nome comum, Sexo, Nascimento, Tipo anilha, Diam., Código de anilha), encontrado ${celulas.length}.`,
+      erro: "Não foi possível reconhecer as 8 colunas esperadas (#, Nome científico, Nome comum, Sexo, Nascimento, Tipo anilha, Diam., Código de anilha) nesta linha.",
     };
   }
 
-  // Nomes longos podem quebrar em mais de uma linha dentro da célula (largura
-  // de coluna variável entre versões do documento) — normaliza para espaço único.
-  const [numero, nomeCientifico, nomeComum, sexoRaw, nascimentoRaw, tipoAnilha, diametroAnilha, anilha] =
-    celulas.map(normalizarCelula);
+  const [, numero, nomeCombinado, sexoRaw, nascimentoRaw, tipoAnilha, diametroAnilha, anilha] = match;
+
+  // "Nome comum" é sempre o último token do trecho combinado (pode ser um
+  // único nome hifenizado, ex: "Galo-da-campina"); "Nome científico" é o
+  // restante (2-3 palavras, ex: "Oryzoborus maximiliani maximiliani").
+  const tokensNome = nomeCombinado.trim().split(/\s+/);
+  const nomeComum = tokensNome[tokensNome.length - 1] ?? "";
+  const nomeCientifico = tokensNome.slice(0, -1).join(" ");
+
+  if (!nomeCientifico || !nomeComum) {
+    return { erro: `Não foi possível separar nome científico e nome comum em "${nomeCombinado}".` };
+  }
 
   const sexo = mapearSexo(sexoRaw);
   if (!sexo) {
     return { erro: `Valor de sexo inválido: "${sexoRaw}" (esperado M, F ou I).` };
   }
 
-  if (!anilha) {
+  const anilhaLimpa = anilha.trim();
+  if (!anilhaLimpa) {
     return { erro: "Código de anilha ausente." };
   }
 
-  if (pareceTruncada(anilha)) {
+  if (pareceTruncada(anilhaLimpa)) {
     return {
-      erro: `Código de anilha "${anilha}" pode estar truncado (mais de ${LIMITE_SUSPEITO_ANILHA} caracteres sem espaço) — confira o valor no documento original antes de cadastrar manualmente.`,
+      erro: `Código de anilha "${anilhaLimpa}" pode estar truncado (mais de ${LIMITE_SUSPEITO_ANILHA} caracteres sem espaço) — confira o valor no documento original antes de cadastrar manualmente.`,
     };
   }
 
@@ -164,9 +226,9 @@ function parseLinhaAve(celulas: string[]): { ave: AveExtraidaIbama } | { erro: s
       nomeComum,
       sexo,
       dataNascimento: parseData(nascimentoRaw),
-      tipoAnilha,
-      diametroAnilha,
-      anilha,
+      tipoAnilha: tipoAnilha.trim(),
+      diametroAnilha: diametroAnilha.trim(),
+      anilha: anilhaLimpa,
     },
   };
 }
@@ -192,10 +254,15 @@ function parseData(valor: string): Date | null {
  * A seção de identificação do responsável vem como texto livre (não
  * tabular), separada da tabela de aves. Captura apenas nome e telefone —
  * CPF e endereço não são extraídos por decisão explícita de escopo.
+ *
+ * No documento real, "Nome:" e "Telefone:" aparecem na mesma linha que
+ * outros campos (ex: "Nome: DAVI ... CPF: ...", "Telefone: ... Fax: ...
+ * E-mail: ..."), não em linhas próprias — por isso os padrões abaixo param
+ * no próximo rótulo de campo conhecido, em vez de ir até a quebra de linha.
  */
 function extrairResponsavel(texto: string): ResponsavelExtraido {
-  const nomeMatch = texto.match(/Nome do Criador:[ \t]*([^\n]+)/i);
-  const telefoneMatch = texto.match(/Telefone:[ \t]*([^\n]+)/i);
+  const nomeMatch = texto.match(/\bNome:\s*(.+?)\s+CPF:/i);
+  const telefoneMatch = texto.match(/\bTelefone:\s*(.+?)\s+Fax:/i);
 
   return {
     nome: nomeMatch ? nomeMatch[1].trim() : null,
