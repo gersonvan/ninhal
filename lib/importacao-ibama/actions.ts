@@ -17,8 +17,6 @@ import type {
   ResponsavelSugerido,
 } from "./types";
 
-export type { LinhaConfirmacaoIbama, LinhaRevisaoIbama, ResponsavelSugerido };
-
 export type ProcessarPdfState =
   | { error: string }
   | {

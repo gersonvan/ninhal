@@ -10,10 +10,12 @@ import {
   confirmarImportacaoAction,
   processarPdfIbamaAction,
   type ConfirmarImportacaoState,
-  type LinhaConfirmacaoIbama,
-  type LinhaRevisaoIbama,
-  type ResponsavelSugerido,
 } from "@/lib/importacao-ibama/actions";
+import type {
+  LinhaConfirmacaoIbama,
+  LinhaRevisaoIbama,
+  ResponsavelSugerido,
+} from "@/lib/importacao-ibama/types";
 
 interface Especie {
   id: string;
