@@ -101,17 +101,16 @@ describe("CrachaDocument", () => {
     expect(texto).toContain("IBAMA-12345/2024");
   });
 
-  it("contém a árvore genealógica de 3 gerações (pais e avós)", () => {
+  it("contém mutação/cor e origem da própria ave, sem dados de genealogia", () => {
     const texto = extrairTextos(CrachaDocument({ dados: DADOS_TESTE })).join(" ");
 
-    expect(texto).toContain("Rufus");
-    expect(texto).toContain("BR-2021-0099");
-    expect(texto).toContain("Alice");
-    expect(texto).toContain("BR-2021-0075");
-    expect(texto).toContain("Adquirido — sem registro");
-    expect(texto).toContain("Adquirida — sem registro");
-    expect(texto).toContain("Não registrado");
-    expect(texto).toContain("Não registrada");
+    expect(texto).toContain("Isabela");
+    expect(texto).toContain("Nascida no criatório");
+    // O crachá é um documento de identificação da própria ave — a árvore
+    // genealógica (pais/avós) fica reservada ao Certificado de Pedigree.
+    expect(texto).not.toContain("Rufus");
+    expect(texto).not.toContain("Alice");
+    expect(texto).not.toContain("Genealogia");
   });
 
   it("contém os dados do responsável (nome e telefone) e do criatório", () => {

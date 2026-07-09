@@ -324,10 +324,16 @@ function EdicaoAve({
   const [sexo, setSexo] = useState(ave.sexo);
   const [origem, setOrigem] = useState(ave.origem);
   const [status, setStatus] = useState(ave.status);
+  const [fotoPreview, setFotoPreview] = useState<string | null>(ave.foto);
   const { pais, maes } = useParentesCandidatos(especieId);
 
   const dataNascimentoValue =
     ave.dataNascimento && new Date(ave.dataNascimento).toISOString().slice(0, 10);
+
+  function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) setFotoPreview(URL.createObjectURL(file));
+  }
 
   return (
     <div className="max-w-[640px] mx-auto min-h-screen box-border">
@@ -348,6 +354,32 @@ function EdicaoAve({
 
       <form action={formAction} className="p-5 flex flex-col gap-5">
         <input type="hidden" name="id" value={ave.id} />
+
+        <div className="flex justify-center">
+          <label
+            htmlFor="foto"
+            className="w-[120px] h-[120px] rounded-full border-[1.5px] border-dashed border-input-border bg-white flex items-center justify-center text-text-muted text-sm cursor-pointer overflow-hidden"
+          >
+            {fotoPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={fotoPreview}
+                alt="Pré-visualização da foto"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              "Adicionar foto"
+            )}
+          </label>
+          <input
+            id="foto"
+            name="foto"
+            type="file"
+            accept="image/*"
+            onChange={handleFotoChange}
+            className="hidden"
+          />
+        </div>
 
         <TextField
           name="nomeApelido"

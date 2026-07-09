@@ -1,5 +1,4 @@
 import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer";
-import type { NoArvore } from "@/lib/arvore/construir";
 import type { DadosPedigree } from "./service";
 import { CORES } from "./PedigreeDocument";
 
@@ -20,92 +19,64 @@ const styles = StyleSheet.create({
   },
   corpo: {
     flexDirection: "row",
-    gap: 8,
+    gap: 10,
     flex: 1,
   },
   colunaFoto: {
-    width: 56,
+    width: 76,
     alignItems: "center",
   },
   foto: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
   },
   fotoPlaceholder: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     backgroundColor: CORES.bordaClara,
   },
   anilhaBadge: {
-    marginTop: 4,
+    marginTop: 6,
     fontFamily: "Courier-Bold",
-    fontSize: 6,
+    fontSize: 7,
     color: CORES.textoPrincipal,
     textAlign: "center",
   },
   colunaPrincipal: {
     flex: 1,
+    justifyContent: "center",
   },
   nomeAve: {
     fontFamily: "Times-Bold",
-    fontSize: 13,
+    fontSize: 15,
     color: CORES.textoPrincipal,
   },
   especieAve: {
     fontFamily: "Helvetica",
-    fontSize: 6.5,
+    fontSize: 7.5,
     color: CORES.textoSecundario,
-    marginTop: 1,
+    marginTop: 2,
   },
   linhaCampos: {
     flexDirection: "row",
-    gap: 10,
-    marginTop: 4,
+    flexWrap: "wrap",
+    gap: 12,
+    marginTop: 8,
   },
   campoLabel: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 5,
+    fontSize: 5.5,
     letterSpacing: 0.3,
     color: CORES.textoMuted,
     textTransform: "uppercase",
   },
   campoValor: {
     fontFamily: "Courier-Bold",
-    fontSize: 7,
+    fontSize: 8,
     color: CORES.textoPrincipal,
     marginTop: 1,
-  },
-  genealogiaTitulo: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 5,
-    letterSpacing: 0.3,
-    color: CORES.textoMuted,
-    textTransform: "uppercase",
-    marginTop: 6,
-    marginBottom: 2,
-  },
-  linhaPais: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  ancestralPai: {
-    fontFamily: "Helvetica",
-    fontSize: 6,
-    color: CORES.textoPrincipal,
-  },
-  linhaAvos: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 4,
-    marginTop: 2,
-  },
-  ancestralAvo: {
-    fontFamily: "Helvetica",
-    fontSize: 5,
-    color: CORES.textoMuted,
-    width: "48%",
   },
   rodape: {
     flexDirection: "row",
@@ -135,13 +106,6 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
 });
-
-function nomeAncestral(no: NoArvore): string {
-  if (no.conhecido) {
-    return `${no.nomeApelido || no.anilha} (${no.anilha})`;
-  }
-  return no.label;
-}
 
 export default function CrachaDocument({ dados }: { dados: DadosPedigree }) {
   const nomeAveExibicao = dados.ave.nomeApelido || dados.ave.anilha;
@@ -177,26 +141,16 @@ export default function CrachaDocument({ dados }: { dados: DadosPedigree }) {
                   {dados.ave.registro || "Não informado"}
                 </Text>
               </View>
-            </View>
-
-            <Text style={styles.genealogiaTitulo}>Genealogia</Text>
-            <View style={styles.linhaPais}>
-              <Text style={styles.ancestralPai}>Pai: {nomeAncestral(dados.arvore.pai)}</Text>
-              <Text style={styles.ancestralPai}>Mãe: {nomeAncestral(dados.arvore.mae)}</Text>
-            </View>
-            <View style={styles.linhaAvos}>
-              <Text style={styles.ancestralAvo}>
-                Avô pat.: {nomeAncestral(dados.arvore.paiDoPai)}
-              </Text>
-              <Text style={styles.ancestralAvo}>
-                Avó pat.: {nomeAncestral(dados.arvore.maeDoPai)}
-              </Text>
-              <Text style={styles.ancestralAvo}>
-                Avô mat.: {nomeAncestral(dados.arvore.paiDaMae)}
-              </Text>
-              <Text style={styles.ancestralAvo}>
-                Avó mat.: {nomeAncestral(dados.arvore.maeDaMae)}
-              </Text>
+              <View>
+                <Text style={styles.campoLabel}>Mutação / cor</Text>
+                <Text style={styles.campoValor}>
+                  {dados.ave.mutacaoCor || "Não informado"}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.campoLabel}>Origem</Text>
+                <Text style={styles.campoValor}>{dados.ave.origemLabel}</Text>
+              </View>
             </View>
           </View>
         </View>
