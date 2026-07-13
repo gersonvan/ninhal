@@ -13,7 +13,7 @@ import {
 } from "@/lib/aves/labels";
 import { useParentesCandidatos } from "@/lib/aves/useParentesCandidatos";
 import { deleteAveAction, updateAveAction } from "@/lib/aves/actions";
-import { validarTamanhoFoto } from "@/lib/aves/foto";
+import { redimensionarFoto, validarTamanhoFoto } from "@/lib/aves/foto";
 
 interface Especie {
   id: string;
@@ -327,23 +327,33 @@ function EdicaoAve({
   const [status, setStatus] = useState(ave.status);
   const [fotoPreview, setFotoPreview] = useState<string | null>(ave.foto);
   const [fotoErro, setFotoErro] = useState<string | null>(null);
+  const [otimizandoFoto, setOtimizandoFoto] = useState(false);
   const { pais, maes } = useParentesCandidatos(especieId);
 
   const dataNascimentoValue =
     ave.dataNascimento && new Date(ave.dataNascimento).toISOString().slice(0, 10);
 
-  function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const erro = validarTamanhoFoto(file);
+    setOtimizandoFoto(true);
+    const otimizada = await redimensionarFoto(file);
+    setOtimizandoFoto(false);
+
+    const erro = validarTamanhoFoto(otimizada);
     if (erro) {
       setFotoErro(erro);
       event.target.value = "";
       return;
     }
+
+    const transferencia = new DataTransfer();
+    transferencia.items.add(otimizada);
+    event.target.files = transferencia.files;
+
     setFotoErro(null);
-    setFotoPreview(URL.createObjectURL(file));
+    setFotoPreview(URL.createObjectURL(otimizada));
   }
 
   return (
@@ -371,7 +381,9 @@ function EdicaoAve({
             htmlFor="foto"
             className="w-[120px] h-[120px] rounded-full border-[1.5px] border-dashed border-input-border bg-white flex items-center justify-center text-text-muted text-sm cursor-pointer overflow-hidden"
           >
-            {fotoPreview ? (
+            {otimizandoFoto ? (
+              "Otimizando foto…"
+            ) : fotoPreview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={fotoPreview}
@@ -569,7 +581,7 @@ function EdicaoAve({
           >
             Cancelar
           </Button>
-          <Button type="submit" disabled={pending} className="flex-1">
+          <Button type="submit" disabled={pending || otimizandoFoto} className="flex-1">
             {pending ? "Salvando..." : "Salvar alterações"}
           </Button>
         </div>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import { createAveAction } from "@/lib/aves/actions";
-import { validarTamanhoFoto } from "@/lib/aves/foto";
+import { redimensionarFoto, validarTamanhoFoto } from "@/lib/aves/foto";
 import { useParentesCandidatos } from "@/lib/aves/useParentesCandidatos";
 import { criarEspecie } from "@/lib/especies/client";
 
@@ -37,6 +37,7 @@ export default function NovoCadastroForm({
 
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
   const [fotoErro, setFotoErro] = useState<string | null>(null);
+  const [otimizandoFoto, setOtimizandoFoto] = useState(false);
   const [listaEspecies, setListaEspecies] = useState(especies);
   const [especieId, setEspecieId] = useState(
     preselecao?.especieId ?? especies[0]?.id ?? "",
@@ -54,7 +55,7 @@ export default function NovoCadastroForm({
   const [salvandoEspecie, setSalvandoEspecie] = useState(false);
   const [erroEspecie, setErroEspecie] = useState<string | null>(null);
 
-  function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) {
       setFotoErro(null);
@@ -62,14 +63,23 @@ export default function NovoCadastroForm({
       return;
     }
 
-    const erro = validarTamanhoFoto(file);
+    setOtimizandoFoto(true);
+    const otimizada = await redimensionarFoto(file);
+    setOtimizandoFoto(false);
+
+    const erro = validarTamanhoFoto(otimizada);
     if (erro) {
       setFotoErro(erro);
       event.target.value = "";
       return;
     }
+
+    const transferencia = new DataTransfer();
+    transferencia.items.add(otimizada);
+    event.target.files = transferencia.files;
+
     setFotoErro(null);
-    setFotoPreview(URL.createObjectURL(file));
+    setFotoPreview(URL.createObjectURL(otimizada));
   }
 
   async function handleAdicionarEspecie() {
@@ -118,7 +128,9 @@ export default function NovoCadastroForm({
             htmlFor="foto"
             className="w-[120px] h-[120px] rounded-full border-[1.5px] border-dashed border-input-border bg-white flex items-center justify-center text-text-muted text-sm cursor-pointer overflow-hidden"
           >
-            {fotoPreview ? (
+            {otimizandoFoto ? (
+              "Otimizando foto…"
+            ) : fotoPreview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={fotoPreview}
@@ -363,7 +375,7 @@ export default function NovoCadastroForm({
           >
             Cancelar
           </Link>
-          <Button type="submit" disabled={pending} className="flex-1">
+          <Button type="submit" disabled={pending || otimizandoFoto} className="flex-1">
             {pending ? "Salvando..." : "Salvar ave"}
           </Button>
         </div>
