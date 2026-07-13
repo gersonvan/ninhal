@@ -42,6 +42,10 @@ export default function NovaNinhadaForm({ especies }: { especies: Especie[] }) {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!cancelado && data) setParentesco(data);
+      })
+      .catch(() => {
+        // Falha silenciosa: a prévia de consanguinidade só não aparece — a
+        // trava real ao salvar a ninhada é validada de novo no servidor.
       });
 
     return () => {

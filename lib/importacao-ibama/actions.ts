@@ -48,7 +48,15 @@ export async function processarPdfIbamaAction(
     };
   }
 
-  const avesComEspecie = await resolverEspeciesDasAves(extraido.aves);
+  let avesComEspecie;
+  try {
+    avesComEspecie = await resolverEspeciesDasAves(extraido.aves);
+  } catch {
+    return {
+      error:
+        "Não foi possível identificar a espécie de uma ou mais aves deste PDF. Confirme que é o arquivo correto do IBAMA.",
+    };
+  }
 
   const linhas = await runWithTenant(tenant.id, async () => {
     const resultado: LinhaRevisaoIbama[] = [];

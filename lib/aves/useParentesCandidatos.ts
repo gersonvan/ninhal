@@ -36,12 +36,19 @@ export function useParentesCandidatos(
       .then((res) => (res.ok ? res.json() : []))
       .then((data: AveCandidata[]) => {
         if (!cancelado) setPais(data);
+      })
+      .catch(() => {
+        // Falha silenciosa: a lista de candidatos a pai só fica vazia — não
+        // há um estado de erro dedicado para essa prévia auxiliar do formulário.
       });
 
     fetch(`/api/aves?especieId=${especieId}&sexo=FEMEA${sufixoStatus}`)
       .then((res) => (res.ok ? res.json() : []))
       .then((data: AveCandidata[]) => {
         if (!cancelado) setMaes(data);
+      })
+      .catch(() => {
+        // Idem, para a lista de candidatas a mãe.
       });
 
     return () => {

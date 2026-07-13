@@ -27,19 +27,21 @@ export default async function ArvoreGenealogicaPage({ params }: PageProps) {
 
   const { id } = await params;
 
-  const [ave, arvore, alertasAtivados] = await Promise.all([
-    runWithTenant(tenant.id, () => getAve(id)),
-    runWithTenant(tenant.id, () => montarArvoreGenealogica(id)),
-    alertasConsanguinidadeAtivados(tenant.id),
-  ]);
-
+  // Busca a ave primeiro e sozinha: `montarArvoreGenealogica` lança uma
+  // exceção se a ave não existir, e rodar as duas junto num `Promise.all`
+  // faria essa exceção escapar antes do `notFound()` abaixo rodar — um link
+  // antigo/favoritado para uma ave já excluída quebraria a página em vez de
+  // mostrar "não encontrado".
+  const ave = await runWithTenant(tenant.id, () => getAve(id));
   if (!ave) {
     notFound();
   }
 
-  const ninhadaAtiva = await runWithTenant(tenant.id, () =>
-    buscarNinhadaAtivaDaAve(id),
-  );
+  const [arvore, alertasAtivados, ninhadaAtiva] = await Promise.all([
+    runWithTenant(tenant.id, () => montarArvoreGenealogica(id)),
+    alertasConsanguinidadeAtivados(tenant.id),
+    runWithTenant(tenant.id, () => buscarNinhadaAtivaDaAve(id)),
+  ]);
   const statusNinhada = ninhadaAtiva
     ? determinarStatusNinhada(ninhadaAtiva, alertasAtivados)
     : null;

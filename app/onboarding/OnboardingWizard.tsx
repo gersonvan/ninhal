@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { completeOnboardingAction } from "@/lib/onboarding/actions";
+import { redimensionarFoto, validarTamanhoFoto } from "@/lib/aves/foto";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 
@@ -20,6 +21,8 @@ export default function OnboardingWizard() {
     Record<string, boolean>
   >({ Canários: true });
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoErro, setLogoErro] = useState<string | null>(null);
+  const [otimizandoLogo, setOtimizandoLogo] = useState(false);
   const [state, formAction, pending] = useActionState(
     completeOnboardingAction,
     null,
@@ -34,13 +37,31 @@ export default function OnboardingWizard() {
     setSelectedSpecies((prev) => ({ ...prev, [species]: !prev[species] }));
   }
 
-  function handleLogoChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleLogoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) {
+      setLogoErro(null);
       setLogoPreview(null);
       return;
     }
-    setLogoPreview(URL.createObjectURL(file));
+
+    setOtimizandoLogo(true);
+    const otimizado = await redimensionarFoto(file);
+    setOtimizandoLogo(false);
+
+    const erro = validarTamanhoFoto(otimizado);
+    if (erro) {
+      setLogoErro(erro);
+      event.target.value = "";
+      return;
+    }
+
+    const transferencia = new DataTransfer();
+    transferencia.items.add(otimizado);
+    event.target.files = transferencia.files;
+
+    setLogoErro(null);
+    setLogoPreview(URL.createObjectURL(otimizado));
   }
 
   function handleNext() {
@@ -155,7 +176,9 @@ export default function OnboardingWizard() {
                   htmlFor="logo"
                   className="w-40 h-40 rounded-full border-[1.5px] border-dashed border-input-border bg-white flex items-center justify-center text-text-muted text-sm cursor-pointer overflow-hidden"
                 >
-                  {logoPreview ? (
+                  {otimizandoLogo ? (
+                    "Otimizando…"
+                  ) : logoPreview ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={logoPreview}
@@ -175,6 +198,11 @@ export default function OnboardingWizard() {
                   className="hidden"
                 />
               </div>
+              {logoErro && (
+                <p className="text-sm font-semibold text-terracota text-center">
+                  {logoErro}
+                </p>
+              )}
             </div>
           )}
 
@@ -214,7 +242,7 @@ export default function OnboardingWizard() {
               <Button
                 type="button"
                 onClick={handleNext}
-                disabled={step === 1 && name.trim().length === 0}
+                disabled={(step === 1 && name.trim().length === 0) || otimizandoLogo}
                 className="flex-1"
               >
                 Continuar
@@ -226,7 +254,7 @@ export default function OnboardingWizard() {
                   name="redirecionarPara"
                   value="dashboard"
                   variant="secondary"
-                  disabled={pending}
+                  disabled={pending || otimizandoLogo}
                   className="flex-1"
                 >
                   {pending ? "Concluindo..." : "Pular por agora"}
@@ -235,7 +263,7 @@ export default function OnboardingWizard() {
                   type="submit"
                   name="redirecionarPara"
                   value="importar-ibama"
-                  disabled={pending}
+                  disabled={pending || otimizandoLogo}
                   className="flex-1"
                 >
                   {pending ? "Concluindo..." : "Importar do IBAMA"}
