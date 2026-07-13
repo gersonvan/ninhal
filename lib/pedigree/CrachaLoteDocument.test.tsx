@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ReactNode } from "react";
-import { Page } from "@react-pdf/renderer";
+import { Page, renderToBuffer } from "@react-pdf/renderer";
 import CrachaLoteDocument, { CRACHAS_POR_PAGINA } from "./CrachaLoteDocument";
 import type { DadosCracha } from "./service";
 
@@ -82,5 +82,21 @@ describe("CrachaLoteDocument", () => {
     expect(texto).toContain("BR-2024-002");
     expect(texto).toContain("Ave 003");
     expect(texto).toContain("BR-2024-003");
+  });
+
+  it(`renderiza ${CRACHAS_POR_PAGINA} crachás em exatamente 1 página física do PDF (grade 2x4 sem transbordar)`, async () => {
+    // Regressão: com margens largas demais a segunda coluna não cabia nos
+    // 21cm do A4, a grade colapsava para 1 cartão por linha e o react-pdf
+    // criava páginas físicas extras, fatiando cartões na virada de página.
+    // A contagem de "/Type /Page" no PDF real detecta esse transbordo, que a
+    // inspeção estrutural de elementos <Page> não enxerga.
+    const lote = Array.from({ length: CRACHAS_POR_PAGINA }, (_, i) =>
+      aveDeTeste(String(i).padStart(3, "0")),
+    );
+    const buffer = await renderToBuffer(CrachaLoteDocument({ lote }));
+
+    const paginasFisicas =
+      buffer.toString("latin1").match(/\/Type\s*\/Page[^s]/g)?.length ?? 0;
+    expect(paginasFisicas).toBe(1);
   });
 });
