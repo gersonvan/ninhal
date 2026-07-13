@@ -5,6 +5,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import { createAveAction } from "@/lib/aves/actions";
+import { validarTamanhoFoto } from "@/lib/aves/foto";
 import { useParentesCandidatos } from "@/lib/aves/useParentesCandidatos";
 import { criarEspecie } from "@/lib/especies/client";
 
@@ -35,6 +36,7 @@ export default function NovoCadastroForm({
   const [state, formAction, pending] = useActionState(createAveAction, null);
 
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
+  const [fotoErro, setFotoErro] = useState<string | null>(null);
   const [listaEspecies, setListaEspecies] = useState(especies);
   const [especieId, setEspecieId] = useState(
     preselecao?.especieId ?? especies[0]?.id ?? "",
@@ -54,7 +56,20 @@ export default function NovoCadastroForm({
 
   function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    setFotoPreview(file ? URL.createObjectURL(file) : null);
+    if (!file) {
+      setFotoErro(null);
+      setFotoPreview(null);
+      return;
+    }
+
+    const erro = validarTamanhoFoto(file);
+    if (erro) {
+      setFotoErro(erro);
+      event.target.value = "";
+      return;
+    }
+    setFotoErro(null);
+    setFotoPreview(URL.createObjectURL(file));
   }
 
   async function handleAdicionarEspecie() {
@@ -123,6 +138,11 @@ export default function NovoCadastroForm({
             className="hidden"
           />
         </div>
+        {fotoErro && (
+          <p className="text-sm font-semibold text-terracota text-center -mt-3">
+            {fotoErro}
+          </p>
+        )}
 
         <TextField
           name="nomeApelido"

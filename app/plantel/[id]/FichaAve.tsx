@@ -13,6 +13,7 @@ import {
 } from "@/lib/aves/labels";
 import { useParentesCandidatos } from "@/lib/aves/useParentesCandidatos";
 import { deleteAveAction, updateAveAction } from "@/lib/aves/actions";
+import { validarTamanhoFoto } from "@/lib/aves/foto";
 
 interface Especie {
   id: string;
@@ -325,6 +326,7 @@ function EdicaoAve({
   const [origem, setOrigem] = useState(ave.origem);
   const [status, setStatus] = useState(ave.status);
   const [fotoPreview, setFotoPreview] = useState<string | null>(ave.foto);
+  const [fotoErro, setFotoErro] = useState<string | null>(null);
   const { pais, maes } = useParentesCandidatos(especieId);
 
   const dataNascimentoValue =
@@ -332,7 +334,16 @@ function EdicaoAve({
 
   function handleFotoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    if (file) setFotoPreview(URL.createObjectURL(file));
+    if (!file) return;
+
+    const erro = validarTamanhoFoto(file);
+    if (erro) {
+      setFotoErro(erro);
+      event.target.value = "";
+      return;
+    }
+    setFotoErro(null);
+    setFotoPreview(URL.createObjectURL(file));
   }
 
   return (
@@ -380,6 +391,11 @@ function EdicaoAve({
             className="hidden"
           />
         </div>
+        {fotoErro && (
+          <p className="text-sm font-semibold text-terracota text-center -mt-3">
+            {fotoErro}
+          </p>
+        )}
 
         <TextField
           name="nomeApelido"

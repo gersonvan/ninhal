@@ -4,6 +4,15 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Fotos de aves enviadas via Server Action (cadastro/edição) passam pelo
+  // limite de corpo de requisição das Server Actions do Next, cujo padrão é
+  // apenas 1 MB — bem abaixo do tamanho comum de fotos de câmera de celular,
+  // causando "Body exceeded 1 MB limit" (500) em produção para fotos maiores.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "8mb",
+    },
+  },
   // pdf-parse/pdfjs-dist referencia DOMMatrix (API de Canvas do navegador) em
   // tempo de avaliação de módulo em sua build "browser" — sem isso, o bundler
   // do Next escolhe essa build em vez da build Node, quebrando em produção
