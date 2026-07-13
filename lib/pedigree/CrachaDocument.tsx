@@ -1,16 +1,16 @@
 import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer";
-import type { DadosPedigree } from "./service";
+import type { DadosCracha } from "./service";
 import { CORES } from "./PedigreeDocument";
 
 /** Crachá: cartão compacto de identificação, tamanho carteira/cartão (10cm x 6cm). */
-const PT_POR_CM = 28.3464567;
-const LARGURA = 10 * PT_POR_CM;
-const ALTURA = 6 * PT_POR_CM;
+export const PT_POR_CM = 28.3464567;
+export const LARGURA_CRACHA = 10 * PT_POR_CM;
+export const ALTURA_CRACHA = 6 * PT_POR_CM;
 
 const styles = StyleSheet.create({
-  page: {
-    width: LARGURA,
-    height: ALTURA,
+  cartao: {
+    width: LARGURA_CRACHA,
+    height: ALTURA_CRACHA,
     backgroundColor: CORES.fundoCertificado,
     borderWidth: 1.5,
     borderColor: CORES.bordaPrincipal,
@@ -107,63 +107,79 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function CrachaDocument({ dados }: { dados: DadosPedigree }) {
+/**
+ * Conteúdo visual do Crachá (cartão 10cm x 6cm), sem o `<Page>` que o
+ * envolve — reutilizado tanto pelo Crachá individual (`CrachaDocument`)
+ * quanto pela impressão em lote (`CrachaLoteDocument`, vários cartões por
+ * página A4).
+ */
+export function CartaoCracha({ dados }: { dados: DadosCracha }) {
+  const nomeAveExibicao = dados.ave.nomeApelido || dados.ave.anilha;
+
+  return (
+    <View style={styles.cartao}>
+      <View style={styles.corpo}>
+        <View style={styles.colunaFoto}>
+          {dados.ave.fotoUrl ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
+            <Image src={dados.ave.fotoUrl} style={styles.foto} />
+          ) : (
+            <View style={styles.fotoPlaceholder} />
+          )}
+          <Text style={styles.anilhaBadge}>{dados.ave.anilha}</Text>
+        </View>
+
+        <View style={styles.colunaPrincipal}>
+          <Text style={styles.nomeAve}>{nomeAveExibicao}</Text>
+          <Text style={styles.especieAve}>
+            {dados.ave.especieNome} · {dados.ave.sexoLabel}
+          </Text>
+
+          <View style={styles.linhaCampos}>
+            <View>
+              <Text style={styles.campoLabel}>Nascimento</Text>
+              <Text style={styles.campoValor}>{dados.ave.dataNascimentoLabel}</Text>
+            </View>
+            <View>
+              <Text style={styles.campoLabel}>Registro</Text>
+              <Text style={styles.campoValor}>
+                {dados.ave.registro || "Não informado"}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.campoLabel}>Mutação / cor</Text>
+              <Text style={styles.campoValor}>
+                {dados.ave.mutacaoCor || "Não informado"}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.campoLabel}>Origem</Text>
+              <Text style={styles.campoValor}>{dados.ave.origemLabel}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.rodape}>
+        <View>
+          <Text style={styles.responsavelNome}>{dados.responsavelNome}</Text>
+          <Text style={styles.responsavelInfo}>
+            {dados.responsavelTelefone || "Telefone não informado"}
+          </Text>
+        </View>
+        <Text style={styles.criatorioNome}>{dados.criatorioNome}</Text>
+      </View>
+    </View>
+  );
+}
+
+export default function CrachaDocument({ dados }: { dados: DadosCracha }) {
   const nomeAveExibicao = dados.ave.nomeApelido || dados.ave.anilha;
 
   return (
     <Document title={`Cracha - ${nomeAveExibicao}`}>
-      <Page size={[LARGURA, ALTURA]} style={styles.page}>
-        <View style={styles.corpo}>
-          <View style={styles.colunaFoto}>
-            {dados.ave.fotoUrl ? (
-              // eslint-disable-next-line jsx-a11y/alt-text
-              <Image src={dados.ave.fotoUrl} style={styles.foto} />
-            ) : (
-              <View style={styles.fotoPlaceholder} />
-            )}
-            <Text style={styles.anilhaBadge}>{dados.ave.anilha}</Text>
-          </View>
-
-          <View style={styles.colunaPrincipal}>
-            <Text style={styles.nomeAve}>{nomeAveExibicao}</Text>
-            <Text style={styles.especieAve}>
-              {dados.ave.especieNome} · {dados.ave.sexoLabel}
-            </Text>
-
-            <View style={styles.linhaCampos}>
-              <View>
-                <Text style={styles.campoLabel}>Nascimento</Text>
-                <Text style={styles.campoValor}>{dados.ave.dataNascimentoLabel}</Text>
-              </View>
-              <View>
-                <Text style={styles.campoLabel}>Registro</Text>
-                <Text style={styles.campoValor}>
-                  {dados.ave.registro || "Não informado"}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.campoLabel}>Mutação / cor</Text>
-                <Text style={styles.campoValor}>
-                  {dados.ave.mutacaoCor || "Não informado"}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.campoLabel}>Origem</Text>
-                <Text style={styles.campoValor}>{dados.ave.origemLabel}</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.rodape}>
-          <View>
-            <Text style={styles.responsavelNome}>{dados.responsavelNome}</Text>
-            <Text style={styles.responsavelInfo}>
-              {dados.responsavelTelefone || "Telefone não informado"}
-            </Text>
-          </View>
-          <Text style={styles.criatorioNome}>{dados.criatorioNome}</Text>
-        </View>
+      <Page size={[LARGURA_CRACHA, ALTURA_CRACHA]}>
+        <CartaoCracha dados={dados} />
       </Page>
     </Document>
   );

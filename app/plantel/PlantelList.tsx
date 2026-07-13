@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Card from "@/components/ui/Card";
 import Badge, { BIRD_STATUS_BADGE } from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 import {
   SEXO_AVE_LABELS,
   STATUS_AVE_LABELS,
@@ -44,6 +45,8 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
   const [statusAtivo, setStatusAtivo] = useState<string | null>(null);
   const [aves, setAves] = useState<AveListItem[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  const [selecionando, setSelecionando] = useState(false);
+  const [selecionados, setSelecionados] = useState<Set<string>>(new Set());
   // Query dos dados exibidos; enquanto difere da query atual, há uma busca em voo.
   const [queryCarregada, setQueryCarregada] = useState<string | null>(null);
 
@@ -89,6 +92,23 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
 
   const atualizando = queryCarregada !== queryString;
 
+  function alternarSelecao(id: string) {
+    setSelecionados((atual) => {
+      const proximo = new Set(atual);
+      if (proximo.has(id)) {
+        proximo.delete(id);
+      } else {
+        proximo.add(id);
+      }
+      return proximo;
+    });
+  }
+
+  function sairDoModoSelecao() {
+    setSelecionando(false);
+    setSelecionados(new Set());
+  }
+
   return (
     <div className="pb-6 min-[900px]:pb-0">
       <div className="max-w-[900px] mx-auto px-5 pt-5 pb-2 flex items-start justify-between gap-3">
@@ -100,12 +120,25 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
             {aves === null ? "Carregando…" : `${aves.length} aves cadastradas`}
           </div>
         </div>
-        <Link
-          href="/configuracoes/importar-ibama"
-          className="no-underline shrink-0 font-sans font-bold text-[13px] text-oliva-600 border-[1.5px] border-oliva-600 px-4 py-2.5 rounded-lg"
-        >
-          Importar do IBAMA
-        </Link>
+        <div className="flex flex-wrap justify-end gap-2">
+          {aves !== null && aves.length > 0 && (
+            <button
+              type="button"
+              onClick={() =>
+                selecionando ? sairDoModoSelecao() : setSelecionando(true)
+              }
+              className="shrink-0 font-sans font-bold text-[13px] text-oliva-600 border-[1.5px] border-oliva-600 px-4 py-2.5 rounded-lg bg-transparent"
+            >
+              {selecionando ? "Cancelar" : "Imprimir crachás"}
+            </button>
+          )}
+          <Link
+            href="/configuracoes/importar-ibama"
+            className="no-underline shrink-0 font-sans font-bold text-[13px] text-oliva-600 border-[1.5px] border-oliva-600 px-4 py-2.5 rounded-lg"
+          >
+            Importar do IBAMA
+          </Link>
+        </div>
       </div>
 
       <div className="max-w-[900px] mx-auto px-5 py-3 flex flex-col gap-3">
@@ -239,6 +272,72 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
         {aves?.map((ave) => {
           const statusLabel = STATUS_AVE_LABELS[ave.status];
           const badgeVariant = BIRD_STATUS_BADGE[statusLabel] ?? "neutral";
+          const conteudo = (
+            <Card className="p-3 flex items-center gap-3.5">
+              {selecionando && (
+                <input
+                  type="checkbox"
+                  checked={selecionados.has(ave.id)}
+                  // O clique já é tratado pelo elemento pai (evita alternar a
+                  // seleção duas vezes por causa do bubbling do clique).
+                  onChange={() => {}}
+                  className="shrink-0 w-[18px] h-[18px]"
+                />
+              )}
+              {ave.foto ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={ave.foto}
+                  alt={ave.nomeApelido ?? ave.anilha}
+                  className="w-[52px] h-[52px] rounded-[10px] object-cover shrink-0"
+                />
+              ) : (
+                <div
+                  className="w-[52px] h-[52px] rounded-[10px] shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg,#E4DCC8,#C9BB9A)",
+                  }}
+                />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="font-serif font-semibold text-base text-text-primary truncate">
+                  {ave.nomeApelido || ave.anilha}
+                </div>
+                <div className="font-sans text-xs text-text-muted truncate">
+                  {ave.especie.nome} · {SEXO_AVE_LABELS[ave.sexo]}
+                </div>
+              </div>
+              <div className="text-right shrink-0 flex flex-col items-end gap-1">
+                <div className="font-mono text-xs text-text-secondary">
+                  {ave.anilha}
+                </div>
+                <div className="flex gap-1.5">
+                  {ave.emNinhada && <Badge variant="warning">Em ninhada</Badge>}
+                  <Badge variant={badgeVariant}>{statusLabel}</Badge>
+                </div>
+              </div>
+            </Card>
+          );
+
+          if (selecionando) {
+            return (
+              <div
+                key={ave.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => alternarSelecao(ave.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    alternarSelecao(ave.id);
+                  }
+                }}
+              >
+                {conteudo}
+              </div>
+            );
+          }
+
           return (
             <Link
               key={ave.id}
@@ -246,44 +345,29 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
               prefetch={false}
               className="no-underline"
             >
-              <Card className="p-3 flex items-center gap-3.5">
-                {ave.foto ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={ave.foto}
-                    alt={ave.nomeApelido ?? ave.anilha}
-                    className="w-[52px] h-[52px] rounded-[10px] object-cover shrink-0"
-                  />
-                ) : (
-                  <div
-                    className="w-[52px] h-[52px] rounded-[10px] shrink-0"
-                    style={{
-                      background: "linear-gradient(135deg,#E4DCC8,#C9BB9A)",
-                    }}
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className="font-serif font-semibold text-base text-text-primary truncate">
-                    {ave.nomeApelido || ave.anilha}
-                  </div>
-                  <div className="font-sans text-xs text-text-muted truncate">
-                    {ave.especie.nome} · {SEXO_AVE_LABELS[ave.sexo]}
-                  </div>
-                </div>
-                <div className="text-right shrink-0 flex flex-col items-end gap-1">
-                  <div className="font-mono text-xs text-text-secondary">
-                    {ave.anilha}
-                  </div>
-                  <div className="flex gap-1.5">
-                    {ave.emNinhada && <Badge variant="warning">Em ninhada</Badge>}
-                    <Badge variant={badgeVariant}>{statusLabel}</Badge>
-                  </div>
-                </div>
-              </Card>
+              {conteudo}
             </Link>
           );
         })}
       </div>
+
+      {selecionando && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border px-5 py-3.5 flex items-center justify-between gap-3">
+          <span className="font-sans text-sm text-text-secondary">
+            {selecionados.size} selecionada{selecionados.size === 1 ? "" : "s"}
+          </span>
+          <Button
+            variant="primary"
+            size="small"
+            disabled={selecionados.size === 0}
+            onClick={() => {
+              window.location.href = `/plantel/cracha-lote?ids=${[...selecionados].join(",")}`;
+            }}
+          >
+            Gerar Crachás
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
