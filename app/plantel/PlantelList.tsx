@@ -47,6 +47,7 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
   const [erro, setErro] = useState<string | null>(null);
   const [selecionando, setSelecionando] = useState(false);
   const [selecionados, setSelecionados] = useState<Set<string>>(new Set());
+  const [filtrosAbertos, setFiltrosAbertos] = useState(false);
   // Query dos dados exibidos; enquanto difere da query atual, há uma busca em voo.
   const [queryCarregada, setQueryCarregada] = useState<string | null>(null);
 
@@ -91,6 +92,7 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
   }, [queryString]);
 
   const atualizando = queryCarregada !== queryString;
+  const filtrosAtivos = (chipAtivo ? 1 : 0) + (statusAtivo ? 1 : 0);
 
   function alternarSelecao(id: string) {
     setSelecionados((atual) => {
@@ -163,45 +165,91 @@ export default function PlantelList({ especies }: { especies: Especie[] }) {
           />
         </div>
 
-        <div className="flex gap-2 overflow-x-auto">
-          <FiltroChip
-            label="Todas"
-            ativo={chipAtivo === null}
-            onClick={() => setChipAtivo(null)}
-          />
-          {SEXO_FILTROS.map((f) => (
-            <FiltroChip
-              key={f.value}
-              label={f.label}
-              ativo={chipAtivo?.tipo === "sexo" && chipAtivo.valor === f.value}
-              onClick={() => setChipAtivo({ tipo: "sexo", valor: f.value })}
-            />
-          ))}
-          {especies.map((especie) => (
-            <FiltroChip
-              key={especie.id}
-              label={especie.nome}
-              ativo={chipAtivo?.tipo === "especie" && chipAtivo.valor === especie.id}
-              onClick={() => setChipAtivo({ tipo: "especie", valor: especie.id })}
-            />
-          ))}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setFiltrosAbertos((aberto) => !aberto)}
+            className={`shrink-0 inline-flex items-center gap-2 font-sans font-bold text-[13px] px-4 py-2.5 rounded-full ${
+              filtrosAbertos || filtrosAtivos > 0
+                ? "bg-oliva-600 text-background border-none"
+                : "bg-white text-text-secondary border-[1.5px] border-border"
+            }`}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.2}
+              strokeLinecap="round"
+            >
+              <path d="M4 7h16" />
+              <path d="M7 12h10" />
+              <path d="M10 17h4" />
+            </svg>
+            Filtros
+            {filtrosAtivos > 0 && ` (${filtrosAtivos})`}
+          </button>
+          {filtrosAtivos > 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                setChipAtivo(null);
+                setStatusAtivo(null);
+              }}
+              className="shrink-0 font-sans font-bold text-[13px] text-text-muted bg-transparent border-none"
+            >
+              Limpar
+            </button>
+          )}
         </div>
 
-        <div className="flex gap-2 overflow-x-auto">
-          <FiltroChip
-            label="Todos os status"
-            ativo={statusAtivo === null}
-            onClick={() => setStatusAtivo(null)}
-          />
-          {STATUS_FILTROS.map((f) => (
-            <FiltroChip
-              key={f.value}
-              label={f.label}
-              ativo={statusAtivo === f.value}
-              onClick={() => setStatusAtivo(f.value)}
-            />
-          ))}
-        </div>
+        {filtrosAbertos && (
+          <>
+            <div className="flex gap-2 overflow-x-auto">
+              <FiltroChip
+                label="Todas"
+                ativo={chipAtivo === null}
+                onClick={() => setChipAtivo(null)}
+              />
+              {SEXO_FILTROS.map((f) => (
+                <FiltroChip
+                  key={f.value}
+                  label={f.label}
+                  ativo={chipAtivo?.tipo === "sexo" && chipAtivo.valor === f.value}
+                  onClick={() => setChipAtivo({ tipo: "sexo", valor: f.value })}
+                />
+              ))}
+              {especies.map((especie) => (
+                <FiltroChip
+                  key={especie.id}
+                  label={especie.nome}
+                  ativo={
+                    chipAtivo?.tipo === "especie" && chipAtivo.valor === especie.id
+                  }
+                  onClick={() => setChipAtivo({ tipo: "especie", valor: especie.id })}
+                />
+              ))}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto">
+              <FiltroChip
+                label="Todos os status"
+                ativo={statusAtivo === null}
+                onClick={() => setStatusAtivo(null)}
+              />
+              {STATUS_FILTROS.map((f) => (
+                <FiltroChip
+                  key={f.value}
+                  label={f.label}
+                  ativo={statusAtivo === f.value}
+                  onClick={() => setStatusAtivo(f.value)}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <div

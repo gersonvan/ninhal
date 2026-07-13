@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
+import { runWithTenant } from "@/lib/tenant/context";
 import AppShell from "@/components/nav/AppShell";
 import Alert from "@/components/ui/Alert";
 import PlantelList from "./PlantelList";
@@ -20,7 +21,17 @@ export default async function PlantelPage({
     redirect("/onboarding");
   }
 
-  const especies = await prisma.especie.findMany({ orderBy: { nome: "asc" } });
+  // Apenas as espécies presentes no plantel do criador — filtrar pelo
+  // catálogo global inteiro polui a tela e sempre retorna vazio para
+  // espécies que ele não tem.
+  const avesPorEspecie = await runWithTenant(tenant.id, () =>
+    prisma.ave.findMany({
+      distinct: ["especieId"],
+      select: { especie: { select: { id: true, nome: true } } },
+      orderBy: { especie: { nome: "asc" } },
+    }),
+  );
+  const especies = avesPorEspecie.map(({ especie }) => especie);
   const { aviso } = await searchParams;
 
   return (
