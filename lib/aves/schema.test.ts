@@ -46,5 +46,15 @@ describe("createAveSchema", () => {
     expect(result.dataNascimento).toBeUndefined();
     expect(result.anilhaPaiId).toBeUndefined();
     expect(result.anilhaMaeId).toBeUndefined();
+    expect(result.origemDetalhe).toBeUndefined();
+  });
+
+  it("aceita origemDetalhe (de onde a ave foi adquirida)", () => {
+    const result = createAveSchema.parse({
+      ...BASE_INPUT,
+      origem: "ADQUIRIDA",
+      origemDetalhe: "Criatório Serra Verde",
+    });
+    expect(result.origemDetalhe).toBe("Criatório Serra Verde");
   });
 });

@@ -18,6 +18,8 @@ export const createAveSchema = z.object({
   sexo: z.enum(SEXO_AVE_VALUES),
   dataNascimento: z.coerce.date().optional(),
   origem: z.enum(ORIGEM_AVE_VALUES),
+  // Só relevante quando origem = ADQUIRIDA — preenchido opcionalmente pelo usuário.
+  origemDetalhe: z.string().trim().min(1).optional(),
   anilhaPaiId: z.string().trim().min(1).optional(),
   anilhaMaeId: z.string().trim().min(1).optional(),
   status: z.enum(STATUS_AVE_VALUES).optional(),

@@ -30,6 +30,7 @@ interface AveDetalhe {
   sexo: keyof typeof SEXO_AVE_LABELS;
   dataNascimento: Date | string | null;
   origem: keyof typeof ORIGEM_AVE_LABELS;
+  origemDetalhe: string | null;
   status: keyof typeof STATUS_AVE_LABELS;
   foto: string | null;
   registro: string | null;
@@ -46,6 +47,14 @@ function formatarData(data: Date | string | null): string {
   if (!data) return "Não informado";
   const d = new Date(data);
   return d.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+}
+
+function origemExibicao(ave: Pick<AveDetalhe, "origem" | "origemDetalhe">): string {
+  const label = ORIGEM_AVE_LABELS[ave.origem];
+  if (ave.origem === "ADQUIRIDA" && ave.origemDetalhe) {
+    return `${label} — ${ave.origemDetalhe}`;
+  }
+  return label;
 }
 
 export default function FichaAve({
@@ -141,7 +150,7 @@ export default function FichaAve({
           <InfoCard label="Mutação / cor" valor={ave.mutacaoCor || "Não informado"} />
           <InfoCard
             label="Origem"
-            valor={ORIGEM_AVE_LABELS[ave.origem]}
+            valor={origemExibicao(ave)}
             className="col-span-2"
           />
           <InfoCard
@@ -541,6 +550,15 @@ function EdicaoAve({
           </div>
           <input type="hidden" name="origem" value={origem} />
         </div>
+
+        {origem === "ADQUIRIDA" && (
+          <TextField
+            name="origemDetalhe"
+            label="De onde foi adquirida"
+            placeholder="Ex: Criatório Serra Verde, Loja Aves & Cia"
+            defaultValue={ave.origemDetalhe ?? ""}
+          />
+        )}
 
         <div className="flex flex-col gap-1.5">
           <label className="text-[13px] font-bold text-[#4a4638]">Status</label>

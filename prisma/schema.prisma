@@ -81,6 +81,8 @@ model Ave {
   sexo           SexoAve
   dataNascimento DateTime? @db.Date
   origem         OrigemAve
+  /// De onde a ave foi adquirida (nome do criador/loja) — só relevante quando origem = ADQUIRIDA.
+  origemDetalhe  String?
   /// Referencia outra Ave do mesmo tenant, mesma espécie, sexo Macho.
   anilhaPaiId    String?
   paiAve         Ave?      @relation("AvePai", fields: [anilhaPaiId], references: [id])

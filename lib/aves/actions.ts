@@ -75,6 +75,7 @@ function readAveInput(formData: FormData) {
     sexo: readOptionalString(formData, "sexo"),
     dataNascimento: readOptionalString(formData, "dataNascimento"),
     origem: readOptionalString(formData, "origem"),
+    origemDetalhe: readOptionalString(formData, "origemDetalhe"),
     anilhaPaiId: readOptionalString(formData, "anilhaPaiId"),
     anilhaMaeId: readOptionalString(formData, "anilhaMaeId"),
     status: readOptionalString(formData, "status"),

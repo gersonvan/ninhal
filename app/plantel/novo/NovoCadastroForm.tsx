@@ -364,6 +364,14 @@ export default function NovoCadastroForm({
           <input type="hidden" name="origem" value={origem} />
         </div>
 
+        {origem === "ADQUIRIDA" && (
+          <TextField
+            name="origemDetalhe"
+            label="De onde foi adquirida"
+            placeholder="Ex: Criatório Serra Verde, Loja Aves & Cia"
+          />
+        )}
+
         {state?.error && (
           <p className="text-sm font-semibold text-terracota">{state.error}</p>
         )}

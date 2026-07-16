@@ -61,6 +61,19 @@ describe("createAve", () => {
     expect(ave.tenantId).toBe(tenantA.id);
   });
 
+  it("persiste origemDetalhe (de onde a ave foi adquirida)", async () => {
+    const ave = await runWithTenant(tenantA.id, () =>
+      createAve({
+        anilha: `BR-ORIGEM-DETALHE-${suffix}`,
+        especieId: especieCanario.id,
+        sexo: "MACHO",
+        origem: "ADQUIRIDA",
+        origemDetalhe: "Criatório Serra Verde",
+      }),
+    );
+    expect(ave.origemDetalhe).toBe("Criatório Serra Verde");
+  });
+
   it("permite a mesma anilha em tenants diferentes", async () => {
     const anilha = `BR-DUP-TENANT-${suffix}`;
     await runWithTenant(tenantA.id, () =>
